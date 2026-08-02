@@ -28,7 +28,7 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-12">
+    <section id="trade-in-section" className="max-w-7xl mx-auto px-6 py-12">
       <div className="bg-[#f5f5f7] rounded-3xl p-8 md:p-12 text-center max-w-4xl mx-auto">
         
         <div className="flex justify-center mb-4">

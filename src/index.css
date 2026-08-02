@@ -9,17 +9,30 @@
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
-html {
-  scroll-behavior: smooth;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+html, body {
+  overscroll-behavior-y: contain;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
   background-color: #F5F5F7;
   color: #1D1D1F;
   line-height: 1.5;
+}
+
+button, a, [role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Active press animation for native touch feedback */
+button:active, a:active, [role="button"]:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
 }
 
 /* --- Custom Scrollbar --- */

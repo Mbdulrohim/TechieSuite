@@ -57,8 +57,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const inputClasses = "bg-white p-3 rounded-xl border border-gray-200 font-medium text-[14px] text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#0066CC]/40 focus:border-[#0066CC]/40 transition-all";
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-[#E5E5E7] p-8 md:p-10 overflow-hidden animate-scale-in my-8">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4">
+      <div className="relative bg-[#F5F5F7] rounded-t-[28px] md:rounded-3xl max-w-2xl w-full shadow-2xl border border-[#E5E5E7] overflow-y-auto animate-slide-in-up md:animate-scale-in max-h-[90vh] md:max-h-[90vh] my-0 md:my-8 p-6 md:p-8">
+        
+        {/* Mobile Drag Handle */}
+        <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto -mt-2 mb-4 md:hidden" />
         
         <button
           onClick={onClose}

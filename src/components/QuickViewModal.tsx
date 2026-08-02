@@ -45,8 +45,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   const totalPrice = basePrice + (appleCare ? 199 : 0);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-[#E5E5E7] overflow-hidden animate-scale-in my-8">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4">
+      <div className="relative bg-white rounded-t-[28px] md:rounded-3xl max-w-4xl w-full shadow-2xl border border-[#E5E5E7] overflow-y-auto animate-slide-in-up md:animate-scale-in max-h-[90vh] md:max-h-[90vh] my-0 md:my-8">
+        
+        {/* Mobile Bottom Sheet Drag Handle */}
+        <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-3 mb-1 md:hidden" />
         
         {/* Close */}
         <button

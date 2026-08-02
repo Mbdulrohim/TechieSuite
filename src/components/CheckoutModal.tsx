@@ -54,14 +54,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     onClearCart();
   };
 
-  const inputClasses = "bg-white p-3 rounded-xl border border-gray-200 font-medium text-[14px] text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#0066CC]/40 focus:border-[#0066CC]/40 transition-all";
+  const inputClasses = "bg-white px-3.5 h-11 rounded-xl border border-gray-200 font-medium text-base md:text-[14px] text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#0066CC]/40 focus:border-[#0066CC]/40 transition-all";
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4">
-      <div className="relative bg-[#F5F5F7] rounded-t-[28px] md:rounded-3xl max-w-2xl w-full shadow-2xl border border-[#E5E5E7] overflow-y-auto animate-slide-in-up md:animate-scale-in max-h-[90vh] md:max-h-[90vh] my-0 md:my-8 p-6 md:p-8">
-        
-        {/* Mobile Drag Handle */}
-        <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto -mt-2 mb-4 md:hidden" />
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-[#E5E5E7] p-6 md:p-10 overflow-hidden animate-scale-in my-auto pb-[calc(2rem+env(safe-area-inset-bottom))]">
         
         <button
           onClick={onClose}
@@ -143,7 +140,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 {fulfillment === 'delivery' ? (
                   <div className="space-y-3 bg-[#F5F5F7] p-5 rounded-2xl border border-gray-200">
                     <h4 className="font-semibold text-[15px] text-[#1D1D1F]">Shipping Address</h4>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <input type="text" placeholder="Full Name" value={address.name}
                         onChange={(e) => setAddress({ ...address, name: e.target.value })}
                         className={inputClasses} />
@@ -154,7 +151,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <input type="text" placeholder="Street Address" value={address.street}
                       onChange={(e) => setAddress({ ...address, street: e.target.value })}
                       className={`w-full ${inputClasses}`} />
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <input type="text" placeholder="City" value={address.city}
                         onChange={(e) => setAddress({ ...address, city: e.target.value })}
                         className={inputClasses} />
@@ -181,7 +178,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                 <button
                   onClick={() => setStep('payment')}
-                  className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white font-semibold text-[15px] py-3.5 rounded-full transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-[#0066CC] hover:bg-[#0055B3] active:scale-[0.98] active:opacity-80 text-white font-semibold text-[15px] h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center gap-2"
                 >
                   Continue to Payment
                   <ArrowRight className="w-4 h-4" />
@@ -271,13 +268,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <div className="flex gap-3">
                   <button
                     onClick={() => setStep('details')}
-                    className="w-1/3 py-3.5 border border-gray-200 rounded-full font-semibold text-[14px] hover:bg-gray-50 transition-colors"
+                    className="w-1/3 h-11 min-h-[44px] border border-gray-200 rounded-full font-semibold text-[14px] hover:bg-gray-50 active:opacity-80 transition-all flex items-center justify-center"
                   >
                     Back
                   </button>
                   <button
                     onClick={handlePlaceOrder}
-                    className="w-2/3 bg-black hover:bg-gray-900 text-white font-semibold text-[15px] py-3.5 rounded-full transition-all shadow-xl flex items-center justify-center gap-2"
+                    className="w-2/3 bg-black hover:bg-gray-900 active:scale-[0.98] active:opacity-80 text-white font-semibold text-[15px] h-11 min-h-[44px] rounded-full transition-all shadow-xl flex items-center justify-center gap-2"
                   >
                     <Apple className="w-5 h-5 fill-current" />
                     Place Order — {formatNaira(total)}

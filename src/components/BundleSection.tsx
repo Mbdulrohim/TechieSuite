@@ -75,7 +75,7 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
           {/* Products Row */}
           <div className="lg:col-span-8 flex flex-col md:flex-row items-center gap-5 overflow-x-auto pb-2">
             {/* Main Product */}
-            <div className="flex-1 bg-[#F5F5F7] p-5 rounded-2xl border border-gray-200 w-full min-w-[220px]">
+            <div className="flex-1 bg-[#F5F5F7] p-5 rounded-2xl border border-gray-200 w-full md:min-w-[220px]">
               <span className="text-[11px] font-bold bg-[#1D1D1F] text-white px-2.5 py-1 rounded-full uppercase">
                 Main Product
               </span>
@@ -121,7 +121,7 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
                 <React.Fragment key={acc.id}>
                   <div
                     onClick={() => toggleAccessory(acc.id)}
-                    className={`flex-1 p-5 rounded-2xl border cursor-pointer transition-all w-full min-w-[220px] ${
+                    className={`flex-1 p-5 rounded-2xl border cursor-pointer transition-all w-full md:min-w-[220px] ${
                       isChecked
                         ? 'bg-blue-50/50 border-[#0066CC] shadow-sm'
                         : 'bg-gray-50 border-gray-200 opacity-60 hover:opacity-100'
@@ -189,10 +189,10 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
 
             <button
               onClick={handleAdd}
-              className={`w-full py-3.5 px-4 rounded-full font-semibold text-[14px] transition-all flex items-center justify-center gap-2 shadow-md ${
+              className={`w-full h-11 min-h-[44px] px-4 rounded-full font-semibold text-[14px] transition-all flex items-center justify-center gap-2 shadow-md active:scale-[0.98] active:opacity-80 ${
                 isAdded
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-[#0066CC] hover:bg-[#0055B3] text-white active:scale-[0.98]'
+                  : 'bg-[#0066CC] hover:bg-[#0055B3] text-white'
               }`}
             >
               <ShoppingBag className="w-4 h-4" />

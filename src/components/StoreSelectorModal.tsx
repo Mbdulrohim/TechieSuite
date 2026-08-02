@@ -20,7 +20,7 @@ export const StoreSelectorModal: React.FC<StoreSelectorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-[#E5E5E7] p-8 overflow-hidden animate-scale-in">
+      <div className="relative bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-[#E5E5E7] p-6 md:p-8 overflow-hidden animate-scale-in pb-[calc(1.5rem+env(safe-area-inset-bottom))] my-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-gray-200 mb-6">
@@ -87,7 +87,7 @@ export const StoreSelectorModal: React.FC<StoreSelectorModalProps> = ({
         <div className="mt-6">
           <button
             onClick={onClose}
-            className="w-full bg-[#1D1D1F] text-white text-[14px] font-semibold py-3 rounded-full hover:bg-black transition-colors"
+            className="w-full bg-[#1D1D1F] hover:bg-black active:scale-[0.98] active:opacity-80 text-white text-[14px] font-semibold h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center"
           >
             Confirm Store
           </button>

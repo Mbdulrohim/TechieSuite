@@ -28,7 +28,7 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
   };
 
   return (
-    <section id="trade-in-section" className="max-w-7xl mx-auto px-6 py-12">
+    <section className="max-w-7xl mx-auto px-6 py-12">
       <div className="bg-[#f5f5f7] rounded-3xl p-8 md:p-12 text-center max-w-4xl mx-auto">
         
         <div className="flex justify-center mb-4">
@@ -43,11 +43,11 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
           Get {formatNaira(180)}–{formatNaira(650)} in credit toward a new device when you trade in your eligible smartphone.*
         </p>
 
-        <div className="max-w-sm mx-auto space-y-4">
+        <div className="w-full max-w-sm mx-auto space-y-4">
           <select
             value={selectedDevice}
             onChange={(e) => setSelectedDevice(e.target.value)}
-            className="w-full bg-white text-[#1d1d1f] text-[15px] border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-[#0066cc]"
+            className="w-full bg-white text-[#1d1d1f] text-base md:text-[15px] border border-gray-300 rounded-lg px-4 h-11 focus:outline-none focus:border-[#0066cc]"
           >
             {TRADE_IN_DEVICES.map((d) => (
               <option key={d.device} value={d.device}>
@@ -58,7 +58,7 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
 
           <button
             onClick={handleApply}
-            className="w-full bg-[#0071e3] hover:bg-[#0077ED] text-white font-medium text-[15px] px-6 py-3 rounded-full transition-colors flex items-center justify-center gap-1"
+            className="w-full bg-[#0071e3] hover:bg-[#0077ED] active:scale-[0.98] active:opacity-80 text-white font-medium text-[15px] px-6 h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center gap-1"
           >
             {appliedTradeIn && appliedTradeIn.device === selectedDevice
               ? 'Credit Applied'

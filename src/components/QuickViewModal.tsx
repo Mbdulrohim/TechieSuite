@@ -45,11 +45,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   const totalPrice = basePrice + (appleCare ? 199 : 0);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4">
-      <div className="relative bg-white rounded-t-[28px] md:rounded-3xl max-w-4xl w-full shadow-2xl border border-[#E5E5E7] overflow-y-auto animate-slide-in-up md:animate-scale-in max-h-[90vh] md:max-h-[90vh] my-0 md:my-8">
-        
-        {/* Mobile Bottom Sheet Drag Handle */}
-        <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-3 mb-1 md:hidden" />
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="relative bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-[#E5E5E7] overflow-hidden animate-scale-in my-8">
         
         {/* Close */}
         <button
@@ -59,7 +56,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-8 md:p-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 md:p-10 pb-[calc(2rem+env(safe-area-inset-bottom))]">
           
           {/* Left: Image Gallery */}
           <div className="md:col-span-6 space-y-5">
@@ -252,7 +249,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                       onAddToCart(product, selectedColor, selectedStorage, appleCare);
                       onClose();
                     }}
-                    className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white font-semibold text-[15px] py-3.5 rounded-full transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]"
+                    className="w-full bg-[#0066CC] hover:bg-[#0055B3] active:scale-[0.98] active:opacity-80 text-white font-semibold text-[15px] h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center gap-2 shadow-lg"
                   >
                     <ShoppingBag className="w-4 h-4" />
                     <span>Add to Bag — {formatNaira(totalPrice)}</span>
@@ -261,7 +258,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   <div className="flex gap-3">
                     <button
                       onClick={() => onToggleWishlist(product.id)}
-                      className="flex-1 py-3 border border-gray-200 rounded-full text-[14px] font-medium hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors"
+                      className="flex-1 h-11 min-h-[44px] border border-gray-200 rounded-full text-[14px] font-medium hover:bg-gray-50 active:opacity-80 flex items-center justify-center gap-2 transition-colors"
                     >
                       <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#D70015] text-[#D70015]' : ''}`} />
                       {isWishlisted ? 'Saved' : 'Save'}
@@ -269,7 +266,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
 
                     <button
                       onClick={() => onToggleCompare(product)}
-                      className="flex-1 py-3 border border-gray-200 rounded-full text-[14px] font-medium hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors"
+                      className="flex-1 h-11 min-h-[44px] border border-gray-200 rounded-full text-[14px] font-medium hover:bg-gray-50 active:opacity-80 flex items-center justify-center gap-2 transition-colors"
                     >
                       <Scale className="w-4 h-4 text-[#0066CC]" />
                       {isCompared ? 'Compared' : 'Compare'}

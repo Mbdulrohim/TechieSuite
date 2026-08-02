@@ -72,7 +72,7 @@ export const FacetedFilterSidebar: React.FC<FacetedFilterSidebarProps> = ({
             <select
               value={filters.sortBy}
               onChange={(e) => onChangeFilter({ sortBy: e.target.value as any })}
-              className="w-full bg-[#F5F5F7] text-[#1D1D1F] text-[14px] font-medium border border-[#E5E5E7] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#0066CC]/40 transition-all"
+              className="w-full bg-white text-[#1D1D1F] text-base md:text-[14px] font-medium border border-gray-200 rounded-xl px-3.5 h-11 focus:outline-none focus:ring-2 focus:ring-[#0066CC] transition-all"
             >
               <option value="featured">Featured & Best Sellers</option>
               <option value="price-low">Price: Low to High</option>
@@ -189,10 +189,10 @@ export const FacetedFilterSidebar: React.FC<FacetedFilterSidebarProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-[#E5E5E7] bg-[#F5F5F7]">
+        <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] border-t border-[#E5E5E7] bg-[#F5F5F7]">
           <button
             onClick={onClose}
-            className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white font-semibold text-[15px] py-3.5 rounded-full transition-colors"
+            className="w-full bg-[#0066CC] hover:bg-[#0055B3] active:scale-[0.98] active:opacity-80 text-white font-semibold text-[15px] h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center"
           >
             Show {totalResults} Products
           </button>

@@ -78,25 +78,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div ref={searchRef} className="relative">
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="hover:text-white transition-colors"
+              className="hover:text-white transition-colors h-11 min-w-[44px] flex items-center justify-center active:opacity-80"
             >
-              <Search className="w-[15px] h-[15px]" />
+              <Search className="w-[18px] h-[18px]" />
             </button>
 
             {/* Apple-style global search dropdown */}
             {isSearchOpen && (
-              <div className="absolute top-full right-0 mt-4 w-screen max-w-[600px] bg-white rounded-b-2xl shadow-xl text-black -translate-x-1/2 left-1/2 p-6 animate-fade-in-up">
-                <div className="relative">
-                  <Search className="w-5 h-5 absolute left-0 top-1/2 -translate-y-1/2 text-gray-400" />
+              <div className="absolute top-full right-0 mt-2 w-[calc(100vw-2rem)] max-w-xl bg-white rounded-b-2xl shadow-xl text-black -translate-x-1/2 left-1/2 p-4 md:p-6 animate-fade-in-up z-50">
+                <div className="relative flex items-center">
+                  <Search className="w-5 h-5 absolute left-0 text-gray-400" />
                   <input
                     type="text"
                     autoFocus
                     placeholder="Search Techiebase"
                     value={searchQuery}
-                    className="w-full text-2xl font-inter bg-transparent border-none pl-8 focus:outline-none placeholder-gray-300"
+                    className="w-full text-base md:text-2xl font-inter bg-transparent border-none pl-8 pr-8 focus:outline-none placeholder-gray-300 h-11"
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <button onClick={() => setIsSearchOpen(false)} className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
+                  <button onClick={() => setIsSearchOpen(false)} className="absolute right-0 text-gray-400 hover:text-black h-11 min-w-[44px] flex items-center justify-center active:opacity-80">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -129,10 +129,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Bag Icon */}
-          <button onClick={onOpenCart} className="hover:text-white transition-colors relative">
-            <ShoppingBag className="w-[15px] h-[15px]" />
+          <button onClick={onOpenCart} className="hover:text-white transition-colors relative h-11 min-w-[44px] flex items-center justify-center active:opacity-80">
+            <ShoppingBag className="w-[18px] h-[18px]" />
             {cartCount > 0 && (
-              <span className="absolute -bottom-1 -right-1 bg-white text-black text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
+              <span className="absolute top-1 right-1 bg-white text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                 {cartCount}
               </span>
             )}

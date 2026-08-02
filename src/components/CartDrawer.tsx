@@ -223,7 +223,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
         {/* Order Summary Footer */}
         {cart.length > 0 && (
-          <div className="p-6 border-t border-[#E5E5E7] bg-[#F5F5F7] space-y-4">
+          <div className="p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] border-t border-[#E5E5E7] bg-[#F5F5F7] space-y-4">
             <div className="space-y-2 text-[14px] text-gray-600">
               <div className="flex justify-between">
                 <span>Subtotal</span>
@@ -267,7 +267,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             {/* Checkout CTA */}
             <button
               onClick={onOpenCheckout}
-              className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white font-semibold text-[15px] py-4 rounded-full transition-all shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]"
+              className="w-full bg-[#0066CC] hover:bg-[#0055B3] active:scale-[0.98] active:opacity-80 text-white font-semibold text-[15px] h-11 min-h-[44px] rounded-full transition-all shadow-lg flex items-center justify-center gap-2"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-4 h-4" />

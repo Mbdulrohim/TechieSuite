@@ -18,9 +18,7 @@ import { CompareModal } from './components/CompareModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { Footer } from './components/Footer';
-import { MobileBottomTabBar } from './components/Header/MobileBottomTabBar';
 import { Heart, X, ShoppingBag } from 'lucide-react';
-import { formatNaira } from './utils';
 
 export default function App() {
   // Primary State
@@ -208,7 +206,7 @@ export default function App() {
   const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
       
       {/* 1. Utility Top Bar */}
       <TopUtilityBar />
@@ -401,7 +399,7 @@ export default function App() {
                       <img src={p.imageUrl} alt={p.name} className="w-14 h-14 object-contain rounded-lg" />
                       <div>
                         <div className="font-semibold text-[15px] text-[#1D1D1F]">{p.name}</div>
-                        <div className="text-[14px] text-[#0066CC] font-bold">{formatNaira(p.price)}</div>
+                        <div className="text-[14px] text-[#0066CC] font-bold">${p.price}</div>
                       </div>
                     </div>
                     <button
@@ -441,16 +439,6 @@ export default function App() {
 
       {/* Footer */}
       <Footer />
-
-      {/* Native Mobile Bottom Tab Bar */}
-      <MobileBottomTabBar
-        cartCount={cartCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        onSelectCategory={(cat) => {
-          setActiveCategory(cat);
-          setFilters(prev => ({ ...prev, category: cat }));
-        }}
-      />
     </div>
   );
 }

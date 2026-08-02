@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, ShoppingBag, Sparkles } from 'lucide-react';
 import { ProductBundle, ProductColor } from '../types';
+import { formatNaira } from '../utils';
 
 interface BundleSectionProps {
   bundle: ProductBundle;
@@ -55,17 +56,17 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-6 mb-8 border-b border-gray-100">
           <div>
-            <div className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#0066CC] mb-2">
+            <div className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#0066CC] mb-2 font-inter">
               <Sparkles className="w-4 h-4" />
               Frequently Bought Together
             </div>
-            <h2 className="text-2xl font-bold text-[#1D1D1F]">
+            <h2 className="text-3xl font-national-park font-bold text-[#1D1D1F]">
               {bundle.title}
             </h2>
           </div>
 
-          <span className="text-[13px] font-semibold bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full border border-emerald-200 self-start">
-            Save ${bundleSavings} with Bundle Pricing
+          <span className="text-[13px] font-semibold bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full border border-emerald-200 self-start font-inter">
+            Save {formatNaira(bundleSavings)} with Bundle Pricing
           </span>
         </div>
 
@@ -86,8 +87,8 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
               <div className="font-bold text-[15px] text-[#1D1D1F] line-clamp-1">
                 {bundle.mainProduct.name}
               </div>
-              <div className="text-[15px] text-[#0066CC] font-bold mt-1">
-                ${bundle.mainProduct.price}
+              <div className="text-[15px] text-[#0066CC] font-bold mt-1 font-inter">
+                {formatNaira(bundle.mainProduct.price)}
               </div>
 
               {/* Color Selector */}
@@ -147,8 +148,8 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
                     <div className="font-bold text-[15px] text-[#1D1D1F] line-clamp-1">
                       {acc.name}
                     </div>
-                    <div className="text-[15px] text-[#0066CC] font-bold mt-1">
-                      ${acc.price}
+                    <div className="text-[15px] text-[#0066CC] font-bold mt-1 font-inter">
+                      {formatNaira(acc.price)}
                     </div>
                   </div>
                 </React.Fragment>
@@ -162,21 +163,21 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
               Bundle Total ({1 + selectedAccessories.length} items)
             </div>
 
-            <div className="flex items-baseline justify-between">
+            <div className="flex items-baseline justify-between font-inter">
               <div>
                 <span className="text-3xl font-bold text-[#1D1D1F]">
-                  ${finalBundlePrice}
+                  {formatNaira(finalBundlePrice)}
                 </span>
                 {bundleSavings > 0 && (
                   <span className="text-[14px] text-gray-400 line-through ml-2">
-                    ${regularTotal}
+                    {formatNaira(regularTotal)}
                   </span>
                 )}
               </div>
 
               {bundleSavings > 0 && (
                 <span className="text-[13px] font-bold text-emerald-700 bg-emerald-100 px-3 py-1.5 rounded-lg">
-                  Save ${bundleSavings}
+                  Save {formatNaira(bundleSavings)}
                 </span>
               )}
             </div>

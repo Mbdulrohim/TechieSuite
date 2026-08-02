@@ -34,8 +34,8 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
           <Smartphone className="w-10 h-10 text-[#1d1d1f]" />
         </div>
 
-        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#1d1d1f] mb-3">
-          Apple Trade In
+        <h2 className="text-3xl md:text-4xl font-national-park font-bold tracking-tight text-[#1d1d1f] mb-3">
+          Techiebase Trade In
         </h2>
 
         <p className="text-[17px] text-[#1d1d1f] mb-8">
@@ -66,8 +66,8 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
         </div>
 
         <div className="mt-8 text-[12px] text-gray-500">
-          <a href="#" className="text-[#0066cc] hover:underline inline-flex items-center">
-            Learn more about Apple Trade In <ChevronRight className="w-3 h-3 ml-0.5" />
+          <a href="#" className="text-[#0066cc] hover:underline inline-flex items-center font-inter">
+            Learn more about Techiebase Trade In <ChevronRight className="w-3 h-3 ml-0.5" />
           </a>
         </div>
       </div>

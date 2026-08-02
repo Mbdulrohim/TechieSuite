@@ -69,8 +69,8 @@ export const Footer: React.FC = () => {
               Account & Bag
             </h5>
             <ul className="space-y-2.5 text-[14px] text-gray-600">
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Manage Apple ID</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Apple Store Account</a></li>
+              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Manage Techiebase ID</a></li>
+              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Techiebase Account</a></li>
               <li><a href="#" className="hover:text-[#0066CC] transition-colors">Order Status</a></li>
               <li><a href="#" className="hover:text-[#0066CC] transition-colors">Saved Items</a></li>
             </ul>
@@ -81,21 +81,21 @@ export const Footer: React.FC = () => {
               Special Offers
             </h5>
             <ul className="space-y-2.5 text-[14px] text-gray-600">
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Apple Trade-In</a></li>
+              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Techiebase Trade-In</a></li>
               <li><a href="#" className="hover:text-[#0066CC] transition-colors">Education Store</a></li>
               <li><a href="#" className="hover:text-[#0066CC] transition-colors">Certified Refurbished</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Apple Card Financing</a></li>
+              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Techiebase Card Financing</a></li>
             </ul>
           </div>
 
           <div>
             <h5 className="font-bold text-[#1D1D1F] mb-4 text-[13px] uppercase tracking-wider">
-              Apple Store
+              Techiebase Store
             </h5>
             <ul className="space-y-2.5 text-[14px] text-gray-600">
               <li><a href="#" className="hover:text-[#0066CC] transition-colors">Find a Store</a></li>
               <li><a href="#" className="hover:text-[#0066CC] transition-colors">Genius Bar</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Today at Apple</a></li>
+              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Today at Techiebase</a></li>
               <li><a href="#" className="hover:text-[#0066CC] transition-colors">Events</a></li>
             </ul>
           </div>
@@ -105,7 +105,7 @@ export const Footer: React.FC = () => {
               Need Help?
             </h5>
             <p className="text-[14px] text-gray-500 mb-3 leading-relaxed">
-              Speak to an Apple Specialist.
+              Speak to a Techiebase Specialist.
             </p>
             <div className="space-y-3">
               <a href="#" className="inline-flex items-center gap-2 font-semibold text-[14px] text-[#0066CC] hover:underline">
@@ -122,7 +122,7 @@ export const Footer: React.FC = () => {
         {/* Copyright */}
         <div className="py-8 text-gray-400 text-[13px] flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
-            Copyright © {new Date().getFullYear()} Apple Inc. All rights reserved.
+            Copyright © {new Date().getFullYear()} Techiebase Inc. All rights reserved.
           </div>
           <div className="flex gap-6">
             <a href="#" className="hover:underline hover:text-gray-600 transition-colors">Privacy Policy</a>

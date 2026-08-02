@@ -37,13 +37,19 @@ body {
   background: #8e8e93;
 }
 
-/* Hide horizontal scrollbar for pill rows */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+@layer utilities {
+  /* Hide horizontal scrollbar for pill rows */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .font-national-park {
+    font-family: 'National Park', sans-serif;
+  }
 }
 
 /* --- Keyframe Animations --- */

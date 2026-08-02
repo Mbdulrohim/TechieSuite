@@ -7,6 +7,7 @@ import { TopUtilityBar } from './components/Header/TopUtilityBar';
 import { Navbar } from './components/Header/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { CategoryPills } from './components/CategoryPills';
+import { ProductRow } from './components/ProductRow';
 import { ProductCard } from './components/ProductCard';
 import { FacetedFilterSidebar } from './components/FacetedFilterSidebar';
 import { TradeInBanner } from './components/TradeInBanner';
@@ -243,80 +244,70 @@ export default function App() {
           onSelectCategory={setActiveCategory}
         />
 
-        {/* Section: Product Grid */}
-        <section className="max-w-7xl mx-auto px-6 pb-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-8">
-            <div>
-              <p className="text-[13px] font-semibold text-[#0066CC] uppercase tracking-wide mb-1">
-                {activeCategory === 'all' ? 'Featured Lineup' : `${activeCategory.toUpperCase()} Lineup`}
-              </p>
-              <h2 className="text-3xl font-bold text-[#1D1D1F] tracking-tight">
-                {activeCategory === 'all'
-                  ? 'Best Sellers in iPhone, Mac & Wearables'
-                  : `Top Rated ${activeCategory.toUpperCase()} Models`}
-              </h2>
-            </div>
+        {/* Section: 6-Row Layout */}
+        <div className="space-y-4 pb-20">
+          
+          {/* Row 1: Phones */}
+          <ProductRow
+            title="iPhone"
+            products={PRODUCTS.filter(p => p.category === 'iphone')}
+            onAddToCart={(p) => handleAddToCart(p)}
+            onQuickView={(p) => setQuickViewProduct(p)}
+          />
 
-            <div className="flex items-center gap-3 text-[14px] text-gray-500">
-              <span>{filteredProducts.length} models</span>
-              <button
-                onClick={() => setIsFilterDrawerOpen(true)}
-                className="bg-white border border-[#E5E5E7] hover:bg-gray-50 text-[#1D1D1F] px-4 py-2 rounded-full font-semibold text-[14px] transition-colors"
-              >
-                Filters & Sort
-              </button>
-            </div>
-          </div>
+          {/* Row 2: Macs */}
+          <ProductRow
+            title="Mac"
+            products={PRODUCTS.filter(p => p.category === 'mac')}
+            onAddToCart={(p) => handleAddToCart(p)}
+            onQuickView={(p) => setQuickViewProduct(p)}
+          />
 
-          {/* 4-Column Card Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={(p) => handleAddToCart(p)}
-                onQuickView={(p) => setQuickViewProduct(p)}
-              />
-            ))}
-          </div>
-        </section>
+          {/* Banner 1: Trade-In */}
+          <TradeInBanner
+            onApplyTradeIn={(quote) => setTradeInQuote(quote)}
+            appliedTradeIn={tradeInQuote}
+          />
 
-        {/* Trade-In Banner */}
-        <TradeInBanner
-          onApplyTradeIn={(quote) => setTradeInQuote(quote)}
-          appliedTradeIn={tradeInQuote}
-        />
+          {/* Row 3: iPads */}
+          <ProductRow
+            title="iPad"
+            products={PRODUCTS.filter(p => p.category === 'ipad')}
+            onAddToCart={(p) => handleAddToCart(p)}
+            onQuickView={(p) => setQuickViewProduct(p)}
+          />
 
-        {/* Accessory Bundles */}
-        <BundleSection
-          bundle={FEATURED_BUNDLES[0]}
-          onAddBundleToCart={handleAddBundleToCart}
-        />
+          {/* Row 4: Watches */}
+          <ProductRow
+            title="Apple Watch"
+            products={PRODUCTS.filter(p => p.category === 'watch')}
+            onAddToCart={(p) => handleAddToCart(p)}
+            onQuickView={(p) => setQuickViewProduct(p)}
+          />
 
-        {/* Secondary Product Grid */}
-        {activeCategory === 'all' && (
-          <section className="max-w-7xl mx-auto px-6 pt-8 pb-16">
-            <div className="mb-8">
-              <p className="text-[13px] font-semibold text-[#0066CC] uppercase tracking-wide mb-1">
-                Pro Workstations & Audio
-              </p>
-              <h2 className="text-3xl font-bold text-[#1D1D1F] tracking-tight">
-                Mac Studio, iPad Pro & AirPods Family
-              </h2>
-            </div>
+          {/* Banner 2: Accessory Bundles */}
+          <BundleSection
+            bundle={FEATURED_BUNDLES[0]}
+            onAddBundleToCart={handleAddBundleToCart}
+          />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {PRODUCTS.slice(2, 6).map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={(p) => handleAddToCart(p)}
-                  onQuickView={(p) => setQuickViewProduct(p)}
-                />
-              ))}
-            </div>
-          </section>
-        )}
+          {/* Row 5: AirPods */}
+          <ProductRow
+            title="AirPods"
+            products={PRODUCTS.filter(p => p.category === 'airpods')}
+            onAddToCart={(p) => handleAddToCart(p)}
+            onQuickView={(p) => setQuickViewProduct(p)}
+          />
+
+          {/* Row 6: Accessories */}
+          <ProductRow
+            title="Accessories"
+            products={PRODUCTS.filter(p => p.category === 'accessories')}
+            onAddToCart={(p) => handleAddToCart(p)}
+            onQuickView={(p) => setQuickViewProduct(p)}
+          />
+
+        </div>
 
       </main>
 

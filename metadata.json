@@ -1,0 +1,6 @@
+{
+  "name": "Apple Store - Direct Response E-Commerce",
+  "description": "Conversion-optimized flagship Apple online store with high-density catalog, instant trade-in estimator, quick search, side-cart drawer, product reviews, and bundle builder.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

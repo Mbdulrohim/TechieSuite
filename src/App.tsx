@@ -208,10 +208,12 @@ export default function App() {
   return (
     <div className="min-h-screen w-full max-w-full bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
       
-      {/* 1. Utility Top Bar */}
-      <TopUtilityBar />
+      {/* Sticky Header Section for Mobile & Desktop */}
+      <div className="sticky top-0 z-50 w-full">
+        {/* 1. Utility Top Bar */}
+        <TopUtilityBar />
 
-      {/* 2. Primary Navigation */}
+        {/* 2. Primary Navigation */}
         <Navbar
           products={PRODUCTS}
           activeCategory={activeCategory}
@@ -226,6 +228,7 @@ export default function App() {
           onAddToCart={(p) => handleAddToCart(p)}
           onToggleFilterDrawer={() => setIsFilterDrawerOpen(true)}
         />
+      </div>
 
       {/* Main Content Area */}
       <main className="flex-1">

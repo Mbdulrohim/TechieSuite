@@ -16,6 +16,12 @@ html {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
 }
 
+/* Ensure WebKit Mobile Sticky Support */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
 body {
   background-color: #F5F5F7;
   color: #1D1D1F;

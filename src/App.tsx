@@ -206,14 +206,12 @@ export default function App() {
   const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
+    <div className="min-h-screen w-full max-w-full bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
       
-      {/* Sticky Header Section */}
-      <div className="sticky top-0 z-50 w-full">
-        {/* 1. Utility Top Bar */}
-        <TopUtilityBar />
+      {/* 1. Utility Top Bar */}
+      <TopUtilityBar />
 
-        {/* 2. Primary Navigation */}
+      {/* 2. Primary Navigation */}
         <Navbar
           products={PRODUCTS}
           activeCategory={activeCategory}
@@ -228,7 +226,6 @@ export default function App() {
           onAddToCart={(p) => handleAddToCart(p)}
           onToggleFilterDrawer={() => setIsFilterDrawerOpen(true)}
         />
-      </div>
 
       {/* Main Content Area */}
       <main className="flex-1">

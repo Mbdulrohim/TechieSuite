@@ -208,10 +208,7 @@ export default function App() {
     <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
       
       {/* 1. Utility Top Bar */}
-      <TopUtilityBar
-        currentStore={currentStore}
-        onOpenStoreModal={() => setIsStoreModalOpen(true)}
-      />
+      <TopUtilityBar />
 
       {/* 2. Primary Navigation */}
       <Navbar
@@ -244,7 +241,6 @@ export default function App() {
         <CategoryPills
           activeCategory={activeCategory}
           onSelectCategory={setActiveCategory}
-          productCounts={productCounts}
         />
 
         {/* Section: Product Grid */}
@@ -278,12 +274,8 @@ export default function App() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onAddToCart={(p, color) => handleAddToCart(p, color)}
+                onAddToCart={(p) => handleAddToCart(p)}
                 onQuickView={(p) => setQuickViewProduct(p)}
-                onToggleWishlist={handleToggleWishlist}
-                isWishlisted={wishlist.includes(product.id)}
-                onToggleCompare={handleToggleCompare}
-                isCompared={compareList.some((p) => p.id === product.id)}
               />
             ))}
           </div>
@@ -318,12 +310,8 @@ export default function App() {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onAddToCart={(p, color) => handleAddToCart(p, color)}
+                  onAddToCart={(p) => handleAddToCart(p)}
                   onQuickView={(p) => setQuickViewProduct(p)}
-                  onToggleWishlist={handleToggleWishlist}
-                  isWishlisted={wishlist.includes(product.id)}
-                  onToggleCompare={handleToggleCompare}
-                  isCompared={compareList.some((p) => p.id === product.id)}
                 />
               ))}
             </div>

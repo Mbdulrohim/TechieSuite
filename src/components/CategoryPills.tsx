@@ -4,60 +4,45 @@ import { Smartphone, Laptop, Tablet, Watch, Headphones, Cable, Flame, Grid } fro
 interface CategoryPillsProps {
   activeCategory: string;
   onSelectCategory: (category: string) => void;
-  productCounts: Record<string, number>;
 }
 
 export const CategoryPills: React.FC<CategoryPillsProps> = ({
   activeCategory,
   onSelectCategory,
-  productCounts,
 }) => {
   const items = [
-    { id: 'all', label: 'All Models', icon: Grid },
-    { id: 'iphone', label: 'iPhone', icon: Smartphone },
+    { id: 'all', label: 'All', icon: Grid },
     { id: 'mac', label: 'Mac', icon: Laptop },
     { id: 'ipad', label: 'iPad', icon: Tablet },
-    { id: 'watch', label: 'Apple Watch', icon: Watch },
+    { id: 'iphone', label: 'iPhone', icon: Smartphone },
+    { id: 'watch', label: 'Watch', icon: Watch },
     { id: 'airpods', label: 'AirPods', icon: Headphones },
-    { id: 'accessories', label: 'Chargers & Cases', icon: Cable },
+    { id: 'accessories', label: 'Accessories', icon: Cable },
     { id: 'deals', label: 'Deals', icon: Flame },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-1">
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="flex justify-start md:justify-center items-center gap-6 md:gap-10 overflow-x-auto no-scrollbar pb-2">
         {items.map((cat) => {
           const Icon = cat.icon;
           const isActive = activeCategory === cat.id;
-          const count = productCounts[cat.id] || 0;
 
           return (
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
-              className={`flex items-center gap-2.5 px-5 py-3 rounded-full text-[14px] font-semibold whitespace-nowrap transition-all border ${
-                isActive
-                  ? 'bg-[#1D1D1F] text-white border-[#1D1D1F] shadow-lg'
-                  : 'bg-white text-[#1D1D1F] border-[#E5E5E7] hover:bg-gray-50 hover:border-gray-300'
+              className={`flex flex-col items-center gap-2 group transition-opacity ${
+                isActive ? 'opacity-100' : 'opacity-60 hover:opacity-100'
               }`}
             >
               <Icon
-                className={`w-[18px] h-[18px] ${
-                  isActive ? 'text-[#0066CC]' : 'text-gray-400'
-                }`}
+                strokeWidth={isActive ? 2 : 1.5}
+                className="w-8 h-8 text-[#1d1d1f] mb-1"
               />
-              <span>{cat.label}</span>
-              {count > 0 && (
-                <span
-                  className={`text-[12px] px-2 py-0.5 rounded-full font-bold ${
-                    isActive
-                      ? 'bg-white/20 text-white/80'
-                      : 'bg-gray-100 text-gray-500'
-                  }`}
-                >
-                  {count}
-                </span>
-              )}
+              <span className={`text-[12px] ${isActive ? 'font-medium' : 'font-normal'} text-[#1d1d1f]`}>
+                {cat.label}
+              </span>
             </button>
           );
         })}

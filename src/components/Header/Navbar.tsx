@@ -68,6 +68,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button onClick={() => onSelectCategory('watch')} className="hover:text-white transition-colors">Watch</button>
           <button onClick={() => onSelectCategory('airpods')} className="hover:text-white transition-colors">AirPods</button>
           <button onClick={() => onSelectCategory('accessories')} className="hover:text-white transition-colors">Accessories</button>
+          <button onClick={() => onSelectCategory('deals')} className="hover:text-white transition-colors text-emerald-400">Deals</button>
+          <a href="#" className="hover:text-white transition-colors">Trade-In</a>
+          <a href="#" className="hover:text-white transition-colors">Support</a>
         </nav>
 
         <div className="flex items-center gap-6">

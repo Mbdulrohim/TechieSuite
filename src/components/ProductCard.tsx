@@ -14,7 +14,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
 }) => {
   return (
-    <div className="bg-white rounded-[18px] p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_4px_24px_rgba(0,0,0,0.06)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-transparent min-w-[360px] max-w-[360px] flex-shrink-0">
+    <div className="bg-white rounded-[18px] p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_4px_24px_rgba(0,0,0,0.06)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-transparent min-w-[360px] max-w-[360px] flex-shrink-0 h-full">
       
       {/* Product Image */}
       <div
@@ -34,7 +34,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Name - National Park Font */}
         <h3
           onClick={() => onQuickView(product)}
-          className="text-[22px] font-national-park font-semibold text-[#1d1d1f] cursor-pointer"
+          className="text-[22px] font-national-park font-medium text-[#333333] cursor-pointer"
         >
           {product.name}
         </h3>

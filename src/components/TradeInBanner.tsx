@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Smartphone, ChevronRight } from 'lucide-react';
 import { TRADE_IN_DEVICES } from '../data/products';
 import { TradeInQuote } from '../types';
+import { formatNaira } from '../utils';
 
 interface TradeInBannerProps {
   onApplyTradeIn: (quote: TradeInQuote) => void;
@@ -39,7 +40,7 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
         </h2>
 
         <p className="text-[17px] text-[#1d1d1f] mb-8">
-          Get $180–$650 in credit toward a new device when you trade in your current one.
+          Get {formatNaira(180)}–{formatNaira(650)} in credit toward a new device when you trade in your eligible smartphone.*
         </p>
 
         <div className="max-w-sm mx-auto space-y-4">
@@ -50,7 +51,7 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
           >
             {TRADE_IN_DEVICES.map((d) => (
               <option key={d.device} value={d.device}>
-                {d.device} (Up to ${d.maxValue})
+                {d.device} (Up to {formatNaira(d.maxValue)})
               </option>
             ))}
           </select>

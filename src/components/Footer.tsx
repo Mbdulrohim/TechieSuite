@@ -1,5 +1,6 @@
 import React from 'react';
 import { Truck, RotateCcw, ShieldCheck, CreditCard, Phone, Lock } from 'lucide-react';
+import { formatNaira } from '../utils';
 
 export const Footer: React.FC = () => {
   return (
@@ -12,7 +13,7 @@ export const Footer: React.FC = () => {
             {
               icon: Truck,
               title: 'Free 2-Day Shipping',
-              desc: 'On all orders over $50 or free store pickup.',
+              desc: `On all orders over ${formatNaira(50)} or free store pickup.`,
             },
             {
               icon: RotateCcw,

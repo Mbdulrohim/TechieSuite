@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Star, ShieldCheck, Truck, Heart, Scale, ShoppingBag, ThumbsUp } from 'lucide-react';
 import { Product, ProductColor, StorageOption } from '../types';
+import { formatNaira } from '../utils';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -148,17 +149,17 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   <div className="flex items-baseline justify-between">
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl font-bold text-[#1D1D1F]">
-                        ${totalPrice}
+                        {formatNaira(totalPrice)}
                       </span>
                       {product.originalPrice && (
                         <span className="text-[15px] text-gray-400 line-through">
-                          ${product.originalPrice + (selectedStorage?.priceDelta || 0)}
+                          {formatNaira(product.originalPrice + (selectedStorage?.priceDelta || 0))}
                         </span>
                       )}
                     </div>
 
                     <span className="text-[13px] text-emerald-700 font-semibold bg-emerald-100 px-3 py-1 rounded-lg">
-                      ${(totalPrice / 24).toFixed(2)}/mo
+                      {formatNaira(totalPrice / 24)}/mo
                     </span>
                   </div>
                 </div>
@@ -211,7 +212,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                         >
                           <span>{st.capacity}</span>
                           <span className="text-[13px] text-gray-400">
-                            {st.priceDelta === 0 ? 'Included' : `+$${st.priceDelta}`}
+                            {st.priceDelta === 0 ? 'Included' : `+${formatNaira(st.priceDelta)}`}
                           </span>
                         </button>
                       ))}
@@ -234,7 +235,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                         AppleCare+ Protection
                       </span>
                     </div>
-                    <span className="font-bold text-[14px] text-[#0066CC]">+$199</span>
+                    <span className="font-bold text-[14px] text-[#0066CC]">+{formatNaira(199)}</span>
                   </label>
                   <p className="text-[12px] text-gray-500 mt-2 pl-8">
                     Unlimited accidental damage repair, 24/7 support, and express replacement.
@@ -251,7 +252,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                     className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white font-semibold text-[15px] py-3.5 rounded-full transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]"
                   >
                     <ShoppingBag className="w-4 h-4" />
-                    <span>Add to Bag — ${totalPrice}</span>
+                    <span>Add to Bag — {formatNaira(totalPrice)}</span>
                   </button>
 
                   <div className="flex gap-3">

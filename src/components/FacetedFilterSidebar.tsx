@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, RotateCcw, Filter, Check, Star, HardDrive } from 'lucide-react';
 import { FilterState } from '../types';
+import { formatNaira } from '../utils';
 
 interface FacetedFilterSidebarProps {
   isOpen: boolean;
@@ -86,7 +87,7 @@ export const FacetedFilterSidebar: React.FC<FacetedFilterSidebarProps> = ({
             <div className="flex items-center justify-between mb-3">
               <span className="text-[14px] font-semibold text-[#1D1D1F]">Max Price</span>
               <span className="text-[16px] font-bold text-[#0066CC]">
-                ${filters.priceRange[1]}
+                {formatNaira(filters.priceRange[1])}
               </span>
             </div>
             <input
@@ -101,9 +102,9 @@ export const FacetedFilterSidebar: React.FC<FacetedFilterSidebarProps> = ({
               className="w-full"
             />
             <div className="flex justify-between text-[12px] text-gray-400 mt-2">
-              <span>$50</span>
-              <span>$1,250</span>
-              <span>$2,500+</span>
+              <span>{formatNaira(50)}</span>
+              <span>{formatNaira(1250)}</span>
+              <span>{formatNaira(2500)}+</span>
             </div>
           </div>
 

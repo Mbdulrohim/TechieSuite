@@ -44,20 +44,25 @@ export const ProductRow: React.FC<ProductRowProps> = ({
           {title}
         </h2>
         
-        {/* Scroll Container */}
-        <div 
-          ref={scrollRef}
-          className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-2 pb-4"
-        >
-          {finalProducts.map((product, idx) => (
-            <div key={`${product.id}-${idx}`} className="snap-start">
-              <ProductCard
-                product={product}
-                onAddToCart={onAddToCart}
-                onQuickView={onQuickView}
-              />
-            </div>
-          ))}
+        {/* Scroll Container Wrapper with Right Edge Blur */}
+        <div className="relative">
+          <div 
+            ref={scrollRef}
+            className="flex items-stretch gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-2 pb-4"
+          >
+            {finalProducts.map((product, idx) => (
+              <div key={`${product.id}-${idx}`} className="snap-start flex items-stretch">
+                <ProductCard
+                  product={product}
+                  onAddToCart={onAddToCart}
+                  onQuickView={onQuickView}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Right Edge Blur Gradient */}
+          <div className="absolute top-0 bottom-4 right-0 w-24 md:w-40 bg-gradient-to-l from-[#F5F5F7] to-transparent pointer-events-none z-10" />
         </div>
 
         {/* Scroll Controls */}

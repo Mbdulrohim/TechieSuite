@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, ShieldCheck, Truck, MapPin, CreditCard, Apple, ArrowRight, Package, Sparkles } from 'lucide-react';
 import { CartItem, StoreLocation, TradeInQuote } from '../types';
+import { formatNaira } from '../utils';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -221,7 +222,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           0% APR · 3% Daily Cash
                         </div>
                       </div>
-                      <span className="font-semibold text-[14px]">${(total / 24).toFixed(2)}/mo</span>
+                      <span className="font-semibold text-[14px]">{formatNaira(total / 24)}/mo</span>
                     </button>
 
                     <button
@@ -245,11 +246,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <div className="bg-[#F5F5F7] p-5 rounded-2xl space-y-2 border border-gray-200">
                   <h4 className="font-semibold text-[15px] text-[#1D1D1F] mb-1">Order Summary</h4>
                   <div className="flex justify-between text-[14px] text-gray-600">
-                    <span>Items</span><span>${rawSubtotal}</span>
+                    <span>Items</span><span>{formatNaira(rawSubtotal)}</span>
                   </div>
                   {tradeInCredit > 0 && (
                     <div className="flex justify-between text-[14px] text-emerald-600 font-medium">
-                      <span>Trade-In Credit</span><span>-${tradeInCredit}</span>
+                      <span>Trade-In Credit</span><span>-{formatNaira(tradeInCredit)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-[14px] text-gray-600">
@@ -257,10 +258,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <span className="text-emerald-600 font-semibold">FREE</span>
                   </div>
                   <div className="flex justify-between text-[14px] text-gray-600">
-                    <span>Tax</span><span>${tax}</span>
+                    <span>Tax</span><span>{formatNaira(tax)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-[17px] text-[#1D1D1F] pt-3 border-t border-gray-300">
-                    <span>Total</span><span>${total}</span>
+                    <span>Total</span><span>{formatNaira(total)}</span>
                   </div>
                 </div>
 
@@ -276,7 +277,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     className="w-2/3 bg-black hover:bg-gray-900 text-white font-semibold text-[15px] py-3.5 rounded-full transition-all shadow-xl flex items-center justify-center gap-2"
                   >
                     <Apple className="w-5 h-5 fill-current" />
-                    Place Order — ${total}
+                    Place Order — {formatNaira(total)}
                   </button>
                 </div>
               </div>

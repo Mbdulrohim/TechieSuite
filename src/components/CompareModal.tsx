@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Scale, ShoppingBag, Star } from 'lucide-react';
 import { Product } from '../types';
+import { formatNaira } from '../utils';
 
 interface CompareModalProps {
   isOpen: boolean;
@@ -72,7 +73,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                         </button>
                         <img src={p.imageUrl} alt={p.name} className="w-24 h-24 object-contain mx-auto" />
                         <div className="font-bold text-[15px] text-[#1D1D1F]">{p.name}</div>
-                        <div className="text-[17px] font-bold text-[#0066CC]">${p.price}</div>
+                        <div className="text-[17px] font-bold text-[#0066CC]">{formatNaira(p.price)}</div>
                         <button
                           onClick={() => onAddToCart(p)}
                           className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white py-2.5 px-4 rounded-full font-semibold text-[13px] transition-colors"
@@ -100,7 +101,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                   <td className="p-4 font-medium text-[14px] text-gray-500 bg-gray-50">Financing</td>
                   {comparedProducts.map((p) => (
                     <td key={p.id} className="p-4 border-l border-gray-200 text-[14px] text-emerald-600 font-medium">
-                      ${p.monthlyPrice}/mo for 24 mo.
+                      {formatNaira(p.monthlyPrice)}/mo for 24 mo.
                     </td>
                   ))}
                 </tr>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck, ArrowRight, Tag, CreditCard } from 'lucide-react';
 import { CartItem, TradeInQuote } from '../types';
+import { formatNaira } from '../utils';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -71,7 +72,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <Truck className="w-4 h-4" />
               {netSubtotal >= freeShippingThreshold
                 ? 'You qualify for FREE Express Shipping!'
-                : `Add $${(freeShippingThreshold - netSubtotal).toFixed(2)} more for free shipping`}
+                : `Add ${formatNaira(freeShippingThreshold - netSubtotal)} more for free shipping`}
             </span>
           </div>
           <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
@@ -160,10 +161,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                           <div className="text-right">
                             <div className="text-[15px] font-bold text-[#1D1D1F]">
-                              ${lineTotal}
+                              {formatNaira(lineTotal)}
                             </div>
                             <div className="text-[12px] text-emerald-600 font-medium">
-                              ${(lineTotal / 24).toFixed(2)}/mo
+                              {formatNaira(lineTotal / 24)}/mo
                             </div>
                           </div>
                         </div>
@@ -182,7 +183,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <ShieldCheck className="w-4 h-4 text-[#0066CC]" />
                         <span>AppleCare+ Protection</span>
                       </label>
-                      <span className="text-[13px] font-semibold text-gray-500">+$199</span>
+                      <span className="text-[13px] font-semibold text-gray-500">+{formatNaira(199)}</span>
                     </div>
                   </div>
                 );
@@ -205,7 +206,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                   <div className="flex items-center gap-3">
                     <span className="font-bold text-emerald-700 text-[16px]">
-                      -${tradeInQuote.value}
+                      -{formatNaira(tradeInQuote.value)}
                     </span>
                     <button
                       onClick={onRemoveTradeIn}
@@ -226,31 +227,31 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="space-y-2 text-[14px] text-gray-600">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${rawSubtotal}</span>
+                <span>{formatNaira(rawSubtotal)}</span>
               </div>
 
               {tradeInCredit > 0 && (
                 <div className="flex justify-between text-emerald-600 font-medium">
                   <span>Trade-In Discount</span>
-                  <span>-${tradeInCredit}</span>
+                  <span>-{formatNaira(tradeInCredit)}</span>
                 </div>
               )}
 
               <div className="flex justify-between">
                 <span>Shipping</span>
                 <span className="text-emerald-600 font-semibold">
-                  {netSubtotal >= freeShippingThreshold ? 'FREE' : '$10.00'}
+                  {netSubtotal >= freeShippingThreshold ? 'FREE' : formatNaira(10)}
                 </span>
               </div>
 
               <div className="flex justify-between">
                 <span>Estimated Tax</span>
-                <span>${estimatedTax}</span>
+                <span>{formatNaira(estimatedTax)}</span>
               </div>
 
               <div className="flex justify-between font-bold text-[17px] text-[#1D1D1F] pt-3 border-t border-gray-200">
                 <span>Total</span>
-                <span>${total}</span>
+                <span>{formatNaira(total)}</span>
               </div>
             </div>
 
@@ -260,7 +261,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <CreditCard className="w-4 h-4 text-[#0066CC]" />
                 <span>3% Daily Cash with Apple Card</span>
               </div>
-              <span className="font-bold text-emerald-400">+${dailyCashEarned}</span>
+              <span className="font-bold text-emerald-400">+{formatNaira(Number(dailyCashEarned))}</span>
             </div>
 
             {/* Checkout CTA */}

@@ -40,7 +40,7 @@ export const ProductRow: React.FC<ProductRowProps> = ({
   return (
     <section className="py-12">
       <div className="max-w-[1400px] mx-auto px-6">
-        <h2 className="text-4xl font-national-park font-bold text-[#1D1D1F] mb-8 px-2">
+        <h2 className="text-3xl md:text-4xl font-national-park font-medium text-[#333333] mb-4 md:mb-8 px-2">
           {title}
         </h2>
         

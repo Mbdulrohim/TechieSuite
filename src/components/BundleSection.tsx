@@ -60,7 +60,7 @@ export const BundleSection: React.FC<BundleSectionProps> = ({
               <Sparkles className="w-4 h-4" />
               Frequently Bought Together
             </div>
-            <h2 className="text-3xl font-national-park font-bold text-[#1D1D1F]">
+            <h2 className="text-3xl font-national-park font-medium text-[#333333]">
               {bundle.title}
             </h2>
           </div>

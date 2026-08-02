@@ -17,7 +17,7 @@ import { CompareModal } from './components/CompareModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { Footer } from './components/Footer';
-import { Heart, Scale, X, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Heart, X, ShoppingBag } from 'lucide-react';
 
 export default function App() {
   // Primary State
@@ -205,7 +205,7 @@ export default function App() {
   const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans antialiased selection:bg-[#0066CC] selection:text-white flex flex-col justify-between">
+    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
       
       {/* 1. Utility Top Bar */}
       <TopUtilityBar
@@ -232,7 +232,7 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1">
         
-        {/* 3. Hero Carousel Promotional Banner */}
+        {/* 3. Hero Carousel */}
         <HeroCarousel
           products={PRODUCTS}
           onSelectProduct={(p) => setQuickViewProduct(p)}
@@ -240,34 +240,34 @@ export default function App() {
           onOpenCompare={() => setIsCompareOpen(true)}
         />
 
-        {/* 4. Category Quick-Pills Filter */}
+        {/* 4. Category Quick-Pills */}
         <CategoryPills
           activeCategory={activeCategory}
           onSelectCategory={setActiveCategory}
           productCounts={productCounts}
         />
 
-        {/* Section 1: Product Grid - Best Sellers & Trending */}
-        <section className="max-w-7xl mx-auto px-4 my-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-6">
+        {/* Section: Product Grid */}
+        <section className="max-w-7xl mx-auto px-6 pb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-8">
             <div>
-              <div className="text-xs font-bold text-[#0066CC] uppercase tracking-wider">
+              <p className="text-[13px] font-semibold text-[#0066CC] uppercase tracking-wide mb-1">
                 {activeCategory === 'all' ? 'Featured Lineup' : `${activeCategory.toUpperCase()} Lineup`}
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-[#1D1D1F] tracking-tight">
+              </p>
+              <h2 className="text-3xl font-bold text-[#1D1D1F] tracking-tight">
                 {activeCategory === 'all'
                   ? 'Best Sellers in iPhone, Mac & Wearables'
                   : `Top Rated ${activeCategory.toUpperCase()} Models`}
               </h2>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
-              <span>Showing {filteredProducts.length} models</span>
+            <div className="flex items-center gap-3 text-[14px] text-gray-500">
+              <span>{filteredProducts.length} models</span>
               <button
                 onClick={() => setIsFilterDrawerOpen(true)}
-                className="bg-white border border-[#E5E5E7] hover:bg-gray-50 text-[#1D1D1F] px-3 py-1.5 rounded-full font-bold transition-colors"
+                className="bg-white border border-[#E5E5E7] hover:bg-gray-50 text-[#1D1D1F] px-4 py-2 rounded-full font-semibold text-[14px] transition-colors"
               >
-                Filters & Sort ⚙
+                Filters & Sort
               </button>
             </div>
           </div>
@@ -289,26 +289,26 @@ export default function App() {
           </div>
         </section>
 
-        {/* 5. Mid-Page Interactive Trade-In Calculator Banner */}
+        {/* Trade-In Banner */}
         <TradeInBanner
           onApplyTradeIn={(quote) => setTradeInQuote(quote)}
           appliedTradeIn={tradeInQuote}
         />
 
-        {/* 6. Accessory Bundles Section ("Frequently Bought Together") */}
+        {/* Accessory Bundles */}
         <BundleSection
           bundle={FEATURED_BUNDLES[0]}
           onAddBundleToCart={handleAddBundleToCart}
         />
 
-        {/* 7. Secondary Product Grid: Mac Workstations & Audio Accessories */}
+        {/* Secondary Product Grid */}
         {activeCategory === 'all' && (
-          <section className="max-w-7xl mx-auto px-4 my-12">
-            <div className="mb-6">
-              <div className="text-xs font-bold text-[#0066CC] uppercase tracking-wider">
-                Pro Workstations & Immersive Audio
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-[#1D1D1F]">
+          <section className="max-w-7xl mx-auto px-6 pt-8 pb-16">
+            <div className="mb-8">
+              <p className="text-[13px] font-semibold text-[#0066CC] uppercase tracking-wide mb-1">
+                Pro Workstations & Audio
+              </p>
+              <h2 className="text-3xl font-bold text-[#1D1D1F] tracking-tight">
                 Mac Studio, iPad Pro & AirPods Family
               </h2>
             </div>
@@ -332,7 +332,7 @@ export default function App() {
 
       </main>
 
-      {/* Slide-out Cart Drawer */}
+      {/* Cart Drawer */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -348,7 +348,7 @@ export default function App() {
         }}
       />
 
-      {/* Faceted Filter Drawer */}
+      {/* Filter Drawer */}
       <FacetedFilterSidebar
         isOpen={isFilterDrawerOpen}
         onClose={() => setIsFilterDrawerOpen(false)}
@@ -369,7 +369,7 @@ export default function App() {
         totalResults={filteredProducts.length}
       />
 
-      {/* Quick View Product Configuration Modal */}
+      {/* Quick View Modal */}
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
@@ -382,7 +382,7 @@ export default function App() {
         isCompared={quickViewProduct ? compareList.some((p) => p.id === quickViewProduct.id) : false}
       />
 
-      {/* Compare Models Modal */}
+      {/* Compare Modal */}
       <CompareModal
         isOpen={isCompareOpen}
         onClose={() => setIsCompareOpen(false)}
@@ -391,36 +391,36 @@ export default function App() {
         onAddToCart={(p) => handleAddToCart(p)}
       />
 
-      {/* Wishlist Drawer / Modal */}
+      {/* Wishlist Modal */}
       {isWishlistOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-[#E5E5E7]">
-            <div className="flex justify-between items-center pb-3 border-b border-gray-200 mb-4">
-              <div className="flex items-center gap-2 font-bold text-base text-[#1D1D1F]">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="relative bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-[#E5E5E7] animate-scale-in">
+            <div className="flex justify-between items-center pb-4 border-b border-gray-200 mb-5">
+              <div className="flex items-center gap-2.5 font-bold text-[17px] text-[#1D1D1F]">
                 <Heart className="w-5 h-5 text-[#D70015] fill-current" />
-                <span>Saved Wishlist ({wishlistedProducts.length})</span>
+                <span>Saved Items ({wishlistedProducts.length})</span>
               </div>
               <button
                 onClick={() => setIsWishlistOpen(false)}
-                className="p-1 text-gray-400 hover:text-gray-700"
+                className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {wishlistedProducts.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 text-xs">
+              <div className="text-center py-12 text-gray-400 text-[15px]">
                 No items saved to your wishlist yet.
               </div>
             ) : (
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {wishlistedProducts.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between p-3 bg-[#F5F5F7] rounded-2xl">
-                    <div className="flex items-center gap-3">
-                      <img src={p.imageUrl} alt={p.name} className="w-12 h-12 object-contain rounded-lg" />
+                  <div key={p.id} className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-2xl">
+                    <div className="flex items-center gap-4">
+                      <img src={p.imageUrl} alt={p.name} className="w-14 h-14 object-contain rounded-lg" />
                       <div>
-                        <div className="font-bold text-xs text-[#1D1D1F]">{p.name}</div>
-                        <div className="text-xs text-[#0066CC] font-bold">${p.price}</div>
+                        <div className="font-semibold text-[15px] text-[#1D1D1F]">{p.name}</div>
+                        <div className="text-[14px] text-[#0066CC] font-bold">${p.price}</div>
                       </div>
                     </div>
                     <button
@@ -428,7 +428,7 @@ export default function App() {
                         handleAddToCart(p);
                         setIsWishlistOpen(false);
                       }}
-                      className="bg-[#0066CC] text-white text-xs font-bold px-4 py-2 rounded-full"
+                      className="bg-[#0066CC] text-white text-[13px] font-semibold px-5 py-2.5 rounded-full hover:bg-[#0055B3] transition-colors"
                     >
                       Add to Bag
                     </button>
@@ -440,7 +440,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Express Checkout Modal */}
+      {/* Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
@@ -450,7 +450,7 @@ export default function App() {
         onClearCart={() => setCart([])}
       />
 
-      {/* Store Location Selector Modal */}
+      {/* Store Selector Modal */}
       <StoreSelectorModal
         isOpen={isStoreModalOpen}
         onClose={() => setIsStoreModalOpen(false)}

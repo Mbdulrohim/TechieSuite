@@ -1,1 +1,186 @@
 @import "tailwindcss";
+
+/* ========================================================================
+   Apple E-Commerce Design System
+   Premium typography, spacing, and animation foundations
+   ======================================================================== */
+
+/* --- Base Reset & Typography --- */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  background-color: #F5F5F7;
+  color: #1D1D1F;
+  line-height: 1.5;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c4c4c6;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8e8e93;
+}
+
+/* Hide horizontal scrollbar for pill rows */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* --- Keyframe Animations --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes hero-crossfade {
+  0% { opacity: 0; transform: scale(1.02); }
+  8% { opacity: 1; transform: scale(1); }
+  92% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.98); }
+}
+
+/* --- Animation Utility Classes --- */
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.25s ease-out both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Staggered fade-in for product cards */
+.animate-stagger-1 { animation-delay: 0.05s; }
+.animate-stagger-2 { animation-delay: 0.1s; }
+.animate-stagger-3 { animation-delay: 0.15s; }
+.animate-stagger-4 { animation-delay: 0.2s; }
+
+/* --- Hero Carousel Transitions --- */
+.hero-slide-enter {
+  animation: fadeIn 0.8s ease-out both;
+}
+
+/* --- Selection Color --- */
+::selection {
+  background-color: #0066CC;
+  color: white;
+}
+
+/* --- Focus Ring Styling --- */
+:focus-visible {
+  outline: 2px solid #0066CC;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* --- Range Slider Apple Style --- */
+input[type="range"] {
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #E5E5E7;
+  border-radius: 999px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0066CC;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+  transition: transform 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* --- Checkbox Apple Style --- */
+input[type="checkbox"] {
+  accent-color: #0066CC;
+}
+
+/* --- Transition Utilities --- */
+.transition-apple {
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.transition-apple-fast {
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}

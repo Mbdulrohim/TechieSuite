@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Heart, Zap, Eye, Scale, Check, ShoppingBag, MapPin } from 'lucide-react';
+import { Star, Heart, Eye, Scale, ShoppingBag, MapPin } from 'lucide-react';
 import { Product, ProductColor } from '../types';
 
 interface ProductCardProps {
@@ -26,171 +26,173 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   );
 
   return (
-    <div className="group relative bg-white border border-[#E5E5E7] rounded-[16px] p-4 flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:border-gray-300">
+    <div className="group relative bg-white border border-[#E5E5E7] rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:border-gray-300">
       <div>
-        {/* Header Row: Badge & Wishlist & Compare */}
-        <div className="flex items-center justify-between mb-2">
+        {/* Top Row: Badge + Actions */}
+        <div className="flex items-center justify-between mb-3">
           {product.badge ? (
-            <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[#1D1D1F] text-white">
+            <span className="text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full bg-[#1D1D1F] text-white">
               {product.badge}
             </span>
           ) : (
-            <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+            <span className="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1">
               <MapPin className="w-3 h-3" /> Pickup Available
             </span>
           )}
 
           <div className="flex items-center gap-1.5">
-            {/* Compare Toggle */}
             <button
               onClick={() => onToggleCompare(product)}
-              className={`p-1.5 rounded-full text-xs transition-colors ${
+              className={`p-1.5 rounded-full transition-colors ${
                 isCompared
                   ? 'bg-[#0066CC] text-white'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-500'
               }`}
-              title={isCompared ? 'In Compare List' : 'Add to Compare'}
+              title={isCompared ? 'In Compare List' : 'Compare'}
             >
-              <Scale className="w-3.5 h-3.5" />
+              <Scale className="w-4 h-4" />
             </button>
 
-            {/* Wishlist Heart */}
             <button
               onClick={() => onToggleWishlist(product.id)}
-              className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-medium transition-colors ${
+              className={`p-1.5 rounded-full transition-colors ${
                 isWishlisted
                   ? 'bg-[#D70015] text-white'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-500'
               }`}
+              title={isWishlisted ? 'Saved' : 'Save'}
             >
-              <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-current' : ''}`} />
-              <span className="hidden sm:inline">{isWishlisted ? 'Saved' : 'Save'}</span>
+              <Heart
+                className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`}
+              />
             </button>
           </div>
         </div>
 
-        {/* Product Image Showcase */}
-        <div 
+        {/* Product Image — Large & Prominent */}
+        <div
           onClick={() => onQuickView(product)}
-          className="relative h-48 w-full my-2 flex items-center justify-center overflow-hidden cursor-pointer rounded-xl bg-gradient-to-b from-gray-50/50 to-white"
+          className="relative h-56 w-full flex items-center justify-center overflow-hidden cursor-pointer rounded-xl bg-gradient-to-b from-gray-50/80 to-white mb-4"
         >
           <img
             src={selectedColor.image || product.imageUrl}
             alt={product.name}
-            className="max-h-44 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            className="max-h-52 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
           />
 
-          {/* Quick View Floating Overlay */}
-          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <span className="bg-white/90 backdrop-blur-md text-[#1D1D1F] text-xs font-semibold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5 text-[#0066CC]" /> Quick View
+          {/* Quick View Overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center">
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 backdrop-blur text-[#1D1D1F] text-[13px] font-semibold px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+              <Eye className="w-4 h-4 text-[#0066CC]" /> Quick View
             </span>
           </div>
         </div>
 
-        {/* Product Title & Tagline */}
-        <div className="mt-2">
-          <h3 
-            onClick={() => onQuickView(product)}
-            className="text-base font-bold text-[#1D1D1F] group-hover:text-[#0066CC] transition-colors cursor-pointer leading-snug"
-          >
-            {product.name}
-          </h3>
-          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
-            {product.tagline}
-          </p>
-        </div>
+        {/* Product Name */}
+        <h3
+          onClick={() => onQuickView(product)}
+          className="text-[17px] font-bold text-[#1D1D1F] group-hover:text-[#0066CC] transition-colors cursor-pointer leading-snug"
+        >
+          {product.name}
+        </h3>
+        <p className="text-[13px] text-gray-500 mt-1 line-clamp-1">
+          {product.tagline}
+        </p>
 
-        {/* Star Rating & Reviews */}
-        <div className="flex items-center gap-1.5 mt-2 text-xs">
-          <div className="flex items-center text-[#FFB800]">
+        {/* Star Rating */}
+        <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`w-3.5 h-3.5 ${
-                  i < Math.floor(product.rating) ? 'fill-current text-[#FFB800]' : 'text-gray-300'
+                className={`w-4 h-4 ${
+                  i < Math.floor(product.rating)
+                    ? 'fill-[#FFB800] text-[#FFB800]'
+                    : 'text-gray-200'
                 }`}
               />
             ))}
           </div>
-          <span className="font-bold text-[#1D1D1F]">{product.rating}</span>
-          <span className="text-gray-400">({product.reviewCount.toLocaleString()})</span>
+          <span className="text-[13px] font-semibold text-[#1D1D1F]">
+            {product.rating}
+          </span>
+          <span className="text-[13px] text-gray-400">
+            ({product.reviewCount.toLocaleString()})
+          </span>
         </div>
 
-        {/* Color Swatch Picker */}
-        <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-100">
-          <span className="text-[10px] text-gray-400 font-medium">Color:</span>
-          <div className="flex items-center gap-1.5">
+        {/* Color Swatches */}
+        <div className="flex items-center gap-3 mt-4 pt-3 border-t border-gray-100">
+          <div className="flex items-center gap-2">
             {product.colors.map((color, idx) => (
               <button
                 key={idx}
                 onClick={() => setSelectedColor(color)}
-                className={`w-4 h-4 rounded-full border transition-all ${
+                className={`w-5 h-5 rounded-full border-2 transition-all ${
                   selectedColor.name === color.name
-                    ? 'ring-2 ring-[#0066CC] ring-offset-1 scale-110'
-                    : 'border-gray-300 hover:scale-105'
+                    ? 'ring-2 ring-[#0066CC] ring-offset-2 scale-110 border-transparent'
+                    : 'border-gray-200 hover:scale-105'
                 }`}
                 style={{ backgroundColor: color.hex }}
                 title={color.name}
               />
             ))}
           </div>
-          <span className="text-[10px] text-gray-600 font-medium ml-auto truncate max-w-[80px]">
+          <span className="text-[12px] text-gray-500 font-medium ml-auto truncate">
             {selectedColor.name}
           </span>
         </div>
 
-        {/* Price & Monthly Financing */}
-        <div className="mt-3 bg-[#F5F5F7] p-2.5 rounded-xl">
+        {/* Price Block */}
+        <div className="mt-4 bg-[#F5F5F7] p-4 rounded-xl">
           <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-lg font-extrabold text-[#1D1D1F]">
+            <div className="flex items-baseline gap-2">
+              <span className="text-[22px] font-bold text-[#1D1D1F]">
                 ${product.price}
               </span>
               {product.originalPrice && (
-                <span className="text-xs text-gray-400 line-through ml-2">
+                <span className="text-[14px] text-gray-400 line-through">
                   ${product.originalPrice}
                 </span>
               )}
             </div>
 
             {product.originalPrice && (
-              <span className="text-[10px] font-extrabold text-[#D70015] bg-[#D70015]/10 px-1.5 py-0.5 rounded">
+              <span className="text-[12px] font-bold text-[#D70015] bg-[#D70015]/8 px-2 py-1 rounded-md">
                 Save ${product.originalPrice - product.price}
               </span>
             )}
           </div>
 
-          <div className="text-[11px] text-emerald-700 font-medium mt-0.5 flex items-center justify-between">
-            <span>Or ${product.monthlyPrice}/mo. for 24 mo.</span>
-            <span className="text-[10px] text-gray-500">0% APR</span>
+          <div className="text-[13px] text-gray-500 mt-1">
+            or ${product.monthlyPrice}/mo. for 24 mo.{' '}
+            <span className="text-gray-400">· 0% APR</span>
           </div>
         </div>
 
-        {/* Stock Urgency Micro-copy */}
+        {/* Stock Urgency */}
         {product.stockUrgency && (
-          <div className="mt-2 text-[10px] text-[#D70015] font-semibold flex items-center gap-1">
-            <Zap className="w-3 h-3 fill-current text-[#D70015] shrink-0" />
-            <span className="truncate">{product.stockUrgency}</span>
-          </div>
+          <p className="mt-3 text-[12px] text-[#D70015] font-medium line-clamp-1">
+            {product.stockUrgency}
+          </p>
         )}
       </div>
 
-      {/* Action CTA Buttons */}
-      <div className="mt-4 space-y-2">
+      {/* CTAs */}
+      <div className="mt-5 space-y-2.5">
         <button
           onClick={() => onAddToCart(product, selectedColor)}
-          className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white font-bold text-xs py-2.5 px-4 rounded-full transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-[0.98]"
+          className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white font-semibold text-[14px] py-3 rounded-full transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-[0.98]"
         >
-          <ShoppingBag className="w-3.5 h-3.5" />
-          <span>Add to Bag</span>
+          <ShoppingBag className="w-4 h-4" />
+          Add to Bag
         </button>
 
         <button
           onClick={() => onQuickView(product)}
-          className="w-full bg-gray-100 hover:bg-gray-200 text-[#1D1D1F] font-semibold text-xs py-2 px-3 rounded-full transition-colors flex items-center justify-center gap-1.5"
+          className="w-full text-[#0066CC] hover:text-[#0055B3] font-medium text-[13px] py-2 transition-colors"
         >
-          <span>Configure & Specs</span>
+          Configure & View Specs →
         </button>
       </div>
     </div>

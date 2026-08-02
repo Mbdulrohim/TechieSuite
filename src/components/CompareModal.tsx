@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Scale, ShoppingBag, Trash2, Check, Star } from 'lucide-react';
+import { X, Scale, ShoppingBag, Star } from 'lucide-react';
 import { Product } from '../types';
 
 interface CompareModalProps {
@@ -20,67 +20,62 @@ export const CompareModal: React.FC<CompareModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl max-w-5xl w-full shadow-2xl border border-[#E5E5E7] p-6 md:p-8 overflow-hidden animate-in fade-in zoom-in-95 duration-200 my-8">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="relative bg-white rounded-3xl max-w-5xl w-full shadow-2xl border border-[#E5E5E7] p-8 md:p-10 overflow-hidden animate-scale-in my-8">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-gray-200 mb-6">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between pb-5 border-b border-gray-200 mb-8">
+          <div className="flex items-center gap-3">
             <Scale className="w-5 h-5 text-[#0066CC]" />
-            <h2 className="text-xl font-bold text-[#1D1D1F]">
-              Compare Apple Models Side-by-Side
+            <h2 className="text-2xl font-bold text-[#1D1D1F]">
+              Compare Models
             </h2>
-            <span className="text-xs bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full font-bold">
+            <span className="text-[13px] bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-semibold">
               {comparedProducts.length} selected
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100"
+            className="p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {comparedProducts.length === 0 ? (
-          <div className="py-12 text-center text-gray-500 space-y-3">
-            <Scale className="w-12 h-12 text-gray-300 mx-auto" />
-            <div className="font-bold text-base text-[#1D1D1F]">
-              No products selected for comparison
+          <div className="py-16 text-center text-gray-400 space-y-4">
+            <Scale className="w-14 h-14 text-gray-200 mx-auto" />
+            <div className="font-bold text-xl text-[#1D1D1F]">
+              No products selected
             </div>
-            <p className="text-xs max-w-sm mx-auto">
-              Click the scale icon on any product tile to compare specs side-by-side.
+            <p className="text-[15px] max-w-sm mx-auto">
+              Click the compare icon on any product to compare specs side-by-side.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left border-collapse">
+            <table className="w-full text-left border-collapse">
               <thead>
                 <tr>
-                  <th className="p-3 bg-gray-50 font-bold text-gray-500 w-36">
+                  <th className="p-4 bg-gray-50 font-semibold text-[14px] text-gray-500 w-40 rounded-l-xl">
                     Product
                   </th>
                   {comparedProducts.map((p) => (
-                    <th key={p.id} className="p-3 border-l border-gray-200 min-w-[200px]">
-                      <div className="relative flex flex-col items-center text-center space-y-2">
+                    <th key={p.id} className="p-4 border-l border-gray-200 min-w-[220px]">
+                      <div className="relative flex flex-col items-center text-center space-y-3">
                         <button
                           onClick={() => onRemoveFromCompare(p.id)}
-                          className="absolute -top-2 -right-2 p-1 text-gray-400 hover:text-red-500 bg-gray-100 rounded-full"
-                          title="Remove from comparison"
+                          className="absolute -top-1 -right-1 p-1.5 text-gray-400 hover:text-red-500 bg-gray-100 rounded-full transition-colors"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
-                        <img
-                          src={p.imageUrl}
-                          alt={p.name}
-                          className="w-20 h-20 object-contain mx-auto"
-                        />
-                        <div className="font-bold text-sm text-[#1D1D1F]">{p.name}</div>
-                        <div className="text-sm font-extrabold text-[#0066CC]">${p.price}</div>
+                        <img src={p.imageUrl} alt={p.name} className="w-24 h-24 object-contain mx-auto" />
+                        <div className="font-bold text-[15px] text-[#1D1D1F]">{p.name}</div>
+                        <div className="text-[17px] font-bold text-[#0066CC]">${p.price}</div>
                         <button
                           onClick={() => onAddToCart(p)}
-                          className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white py-1.5 px-3 rounded-full font-bold text-[11px] shadow-xs"
+                          className="w-full bg-[#0066CC] hover:bg-[#0055B3] text-white py-2.5 px-4 rounded-full font-semibold text-[13px] transition-colors"
                         >
                           Add to Bag
                         </button>
@@ -91,30 +86,33 @@ export const CompareModal: React.FC<CompareModalProps> = ({
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <tr>
-                  <td className="p-3 font-semibold text-gray-500 bg-gray-50">Rating</td>
+                  <td className="p-4 font-medium text-[14px] text-gray-500 bg-gray-50">Rating</td>
                   {comparedProducts.map((p) => (
-                    <td key={p.id} className="p-3 border-l border-gray-200 font-bold text-[#1D1D1F]">
-                      ★ {p.rating} ({p.reviewCount} reviews)
+                    <td key={p.id} className="p-4 border-l border-gray-200 font-semibold text-[14px] text-[#1D1D1F]">
+                      <div className="flex items-center gap-1.5">
+                        <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                        {p.rating} ({p.reviewCount.toLocaleString()})
+                      </div>
                     </td>
                   ))}
                 </tr>
                 <tr>
-                  <td className="p-3 font-semibold text-gray-500 bg-gray-50">Financing</td>
+                  <td className="p-4 font-medium text-[14px] text-gray-500 bg-gray-50">Financing</td>
                   {comparedProducts.map((p) => (
-                    <td key={p.id} className="p-3 border-l border-gray-200 text-emerald-600 font-medium">
+                    <td key={p.id} className="p-4 border-l border-gray-200 text-[14px] text-emerald-600 font-medium">
                       ${p.monthlyPrice}/mo for 24 mo.
                     </td>
                   ))}
                 </tr>
                 <tr>
-                  <td className="p-3 font-semibold text-gray-500 bg-gray-50">Colors Available</td>
+                  <td className="p-4 font-medium text-[14px] text-gray-500 bg-gray-50">Colors</td>
                   {comparedProducts.map((p) => (
-                    <td key={p.id} className="p-3 border-l border-gray-200">
-                      <div className="flex gap-1 flex-wrap">
+                    <td key={p.id} className="p-4 border-l border-gray-200">
+                      <div className="flex gap-1.5 flex-wrap">
                         {p.colors.map((c, idx) => (
                           <span
                             key={idx}
-                            className="w-3.5 h-3.5 rounded-full border border-gray-300"
+                            className="w-5 h-5 rounded-full border-2 border-gray-200"
                             style={{ backgroundColor: c.hex }}
                             title={c.name}
                           />
@@ -123,12 +121,11 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                     </td>
                   ))}
                 </tr>
-                {/* Dynamically compare specs */}
                 {['Display', 'Chip', 'Processor', 'Camera', 'Battery', 'Weight'].map((specKey) => (
                   <tr key={specKey}>
-                    <td className="p-3 font-semibold text-gray-500 bg-gray-50">{specKey}</td>
+                    <td className="p-4 font-medium text-[14px] text-gray-500 bg-gray-50">{specKey}</td>
                     {comparedProducts.map((p) => (
-                      <td key={p.id} className="p-3 border-l border-gray-200 text-gray-800">
+                      <td key={p.id} className="p-4 border-l border-gray-200 text-[14px] text-gray-700">
                         {p.specs[specKey] || '—'}
                       </td>
                     ))}
@@ -138,7 +135,6 @@ export const CompareModal: React.FC<CompareModalProps> = ({
             </table>
           </div>
         )}
-
       </div>
     </div>
   );

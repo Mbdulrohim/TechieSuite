@@ -67,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </defs>
           </svg>
           <span className="font-quicksand text-xl text-white tracking-[-1px]">
-            TechieBase
+            Techie<span className="text-[#F99A07]">Base</span>
           </span>
         </button>
 

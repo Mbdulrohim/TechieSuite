@@ -1,5 +1,5 @@
 import React from 'react';
-import { Truck, RotateCcw, ShieldCheck, CreditCard, Phone, Lock } from 'lucide-react';
+import { Truck, RotateCcw, ShieldCheck, CreditCard, Phone, Lock, MapPin, Instagram, Twitter, Facebook, Youtube } from 'lucide-react';
 import { formatNaira } from '../utils';
 
 export const Footer: React.FC = () => {
@@ -67,7 +67,7 @@ export const Footer: React.FC = () => {
             
             <div className="flex flex-col items-start gap-0.5">
               <h3 className="font-quicksand font-bold text-2xl text-[#033B66] tracking-[-0.03em] leading-tight">
-                TechieBase
+                Techie<span className="text-[#F99A07]">Base</span>
               </h3>
               <p className="font-quicksand font-bold text-xs md:text-sm text-[#191919] tracking-[-0.03em]">
                 Technology &amp; You
@@ -87,16 +87,40 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
+          {/* Column 4: Location (Placed next to Need Help) */}
           <div>
-            <h5 className="font-bold text-[#1D1D1F] mb-4 text-[13px] uppercase tracking-wider">
-              Special Offers
+            <h5 className="font-bold text-[#1D1D1F] mb-3 text-[13px] uppercase tracking-wider flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-[#0066CC]" />
+              Location
             </h5>
-            <ul className="space-y-2.5 text-[14px] text-gray-600">
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Techiebase Trade-In</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Education Store</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Certified Refurbished</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Techiebase Card Financing</a></li>
-            </ul>
+            <div className="space-y-2.5 text-[13px] text-gray-600">
+              <p className="leading-relaxed">
+                1st Floor, Taiyelolu Tower, 2A Olaide Tomori St, off Medical Road, Ikeja, 101233, Lagos
+              </p>
+              <a href="tel:08143270982" className="inline-flex items-center gap-2 font-semibold text-[#0066CC] hover:underline pt-1">
+                <Phone className="w-3.5 h-3.5" />
+                0814 327 0982
+              </a>
+            </div>
+
+            {/* Social Icons */}
+            <div className="mt-4 pt-3 border-t border-gray-200">
+              <p className="text-[12px] font-semibold text-gray-400 mb-2">Connect With Us</p>
+              <div className="flex items-center gap-2.5 text-gray-600">
+                <a href="#" className="p-2 rounded-full bg-white shadow-sm hover:text-[#0066CC] hover:scale-110 transition-all">
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a href="#" className="p-2 rounded-full bg-white shadow-sm hover:text-[#0066CC] hover:scale-110 transition-all">
+                  <Twitter className="w-4 h-4" />
+                </a>
+                <a href="#" className="p-2 rounded-full bg-white shadow-sm hover:text-[#0066CC] hover:scale-110 transition-all">
+                  <Facebook className="w-4 h-4" />
+                </a>
+                <a href="#" className="p-2 rounded-full bg-white shadow-sm hover:text-[#0066CC] hover:scale-110 transition-all">
+                  <Youtube className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
           </div>
 
           <div>
@@ -119,8 +143,8 @@ export const Footer: React.FC = () => {
               Speak to a Techiebase Specialist.
             </p>
             <div className="space-y-3">
-              <a href="#" className="inline-flex items-center gap-2 font-semibold text-[14px] text-[#0066CC] hover:underline">
-                <Phone className="w-4 h-4" /> 1-800-MY-APPLE
+              <a href="tel:08143270982" className="inline-flex items-center gap-2 font-semibold text-[14px] text-[#0066CC] hover:underline">
+                <Phone className="w-4 h-4" /> 0814 327 0982
               </a>
               <div className="text-[13px] text-emerald-600 font-medium flex items-center gap-1.5">
                 <Lock className="w-3.5 h-3.5" />

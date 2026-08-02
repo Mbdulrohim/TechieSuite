@@ -208,24 +208,27 @@ export default function App() {
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
       
-      {/* 1. Utility Top Bar */}
-      <TopUtilityBar />
+      {/* Sticky Header Section */}
+      <div className="sticky top-0 z-50 w-full">
+        {/* 1. Utility Top Bar */}
+        <TopUtilityBar />
 
-      {/* 2. Primary Navigation */}
-      <Navbar
-        products={PRODUCTS}
-        activeCategory={activeCategory}
-        onSelectCategory={setActiveCategory}
-        cartCount={cart.reduce((a, b) => a + b.quantity, 0)}
-        wishlistCount={wishlist.length}
-        compareCount={compareList.length}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenCompare={() => setIsCompareOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-        onSelectProduct={(p) => setQuickViewProduct(p)}
-        onAddToCart={(p) => handleAddToCart(p)}
-        onToggleFilterDrawer={() => setIsFilterDrawerOpen(true)}
-      />
+        {/* 2. Primary Navigation */}
+        <Navbar
+          products={PRODUCTS}
+          activeCategory={activeCategory}
+          onSelectCategory={setActiveCategory}
+          cartCount={cart.reduce((a, b) => a + b.quantity, 0)}
+          wishlistCount={wishlist.length}
+          compareCount={compareList.length}
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenCompare={() => setIsCompareOpen(true)}
+          onOpenWishlist={() => setIsWishlistOpen(true)}
+          onSelectProduct={(p) => setQuickViewProduct(p)}
+          onAddToCart={(p) => handleAddToCart(p)}
+          onToggleFilterDrawer={() => setIsFilterDrawerOpen(true)}
+        />
+      </div>
 
       {/* Main Content Area */}
       <main className="flex-1">

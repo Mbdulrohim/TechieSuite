@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-[rgba(0,0,0,0.8)] backdrop-blur-md">
+    <header className="w-full bg-[rgba(0,0,0,0.8)] backdrop-blur-md">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-12 flex items-center justify-between text-white/80 text-[12px]">
         {/* Techiebase Logo */}
         <button

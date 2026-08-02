@@ -52,17 +52,27 @@ export const Footer: React.FC = () => {
 
         {/* Footer Columns */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 py-14 border-b border-[#E5E5E7]">
-          <div>
-            <h5 className="font-bold text-[#1D1D1F] mb-4 text-[13px] uppercase tracking-wider">
-              Shop & Learn
-            </h5>
-            <ul className="space-y-2.5 text-[14px] text-gray-600">
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">iPhone 16 Pro</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">MacBook Air M3</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">iPad Pro M4</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">Apple Watch Ultra 2</a></li>
-              <li><a href="#" className="hover:text-[#0066CC] transition-colors">AirPods Pro 2</a></li>
-            </ul>
+          {/* Brand Column (Replaces Shop & Learn) */}
+          <div className="flex flex-col items-start space-y-2">
+            <svg className="w-12 h-14 shrink-0" viewBox="0 0 247 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M170.06 0.543366C211.433 -3.50614 236.19 15.0004 225.777 58.7006C219.822 83.6759 197.521 97.0917 177.019 109.248C202.895 128.074 240.615 133.768 245.737 174.945C253.304 228.401 158.951 268.373 130.476 220.383C109.715 185.398 107.262 130.7 104.03 90.9305C110.203 87.7638 117.471 84.5483 123.813 81.5593C132.049 77.8651 137.511 75.9054 146.175 73.3062C146.449 79.2815 146.175 83.1095 145.731 89.116C163.371 73.5985 182.968 56.9004 200.005 40.9441C191.923 40.0734 182.612 38.3982 174.453 37.2143L123.188 29.5633C129.077 35.8709 132.236 39.4949 136.853 46.7363C133.256 48.009 129.198 49.3672 125.524 50.3789C81.6609 62.4589 43.0633 89.6682 1.77713 107.681C0.905266 97.5528 -0.234185 82.0687 0.0421786 72.0297C4.47551 66.5018 15.1687 58.6589 20.9833 54.4602C61.8768 24.9276 119.449 3.86687 170.06 0.543366Z" fill="url(#footer_logo_gradient)"/>
+              <path d="M69.3843 104.332C70.2243 104.237 69.8076 104.242 70.7452 104.75C72.3815 109.08 72.4012 117.39 72.8251 122.091C77.3736 172.495 84.2936 229.866 123.539 266.163C127.668 269.987 135.597 273.825 140.598 277.026C124.493 283.182 101.35 277.767 85.9162 271.323C79.9453 268.545 74.2502 265.211 68.9061 261.362C38.4491 239.421 20.2864 200.135 11.2739 164.666C8.90839 155.356 7.37249 145.404 5.82617 135.893C18.9249 126.569 53.7972 110.883 69.3843 104.332Z" fill="#033B66"/>
+              <defs>
+                <linearGradient id="footer_logo_gradient" x1="184" y1="36.5" x2="18" y2="180.5" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#F47B09"/>
+                  <stop offset="1" stop-color="#FBAC09"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            
+            <div className="flex flex-col items-start gap-0.5">
+              <h3 className="font-quicksand font-bold text-2xl text-[#033B66] tracking-[-0.03em] leading-tight">
+                TechieBase
+              </h3>
+              <p className="font-quicksand font-bold text-xs md:text-sm text-[#191919] tracking-[-0.03em]">
+                Technology &amp; You
+              </p>
+            </div>
           </div>
 
           <div>

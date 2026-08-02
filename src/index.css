@@ -46,10 +46,6 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
-  .font-national-park {
-    font-family: 'National Park', sans-serif;
-  }
 }
 
 /* --- Keyframe Animations --- */

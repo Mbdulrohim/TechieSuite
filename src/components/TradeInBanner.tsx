@@ -35,7 +35,7 @@ export const TradeInBanner: React.FC<TradeInBannerProps> = ({
           <Smartphone className="w-10 h-10 text-[#1d1d1f]" />
         </div>
 
-        <h2 className="text-3xl md:text-4xl font-national-park font-medium tracking-tight text-[#333333] mb-3">
+        <h2 className="text-3xl md:text-4xl font-inter font-medium tracking-tight text-[#333333] mb-3">
           Techiebase Trade In
         </h2>
 

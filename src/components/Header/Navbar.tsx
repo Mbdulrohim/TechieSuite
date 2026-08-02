@@ -54,7 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Techiebase Logo */}
         <button
           onClick={() => onSelectCategory('all')}
-          className="hover:text-white transition-colors font-national-park text-xl font-bold tracking-wider"
+          className="hover:text-white transition-colors font-inter text-xl font-bold tracking-wider"
         >
           Techiebase
         </button>
@@ -93,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     autoFocus
                     placeholder="Search Techiebase"
                     value={searchQuery}
-                    className="w-full text-2xl font-national-park bg-transparent border-none pl-8 focus:outline-none placeholder-gray-300"
+                    className="w-full text-2xl font-inter bg-transparent border-none pl-8 focus:outline-none placeholder-gray-300"
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   <button onClick={() => setIsSearchOpen(false)} className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">

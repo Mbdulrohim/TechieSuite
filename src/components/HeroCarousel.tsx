@@ -55,7 +55,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       >
         {/* Top — Text */}
         <div className="text-center space-y-2 px-6 z-10 pt-4">
-          <h1 className="text-4xl md:text-[56px] font-national-park font-medium tracking-tight leading-tight text-[#333333]">
+          <h1 className="text-4xl md:text-[56px] font-inter font-medium tracking-tight leading-tight text-[#333333]">
             {slide.title}
           </h1>
           <p className="text-[22px] md:text-[28px] font-inter font-normal tracking-tight mt-1">

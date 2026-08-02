@@ -31,10 +31,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Details */}
       <div className="flex flex-col items-center space-y-1 w-full flex-1">
         
-        {/* Name - National Park Font */}
+        {/* Name - Inter Font */}
         <h3
           onClick={() => onQuickView(product)}
-          className="text-[16px] md:text-[22px] font-national-park font-medium text-[#656565] cursor-pointer"
+          className="text-[16px] md:text-[22px] font-inter font-medium text-[#656565] cursor-pointer"
         >
           {product.name}
         </h3>

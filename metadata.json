@@ -1,6 +1,6 @@
 {
-  "name": "Apple Store - Direct Response E-Commerce",
-  "description": "Conversion-optimized flagship Apple online store with high-density catalog, instant trade-in estimator, quick search, side-cart drawer, product reviews, and bundle builder.",
+  "name": "TechieBase Storefront",
+  "description": "A premium Nigerian storefront for Apple devices, trade-ins, delivery, pickup, and flexible payments.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PRODUCTS, FEATURED_BUNDLES, STORE_LOCATIONS } from './data/products';
-import { Product, CartItem, TradeInQuote, FilterState, ProductColor, StorageOption, StoreLocation, ProductBundle } from './types';
+import { Product, CartItem, TradeInQuote, FilterState, ProductColor, StorageOption, StoreLocation, ProductBundle, Condition } from './types';
+import { formatNaira } from './utils';
 
 // Components
 import { TopUtilityBar } from './components/Header/TopUtilityBar';
@@ -8,7 +9,7 @@ import { Navbar } from './components/Header/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { CategoryPills } from './components/CategoryPills';
 import { ProductRow } from './components/ProductRow';
-import { ProductCard } from './components/ProductCard';
+import { CatalogView } from './components/CatalogView';
 import { FacetedFilterSidebar } from './components/FacetedFilterSidebar';
 import { TradeInBanner } from './components/TradeInBanner';
 import { BundleSection } from './components/BundleSection';
@@ -17,14 +18,115 @@ import { QuickViewModal } from './components/QuickViewModal';
 import { CompareModal } from './components/CompareModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { StoreSelectorModal } from './components/StoreSelectorModal';
+import { JournalIndex, ArticleView } from './components/JournalView';
 import { Footer } from './components/Footer';
-import { Heart, X, ShoppingBag } from 'lucide-react';
+import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
+import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
+
+const CATEGORY_IDS = [
+  'all',
+  'iphone',
+  'mac',
+  'ipad',
+  'watch',
+  'airpods',
+  'samsung',
+  'gaming',
+  'laptops',
+  'audio',
+  'power',
+  'accessories',
+  'deals',
+];
+
+const readCategoryFromUrl = () => {
+  if (typeof window === 'undefined') return 'all';
+  const category = new URLSearchParams(window.location.search).get('category');
+  return category && CATEGORY_IDS.includes(category) ? category : 'all';
+};
+
+/** Condition is a sticky mode rather than a category: the storefront opens on
+ *  brand new, and stays in whichever world you picked as you browse. */
+const readConditionFromUrl = (): Condition => {
+  if (typeof window === 'undefined') return 'new';
+  return new URLSearchParams(window.location.search).get('condition') === 'pre-owned'
+    ? 'pre-owned'
+    : 'new';
+};
+
+/** Journal routing rides on one param:
+ *  no `journal` param -> storefront, `?journal` -> index, `?journal=slug` -> article.
+ *  Returns null for the storefront, '' for the index, or a valid slug. */
+const readJournalFromUrl = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has('journal')) return null;
+  const slug = params.get('journal') ?? '';
+  return slug && articleBySlug(slug) ? slug : '';
+};
+
+const INITIAL_FILTERS: FilterState = {
+  priceRange: [0, 2500],
+  minRating: 0,
+  selectedStorage: [],
+  inStockOnly: false,
+  onSaleOnly: false,
+  sortBy: 'featured',
+};
+
+const getIphoneModelRank = (product: Product) => {
+  if (product.category !== 'iphone') return 0;
+
+  const generation = product.name === 'iPhone Air'
+    ? 17
+    : Number(product.name.match(/iPhone (\d+)/)?.[1] || 0);
+  const variantRank = product.name.includes('Pro Max')
+    ? 50
+    : product.name.includes('Pro')
+      ? 40
+      : product.name === 'iPhone Air'
+        ? 30
+        : product.name.includes('Plus')
+          ? 20
+          : /iPhone \d+$/.test(product.name)
+            ? 10
+            : 5;
+
+  return generation * 100 + variantRank;
+};
+
+/** Closes out the brand-new storefront by handing the shopper to pre-owned,
+ *  rather than ending the page on nothing. */
+const PreOwnedHandoff = ({ onContinue }: { onContinue: () => void }) => (
+  <section className="mx-auto max-w-[1400px] px-6 pt-8">
+    <div className="rounded-panel bg-gradient-to-br from-[#f0e9df] via-canvas to-[#e6ecec] px-8 py-14 text-center md:px-12 md:py-20">
+      <p className="eyebrow text-sale">Also at TechieBase</p>
+      <h2 className="mt-3 text-title font-semibold text-ink md:text-headline">
+        Looking to spend less?
+      </h2>
+      <p className="mx-auto mt-4 max-w-xl text-body text-ink-secondary">
+        Shop certified pre-owned iPhones, Macs, Galaxy phones and consoles — each one inspected,
+        battery-tested and covered by a TechieBase warranty.
+      </p>
+      <button
+        type="button"
+        onClick={onContinue}
+        className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-7 text-footnote font-semibold text-white transition-colors hover:bg-black"
+      >
+        Continue shopping pre-owned <ArrowRight className="h-4 w-4" />
+      </button>
+    </div>
+  </section>
+);
 
 export default function App() {
   // Primary State
-  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeCategory, setActiveCategory] = useState<string>(readCategoryFromUrl);
+  const [activeCondition, setActiveCondition] = useState<Condition>(readConditionFromUrl);
+  /** null = storefront, '' = journal index, otherwise an article slug. */
+  const [journalSlug, setJournalSlug] = useState<string | null>(readJournalFromUrl);
   const [currentStore, setCurrentStore] = useState<StoreLocation>(STORE_LOCATIONS[0]);
-  
+
   // E-Commerce Cart & Persistence State
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<string[]>(['iphone-16-pro']);
@@ -32,16 +134,7 @@ export default function App() {
   const [tradeInQuote, setTradeInQuote] = useState<TradeInQuote | null>(null);
 
   // Filters
-  const [filters, setFilters] = useState<FilterState>({
-    category: 'all',
-    searchQuery: '',
-    priceRange: [0, 2500],
-    minRating: 0,
-    selectedStorage: [],
-    inStockOnly: false,
-    onSaleOnly: false,
-    sortBy: 'featured',
-  });
+  const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
 
   // Modal Visibility Controls
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -52,28 +145,79 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
-  // Category counts for pills
-  const productCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: PRODUCTS.length, deals: 0 };
-    PRODUCTS.forEach((p) => {
-      counts[p.category] = (counts[p.category] || 0) + 1;
-      if (p.originalPrice || p.badge === 'SAVE $100' || p.badge === 'HOT DEAL') {
-        counts.deals += 1;
-      }
-    });
-    return counts;
+  const handleSelectCategory = useCallback((category: string, addToHistory = true) => {
+    const nextCategory = CATEGORY_IDS.includes(category) ? category : 'all';
+    setActiveCategory(nextCategory);
+    setJournalSlug(null);
+    setFilters(INITIAL_FILTERS);
+
+    if (addToHistory) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('journal');
+      if (nextCategory === 'all') url.searchParams.delete('category');
+      else url.searchParams.set('category', nextCategory);
+      window.history.pushState({ category: nextCategory }, '', url);
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  /** Switching condition keeps you in the same category, so "pre-owned iPhone"
+   *  is one click from "new iPhone". */
+  const handleSelectCondition = useCallback((condition: Condition, category?: string) => {
+    setActiveCondition(condition);
+    setJournalSlug(null);
+    setFilters(INITIAL_FILTERS);
+
+    const nextCategory = category ?? readCategoryFromUrl();
+    if (category !== undefined) setActiveCategory(nextCategory);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('journal');
+    if (condition === 'new') url.searchParams.delete('condition');
+    else url.searchParams.set('condition', condition);
+    if (nextCategory === 'all') url.searchParams.delete('category');
+    else url.searchParams.set('category', nextCategory);
+    window.history.pushState({ condition, category: nextCategory }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  /** Pass a slug to open an article, or nothing to open the journal index. */
+  const handleOpenJournal = useCallback((slug = '') => {
+    setJournalSlug(slug);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('category');
+    url.searchParams.set('journal', slug);
+    window.history.pushState({ journal: slug }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      // Re-read every route from the URL so Back works across store, condition
+      // and journal.
+      handleSelectCategory(readCategoryFromUrl(), false);
+      setActiveCondition(readConditionFromUrl());
+      setJournalSlug(readJournalFromUrl());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [handleSelectCategory]);
 
   // Filtered & Sorted Product Catalog
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((product) => {
+      // Condition gate — the two worlds never mix in a listing.
+      if (product.condition !== activeCondition) return false;
+
       // Category filter
       if (activeCategory !== 'all' && activeCategory !== 'deals') {
         if (product.category !== activeCategory) return false;
       } else if (activeCategory === 'deals') {
-        if (!product.originalPrice && product.badge !== 'SAVE $100' && product.badge !== 'HOT DEAL') {
-          return false;
-        }
+        if (!product.originalPrice) return false;
       }
 
       // Max price
@@ -83,9 +227,9 @@ export default function App() {
       if (product.rating < filters.minRating) return false;
 
       // Storage filter
-      if (filters.selectedStorage.length > 0 && product.storageOptions) {
-        const hasStorage = product.storageOptions.some((s) =>
-          filters.selectedStorage.includes(s.capacity)
+      if (filters.selectedStorage.length > 0) {
+        const hasStorage = product.storageOptions?.some((option) =>
+          filters.selectedStorage.some((storage) => option.capacity.startsWith(storage))
         );
         if (!hasStorage) return false;
       }
@@ -102,21 +246,27 @@ export default function App() {
       if (filters.sortBy === 'price-high') return b.price - a.price;
       if (filters.sortBy === 'rating') return b.rating - a.rating;
       if (filters.sortBy === 'reviews') return b.reviewCount - a.reviewCount;
-      return 0; // featured default
+      if (a.category === 'iphone' && b.category === 'iphone') {
+        return getIphoneModelRank(b) - getIphoneModelRank(a);
+      }
+      return 0;
     });
-  }, [activeCategory, filters]);
+  }, [activeCategory, activeCondition, filters]);
+
+  const productsForSection = (category: Product['category']) =>
+    filteredProducts.filter((product) => product.category === category);
 
   // Cart Handlers
   const handleAddToCart = (
     product: Product,
     selectedColor?: ProductColor,
     selectedStorage?: StorageOption,
-    appleCare: boolean = false
+    protection: boolean = false
   ) => {
     const colorToUse = selectedColor || product.colors[0];
     const storageToUse = selectedStorage || (product.storageOptions ? product.storageOptions[0] : undefined);
-    
-    const cartItemId = `${product.id}-${colorToUse.name}-${storageToUse?.capacity || 'std'}-${appleCare ? 'care' : 'nocare'}`;
+
+    const cartItemId = `${product.id}-${colorToUse.name}-${storageToUse?.capacity || 'std'}-${protection ? 'care' : 'nocare'}`;
 
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === cartItemId);
@@ -132,7 +282,7 @@ export default function App() {
           product,
           selectedColor: colorToUse,
           selectedStorage: storageToUse,
-          appleCare,
+          protection,
           quantity: 1,
         },
       ];
@@ -173,10 +323,10 @@ export default function App() {
     setCart((prev) => prev.filter((item) => item.id !== cartItemId));
   };
 
-  const handleToggleAppleCare = (cartItemId: string) => {
+  const handleToggleProtection = (cartItemId: string) => {
     setCart((prev) =>
       prev.map((item) =>
-        item.id === cartItemId ? { ...item, appleCare: !item.appleCare } : item
+        item.id === cartItemId ? { ...item, protection: !item.protection } : item
       )
     );
   };
@@ -206,111 +356,112 @@ export default function App() {
   const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
 
   return (
-    <div className="min-h-screen w-full max-w-full bg-[#F5F5F7] text-[#1D1D1F] antialiased flex flex-col justify-between">
-      
+    <div className="min-h-screen w-full max-w-full bg-canvas text-ink antialiased flex flex-col justify-between">
+
       {/* Sticky Header Section for Mobile & Desktop */}
       <div className="sticky top-0 z-50 w-full">
         {/* 1. Utility Top Bar */}
-        <TopUtilityBar />
+        <TopUtilityBar onLearnMore={() => handleOpenJournal(FEATURED_ARTICLE.slug)} />
 
         {/* 2. Primary Navigation */}
         <Navbar
           products={PRODUCTS}
           activeCategory={activeCategory}
-          onSelectCategory={setActiveCategory}
+          activeCondition={activeCondition}
+          onSelectCategory={handleSelectCategory}
+          onSelectCondition={handleSelectCondition}
           cartCount={cart.reduce((a, b) => a + b.quantity, 0)}
-          wishlistCount={wishlist.length}
-          compareCount={compareList.length}
           onOpenCart={() => setIsCartOpen(true)}
-          onOpenCompare={() => setIsCompareOpen(true)}
-          onOpenWishlist={() => setIsWishlistOpen(true)}
           onSelectProduct={(p) => setQuickViewProduct(p)}
-          onAddToCart={(p) => handleAddToCart(p)}
-          onToggleFilterDrawer={() => setIsFilterDrawerOpen(true)}
+          onOpenJournal={() => handleOpenJournal()}
+          isJournalActive={journalSlug !== null}
         />
       </div>
 
       {/* Main Content Area */}
       <main className="flex-1">
-        
-        {/* 3. Hero Carousel */}
-        <HeroCarousel
-          products={PRODUCTS}
-          onSelectProduct={(p) => setQuickViewProduct(p)}
-          onAddToCart={(p) => handleAddToCart(p)}
-          onOpenCompare={() => setIsCompareOpen(true)}
-        />
+        {journalSlug !== null ? (
+          journalSlug === '' ? (
+            <JournalIndex articles={ARTICLES} onOpenArticle={handleOpenJournal} />
+          ) : (
+            <ArticleView
+              article={articleBySlug(journalSlug) ?? FEATURED_ARTICLE}
+              related={ARTICLES.filter((a) => a.slug !== journalSlug).slice(0, 3)}
+              onBack={() => handleOpenJournal()}
+              onOpenArticle={handleOpenJournal}
+            />
+          )
+        ) : activeCategory === 'all' && activeCondition === 'new' ? (
+          <>
+            <HeroCarousel
+              products={PRODUCTS}
+              onSelectProduct={setQuickViewProduct}
+              onAddToCart={handleAddToCart}
+            />
 
-        {/* 4. Category Quick-Pills */}
-        <CategoryPills
-          activeCategory={activeCategory}
-          onSelectCategory={setActiveCategory}
-        />
+            <CategoryPills activeCategory={activeCategory} onSelectCategory={handleSelectCategory} />
 
-        {/* Section: 6-Row Layout */}
-        <div className="space-y-4 pb-20">
-          
-          {/* Row 1: Phones */}
-          <ProductRow
-            title="iPhone"
-            products={PRODUCTS.filter(p => p.category === 'iphone')}
-            onAddToCart={(p) => handleAddToCart(p)}
-            onQuickView={(p) => setQuickViewProduct(p)}
+            <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-6 pb-2">
+              <button
+                type="button"
+                onClick={() => setIsStoreModalOpen(true)}
+                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-footnote font-medium text-ink shadow-sm ring-1 ring-black/5 hover:ring-black/15"
+              >
+                <MapPin className="h-4 w-4 text-accent" />
+                Pickup: {currentStore.name.replace('TechieBase ', '')}
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setIsWishlistOpen(true)} aria-label={`Open ${wishlist.length} saved items`} className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5 hover:ring-black/15">
+                  <Heart className="h-4 w-4" />
+                  {wishlist.length > 0 && <span className="absolute right-0 top-0 h-2.5 w-2.5 rounded-full bg-brand ring-2 ring-canvas" />}
+                </button>
+                <button type="button" onClick={() => setIsCompareOpen(true)} aria-label={`Compare ${compareList.length} products`} className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5 hover:ring-black/15">
+                  <Scale className="h-4 w-4" />
+                  {compareList.length > 0 && <span className="absolute right-0 top-0 h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-canvas" />}
+                </button>
+                <button type="button" onClick={() => setIsFilterDrawerOpen(true)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-4 text-footnote font-medium text-white hover:bg-black">
+                  <Filter className="h-4 w-4" /> Filter
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4 pb-20">
+              <ProductRow title="iPhone" products={productsForSection('iphone').slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('iphone')} />
+              <ProductRow title="Mac" products={productsForSection('mac')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('mac')} />
+              <TradeInBanner onApplyTradeIn={setTradeInQuote} appliedTradeIn={tradeInQuote} />
+              <ProductRow title="iPad" products={productsForSection('ipad')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('ipad')} />
+              <ProductRow title="Apple Watch" products={productsForSection('watch')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('watch')} />
+              <BundleSection bundle={FEATURED_BUNDLES[0]} onAddBundleToCart={handleAddBundleToCart} />
+              <ProductRow title="AirPods" products={productsForSection('airpods')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('airpods')} />
+              <ProductRow title="Samsung" products={productsForSection('samsung')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('samsung')} />
+              <ProductRow title="Gaming" products={productsForSection('gaming')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('gaming')} />
+              <BundleSection bundle={FEATURED_BUNDLES[2]} onAddBundleToCart={handleAddBundleToCart} />
+              <ProductRow title="Laptops" products={productsForSection('laptops')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('laptops')} />
+              <ProductRow title="Audio" products={productsForSection('audio')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('audio')} />
+              <ProductRow title="Power" products={productsForSection('power')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('power')} />
+              <ProductRow title="Accessories" products={productsForSection('accessories')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('accessories')} />
+
+              <PreOwnedHandoff onContinue={() => handleSelectCondition('pre-owned', 'all')} />
+            </div>
+          </>
+        ) : (
+          <CatalogView
+            category={activeCategory}
+            condition={activeCondition}
+            products={filteredProducts}
+            storeName={currentStore.name.replace('TechieBase ', '')}
+            wishlistCount={wishlist.length}
+            compareCount={compareList.length}
+            onOpenStore={() => setIsStoreModalOpen(true)}
+            onOpenWishlist={() => setIsWishlistOpen(true)}
+            onOpenCompare={() => setIsCompareOpen(true)}
+            onOpenFilters={() => setIsFilterDrawerOpen(true)}
+            onOpenProduct={setQuickViewProduct}
+            onResetFilters={() => setFilters(INITIAL_FILTERS)}
+            onSelectCondition={(condition) => handleSelectCondition(condition)}
           />
-
-          {/* Row 2: Macs */}
-          <ProductRow
-            title="Mac"
-            products={PRODUCTS.filter(p => p.category === 'mac')}
-            onAddToCart={(p) => handleAddToCart(p)}
-            onQuickView={(p) => setQuickViewProduct(p)}
-          />
-
-          {/* Banner 1: Trade-In */}
-          <TradeInBanner
-            onApplyTradeIn={(quote) => setTradeInQuote(quote)}
-            appliedTradeIn={tradeInQuote}
-          />
-
-          {/* Row 3: iPads */}
-          <ProductRow
-            title="iPad"
-            products={PRODUCTS.filter(p => p.category === 'ipad')}
-            onAddToCart={(p) => handleAddToCart(p)}
-            onQuickView={(p) => setQuickViewProduct(p)}
-          />
-
-          {/* Row 4: Watches */}
-          <ProductRow
-            title="Apple Watch"
-            products={PRODUCTS.filter(p => p.category === 'watch')}
-            onAddToCart={(p) => handleAddToCart(p)}
-            onQuickView={(p) => setQuickViewProduct(p)}
-          />
-
-          {/* Banner 2: Accessory Bundles */}
-          <BundleSection
-            bundle={FEATURED_BUNDLES[0]}
-            onAddBundleToCart={handleAddBundleToCart}
-          />
-
-          {/* Row 5: AirPods */}
-          <ProductRow
-            title="AirPods"
-            products={PRODUCTS.filter(p => p.category === 'airpods')}
-            onAddToCart={(p) => handleAddToCart(p)}
-            onQuickView={(p) => setQuickViewProduct(p)}
-          />
-
-          {/* Row 6: Accessories */}
-          <ProductRow
-            title="Accessories"
-            products={PRODUCTS.filter(p => p.category === 'accessories')}
-            onAddToCart={(p) => handleAddToCart(p)}
-            onQuickView={(p) => setQuickViewProduct(p)}
-          />
-
-        </div>
+        )}
 
       </main>
 
@@ -321,7 +472,7 @@ export default function App() {
         cart={cart}
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
-        onToggleAppleCare={handleToggleAppleCare}
+        onToggleProtection={handleToggleProtection}
         tradeInQuote={tradeInQuote}
         onRemoveTradeIn={() => setTradeInQuote(null)}
         onOpenCheckout={() => {
@@ -336,18 +487,7 @@ export default function App() {
         onClose={() => setIsFilterDrawerOpen(false)}
         filters={filters}
         onChangeFilter={(updated) => setFilters((prev) => ({ ...prev, ...updated }))}
-        onResetFilters={() =>
-          setFilters({
-            category: 'all',
-            searchQuery: '',
-            priceRange: [0, 2500],
-            minRating: 0,
-            selectedStorage: [],
-            inStockOnly: false,
-            onSaleOnly: false,
-            sortBy: 'featured',
-          })
-        }
+        onResetFilters={() => setFilters(INITIAL_FILTERS)}
         totalResults={filteredProducts.length}
       />
 
@@ -355,8 +495,8 @@ export default function App() {
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
-        onAddToCart={(p, color, storage, appleCare) =>
-          handleAddToCart(p, color, storage, appleCare)
+        onAddToCart={(p, color, storage, protection) =>
+          handleAddToCart(p, color, storage, protection)
         }
         onToggleWishlist={handleToggleWishlist}
         isWishlisted={quickViewProduct ? wishlist.includes(quickViewProduct.id) : false}
@@ -376,33 +516,34 @@ export default function App() {
       {/* Wishlist Modal */}
       {isWishlistOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-[#E5E5E7] animate-scale-in">
-            <div className="flex justify-between items-center pb-4 border-b border-gray-200 mb-5">
-              <div className="flex items-center gap-2.5 font-bold text-[17px] text-[#1D1D1F]">
-                <Heart className="w-5 h-5 text-[#D70015] fill-current" />
+          <div className="relative bg-white rounded-panel max-w-lg w-full p-8 shadow-2xl border border-hairline-soft animate-scale-in">
+            <div className="flex justify-between items-center pb-4 border-b border-hairline-soft mb-5">
+              <div className="flex items-center gap-2.5 font-semibold text-body text-ink">
+                <Heart className="w-5 h-5 text-critical fill-current" />
                 <span>Saved Items ({wishlistedProducts.length})</span>
               </div>
               <button
                 onClick={() => setIsWishlistOpen(false)}
-                className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Close saved items"
+                className="p-2 text-ink-tertiary hover:text-ink hover:bg-canvas rounded-full transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {wishlistedProducts.length === 0 ? (
-              <div className="text-center py-12 text-gray-400 text-[15px]">
+              <div className="text-center py-12 text-ink-tertiary text-body">
                 No items saved to your wishlist yet.
               </div>
             ) : (
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {wishlistedProducts.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between p-4 bg-[#F5F5F7] rounded-2xl">
+                  <div key={p.id} className="flex items-center justify-between p-4 bg-canvas rounded-card">
                     <div className="flex items-center gap-4">
                       <img src={p.imageUrl} alt={p.name} className="w-14 h-14 object-contain rounded-lg" />
                       <div>
-                        <div className="font-semibold text-[15px] text-[#1D1D1F]">{p.name}</div>
-                        <div className="text-[14px] text-[#0066CC] font-bold">${p.price}</div>
+                        <div className="font-semibold text-body text-ink">{p.name}</div>
+                        <div className="text-footnote text-link font-semibold">{formatNaira(p.price)}</div>
                       </div>
                     </div>
                     <button
@@ -410,7 +551,7 @@ export default function App() {
                         handleAddToCart(p);
                         setIsWishlistOpen(false);
                       }}
-                      className="bg-[#0066CC] text-white text-[13px] font-semibold px-5 py-2.5 rounded-full hover:bg-[#0055B3] transition-colors"
+                      className="bg-accent text-white text-footnote font-semibold px-5 py-2.5 rounded-full hover:bg-accent-hover transition-colors"
                     >
                       Add to Bag
                     </button>

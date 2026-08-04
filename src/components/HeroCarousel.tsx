@@ -53,13 +53,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       id: 'iphone-16-pro',
       headline: 'Hello, Apple Intelligence.',
       image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1200&q=80',
-      productIndex: 0,
+      productId: 'iphone-16-pro',
     },
     {
       id: 'macbook-air-m3',
       headline: 'Lean. Mean. M3 machine.',
       image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80',
-      productIndex: 2,
+      productId: 'macbook-air-m3',
     },
   ];
 
@@ -79,7 +79,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
         ease: 'power2.in',
         onComplete: () => {
           setActionIndex((prev) => (prev + 1) % DYNAMIC_ACTIONS.length);
-          
+
           // Blur in animation
           if (wordRef.current) {
             gsap.fromTo(
@@ -125,23 +125,22 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   }, [slides.length]);
 
   const slide = slides[currentSlide];
-  const targetProduct = products[slide.productIndex] || products[0];
+  const targetProduct = products.find((product) => product.id === slide.productId) || products[0];
   const currentAction = DYNAMIC_ACTIONS[actionIndex];
 
   return (
-    <section className="relative bg-[#fbfbfd] text-[#1d1d1f] overflow-hidden pt-12">
+    <section className="relative bg-surface-raised text-ink overflow-hidden pt-12">
       <div
-        className={`min-h-[500px] md:min-h-[640px] flex flex-col items-center justify-between transition-opacity duration-500 ${
-          isTransitioning ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`min-h-[500px] md:min-h-[640px] flex flex-col items-center justify-between transition-opacity duration-500 ${isTransitioning ? 'opacity-0' : 'opacity-100'
+          }`}
       >
         {/* Top — Text */}
         <div className="text-center space-y-3 px-6 z-10 pt-4">
-          <h1 className="text-4xl md:text-[56px] font-inter font-medium tracking-tight leading-tight text-[#333333] flex flex-wrap items-center justify-center gap-x-3">
+          <h1 className="text-headline md:text-display font-semibold text-ink flex flex-wrap items-center justify-center gap-x-3">
             <span>You can</span>
             <span
               ref={wordRef}
-              className={`bg-gradient-to-r ${currentAction.gradient} bg-clip-text text-transparent font-bold inline-block transition-all duration-300`}
+              className={`bg-gradient-to-r ${currentAction.gradient} bg-clip-text text-transparent font-semibold inline-block transition-all duration-300`}
               style={{
                 filter: 'drop-shadow(0 0 18px ' + currentAction.glowColor + ')',
               }}
@@ -150,20 +149,20 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             </span>
           </h1>
 
-          <p className="text-[22px] md:text-[28px] font-inter font-normal tracking-tight mt-1 text-gray-600">
+          <p className="text-lead md:text-title font-normal mt-1 text-ink-secondary">
             {slide.headline}
           </p>
 
-          <div className="flex items-center justify-center gap-6 pt-4 text-[17px]">
+          <div className="flex items-center justify-center gap-6 pt-4 text-body">
             <button
               onClick={() => onSelectProduct(targetProduct)}
-              className="bg-[#0071e3] hover:bg-[#0077ED] active:scale-[0.98] text-white px-6 h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center font-medium"
+              className="bg-accent hover:bg-accent-hover active:scale-[0.98] text-white px-6 h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center font-medium"
             >
               Learn more
             </button>
             <button
               onClick={() => onAddToCart(targetProduct)}
-              className="text-[#0066cc] hover:underline h-11 flex items-center justify-center active:opacity-80"
+              className="text-link hover:underline h-11 flex items-center justify-center active:opacity-80"
             >
               Buy &gt;
             </button>

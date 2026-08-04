@@ -20,11 +20,41 @@ export interface Review {
   helpfulCount: number;
 }
 
+/** Condition is a separate axis from category: any category can hold both.
+ *  The storefront defaults to 'new' and only shows pre-owned when asked. */
+export type Condition = 'new' | 'pre-owned';
+
+/** Extra detail a pre-owned listing needs and a new one does not. */
+export interface PreOwnedDetail {
+  grade: 'Excellent' | 'Very good' | 'Good';
+  /** Maximum battery capacity, where the device reports one. */
+  batteryHealth?: number;
+  warrantyMonths: number;
+  /** Pre-owned listings are individual handsets, so stock is usually low. */
+  unitsAvailable: number;
+  /** Shown verbatim on the listing — be specific about wear. */
+  note: string;
+}
+
 export interface Product {
   id: string;
   name: string;
   tagline: string;
-  category: 'iphone' | 'mac' | 'ipad' | 'watch' | 'airpods' | 'accessories' | 'deals';
+  condition: Condition;
+  preOwned?: PreOwnedDetail;
+  category:
+    | 'iphone'
+    | 'mac'
+    | 'ipad'
+    | 'watch'
+    | 'airpods'
+    | 'samsung'
+    | 'gaming'
+    | 'laptops'
+    | 'audio'
+    | 'power'
+    | 'accessories'
+    | 'deals';
   price: number;
   originalPrice?: number;
   monthlyPrice: number;
@@ -34,7 +64,7 @@ export interface Product {
   storageOptions?: StorageOption[];
   imageUrl: string;
   additionalImages?: string[];
-  badge?: 'BEST SELLER' | 'NEW' | 'SAVE $100' | 'HOT DEAL' | 'POPULAR';
+  badge?: 'BEST SELLER' | 'NEW' | 'SAVE ₦150K' | 'HOT DEAL' | 'POPULAR';
   stockUrgency?: string;
   inStock: boolean;
   pickupAvailable: boolean;
@@ -48,7 +78,7 @@ export interface CartItem {
   product: Product;
   selectedColor: ProductColor;
   selectedStorage?: StorageOption;
-  appleCare: boolean;
+  protection: boolean;
   quantity: number;
 }
 
@@ -71,14 +101,31 @@ export interface ProductBundle {
 }
 
 export interface FilterState {
-  category: string;
-  searchQuery: string;
   priceRange: [number, number];
   minRating: number;
   selectedStorage: string[];
   inStockOnly: boolean;
   onSaleOnly: boolean;
   sortBy: 'featured' | 'price-low' | 'price-high' | 'rating' | 'reviews';
+}
+
+export type ArticleBlock =
+  | { type: 'paragraph'; text: string }
+  | { type: 'heading'; text: string }
+  | { type: 'list'; items: string[] }
+  | { type: 'callout'; text: string };
+
+export interface Article {
+  slug: string;
+  title: string;
+  /** Standfirst shown under the headline. */
+  dek: string;
+  category: string;
+  date: string;
+  readMinutes: number;
+  image: string;
+  featured?: boolean;
+  body: ArticleBlock[];
 }
 
 export interface StoreLocation {

@@ -1,6 +1,7 @@
-export const formatNaira = (priceInUSD: number): string => {
-  // Multiply by 1500 for realistic Naira value
-  const nairaValue = priceInUSD * 1500;
+const USD_TO_NGN_RATE = 1_500;
+
+export const formatNaira = (cataloguePrice: number): string => {
+  const nairaValue = cataloguePrice * USD_TO_NGN_RATE;
   return new Intl.NumberFormat('en-NG', {
     style: 'currency',
     currency: 'NGN',

@@ -1,9 +1,133 @@
 @import "tailwindcss";
 
 /* ========================================================================
-   Apple E-Commerce Design System
-   Premium typography, spacing, and animation foundations
+   TechieBase Design System
+   Single source of truth for colour, radius, type, motion and elevation.
+   Every value below is exposed to Tailwind as a utility:
+     --color-ink        -> text-ink / bg-ink / ring-ink
+     --radius-card      -> rounded-card
+     --text-body        -> text-body (size + line-height + tracking)
+     --ease-apple       -> ease-apple
+     --shadow-card      -> shadow-card
+   Prefer these over arbitrary values so the surface stays consistent.
    ======================================================================== */
+
+@theme {
+  /* --- Typefaces --- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+    'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-brand: 'Quicksand', 'Inter', sans-serif;
+
+  /* --- Ink (text) --- */
+  --color-ink: #1d1d1f;
+  --color-ink-secondary: #6e6e73;
+  --color-ink-tertiary: #86868b;
+  --color-ink-inverse: #f5f5f7;
+
+  /* --- Surfaces --- */
+  --color-canvas: #f5f5f7;
+  --color-surface: #ffffff;
+  --color-surface-raised: #fbfbfd;
+  --color-surface-sunken: #ececee;
+  --color-hairline: #d2d2d7;
+  --color-hairline-soft: #e8e8ed;
+
+  /* --- Actions ---
+     accent = filled controls, link = inline text links. Apple splits these
+     two blues deliberately; keep them apart. */
+  --color-accent: #0071e3;
+  --color-accent-hover: #0077ed;
+  --color-accent-pressed: #0068d1;
+  --color-accent-surface: #f0f7ff;
+  --color-link: #0066cc;
+
+  /* --- Status --- */
+  --color-sale: #bf4800;
+  --color-success: #008009;
+  --color-success-bright: #30d158; /* legible on dark surfaces */
+  --color-success-surface: #e9f6ea;
+  --color-success-border: #cbe7ce;
+  --color-critical: #d70015;
+  --color-star: #ffb800;
+  --color-whatsapp: #25d366;
+
+  /* --- TechieBase brand --- */
+  --color-brand: #f47b09;
+  --color-brand-amber: #fbac09;
+  --color-brand-deep: #033b66;
+  --color-brand-sky: #38bdf8;
+
+  /* --- Radii ---
+     control = inputs & compact chips, card = product tiles,
+     panel = modals & large containers. Pills stay rounded-full. */
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --radius-panel: 20px;
+
+  /* --- Type scale ---
+     Tracking tightens as size grows, the way SF Pro is optically sized. */
+  --text-micro: 0.6875rem; /* 11 — badge counters and pill labels only */
+  --text-micro--line-height: 1.28;
+  --text-micro--letter-spacing: 0;
+
+  --text-caption: 0.75rem; /* 12 */
+  --text-caption--line-height: 1.34;
+  --text-caption--letter-spacing: -0.008em;
+
+  --text-footnote: 0.875rem; /* 14 */
+  --text-footnote--line-height: 1.43;
+  --text-footnote--letter-spacing: -0.016em;
+
+  --text-body: 1.0625rem; /* 17 */
+  --text-body--line-height: 1.47;
+  --text-body--letter-spacing: -0.022em;
+
+  --text-lead: 1.3125rem; /* 21 */
+  --text-lead--line-height: 1.38;
+  --text-lead--letter-spacing: -0.022em;
+
+  --text-title-sm: 1.5rem; /* 24 */
+  --text-title-sm--line-height: 1.25;
+  --text-title-sm--letter-spacing: -0.024em;
+
+  --text-title: 1.75rem; /* 28 */
+  --text-title--line-height: 1.18;
+  --text-title--letter-spacing: -0.026em;
+
+  --text-title-lg: 2rem; /* 32 */
+  --text-title-lg--line-height: 1.13;
+  --text-title-lg--letter-spacing: -0.028em;
+
+  --text-headline: 2.5rem; /* 40 */
+  --text-headline--line-height: 1.1;
+  --text-headline--letter-spacing: -0.03em;
+
+  --text-display-sm: 3rem; /* 48 */
+  --text-display-sm--line-height: 1.06;
+  --text-display-sm--letter-spacing: -0.032em;
+
+  --text-display: 3.5rem; /* 56 */
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.035em;
+
+  --text-display-lg: 4rem; /* 64 */
+  --text-display-lg--line-height: 1.04;
+  --text-display-lg--letter-spacing: -0.04em;
+
+  --text-hero: 5rem; /* 80 */
+  --text-hero--line-height: 1.02;
+  --text-hero--letter-spacing: -0.045em;
+
+  /* --- Motion --- */
+  --ease-apple: cubic-bezier(0.28, 0.11, 0.32, 1);
+  --ease-apple-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-apple-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --- Elevation --- */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --shadow-panel: 0 24px 64px rgba(0, 0, 0, 0.16);
+}
 
 /* --- Base Reset & Typography --- */
 * {
@@ -13,7 +137,7 @@
 
 html {
   scroll-behavior: smooth;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* Ensure WebKit Mobile Sticky Support */
@@ -23,9 +147,14 @@ html {
 }
 
 body {
-  background-color: #F5F5F7;
-  color: #1D1D1F;
-  line-height: 1.5;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  letter-spacing: var(--text-body--letter-spacing);
 }
 
 /* --- Custom Scrollbar --- */
@@ -36,11 +165,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c4c4c6;
+  background: var(--color-hairline);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8e8e93;
+  background: var(--color-ink-tertiary);
 }
 
 @layer utilities {
@@ -53,10 +182,27 @@ body {
     scrollbar-width: none;
   }
 
+  /* Brand wordmark lockup */
   .font-quicksand {
-    font-family: 'Quicksand', sans-serif;
+    font-family: var(--font-brand);
     font-weight: 700;
-    letter-spacing: -1px;
+    letter-spacing: -0.04em;
+  }
+
+  /* Softens the cut edge of a horizontally scrolling row so the last item
+     fades out instead of being sliced mid-word. */
+  .scroll-fade-x {
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  }
+
+  /* Uppercase eyebrow labels need positive tracking, unlike the rest
+     of the scale. */
+  .eyebrow {
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 }
 
@@ -122,19 +268,19 @@ body {
 
 /* --- Animation Utility Classes --- */
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out both;
+  animation: fadeInUp 0.5s var(--ease-apple-out) both;
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out both;
+  animation: fadeIn 0.3s var(--ease-apple) both;
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slideInRight 0.35s var(--ease-apple-out) both;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.25s ease-out both;
+  animation: scaleIn 0.25s var(--ease-apple-out) both;
 }
 
 .animate-pulse-soft {
@@ -155,28 +301,28 @@ body {
 
 /* --- Hero Carousel Transitions --- */
 .hero-slide-enter {
-  animation: fadeIn 0.8s ease-out both;
+  animation: fadeIn 0.8s var(--ease-apple-out) both;
 }
 
 /* --- Selection Color --- */
 ::selection {
-  background-color: #0066CC;
+  background-color: var(--color-link);
   color: white;
 }
 
 /* --- Focus Ring Styling --- */
 :focus-visible {
-  outline: 2px solid #0066CC;
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: 8px;
 }
 
-/* --- Range Slider Apple Style --- */
+/* --- Range Slider --- */
 input[type="range"] {
   appearance: none;
   width: 100%;
   height: 4px;
-  background: #E5E5E7;
+  background: var(--color-hairline-soft);
   border-radius: 999px;
   outline: none;
 }
@@ -186,26 +332,41 @@ input[type="range"]::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #0066CC;
+  background: var(--color-accent);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
-  transition: transform 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+  transition: transform 0.15s var(--ease-apple);
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
 
-/* --- Checkbox Apple Style --- */
+/* --- Checkbox --- */
 input[type="checkbox"] {
-  accent-color: #0066CC;
+  accent-color: var(--color-accent);
 }
 
 /* --- Transition Utilities --- */
 .transition-apple {
-  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: all 0.3s var(--ease-apple);
 }
 
 .transition-apple-fast {
-  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: all 0.2s var(--ease-apple);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

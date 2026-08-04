@@ -14,8 +14,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
 }) => {
   return (
-    <div className="bg-white rounded-[18px] p-4 md:p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_4px_24px_rgba(0,0,0,0.06)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-transparent min-w-[160px] max-w-[160px] md:min-w-[360px] md:max-w-[360px] flex-shrink-0 h-full">
-      
+    <div className="bg-white rounded-card p-4 md:p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-card-hover shadow-card border border-transparent min-w-[160px] max-w-[160px] md:min-w-[360px] md:max-w-[360px] flex-shrink-0 h-full">
+
       {/* Product Image */}
       <div
         onClick={() => onQuickView(product)}
@@ -30,23 +30,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Product Details */}
       <div className="flex flex-col items-center space-y-1 w-full flex-1">
-        
+
         {/* Name - Inter Font */}
         <h3
           onClick={() => onQuickView(product)}
-          className="text-[16px] md:text-[22px] font-inter font-medium text-[#656565] cursor-pointer"
+          className="text-body md:text-lead font-semibold text-ink cursor-pointer"
         >
           {product.name}
         </h3>
 
         {/* Price */}
-        <div className="text-[13px] md:text-[15px] font-medium text-[#1d1d1f] pt-1 font-inter">
+        <div className="text-footnote md:text-body font-medium text-ink pt-1">
           From {formatNaira(product.price)}
         </div>
 
         {/* Savings */}
         {product.originalPrice && (
-          <div className="text-[12px] md:text-[14px] text-gray-500 mt-1 font-inter">
+          <div className="text-caption md:text-footnote text-ink-secondary mt-1">
             Save {formatNaira(product.originalPrice - product.price)}
           </div>
         )}
@@ -56,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="mt-4 md:mt-8 w-full flex justify-center pb-2">
         <button
           onClick={() => onAddToCart(product)}
-          className="bg-[#0071e3] hover:bg-[#0077ED] active:scale-[0.98] active:opacity-80 text-white font-medium text-[13px] md:text-[15px] px-5 md:px-6 h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center font-inter w-full md:w-auto"
+          className="bg-accent hover:bg-accent-hover active:scale-[0.98] active:opacity-80 text-white font-medium text-footnote md:text-body px-5 md:px-6 h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center w-full md:w-auto"
         >
           Buy
         </button>

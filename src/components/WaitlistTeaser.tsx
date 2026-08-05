@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowRight, Check, MessageCircle } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { ArrowRight, Check, ChevronRight } from 'lucide-react';
 import { UPCOMING_RELEASE } from '../data/upcoming';
 
 /**
@@ -24,17 +24,23 @@ const readJoined = () => {
 };
 
 /**
- * A one-line mention that the next iPhone is coming, with a waitlist signup.
+ * A full-bleed announcement tile for the next launch, with a waitlist signup.
+ *
+ * Built as a product tile rather than a signup widget: name in display type,
+ * one line of copy, and a text link. The field stays hidden until asked for,
+ * because a form sitting open on the page turns an announcement into an ad.
  *
  * NO BACKEND YET. The signup is remembered in localStorage so the shopper sees
- * a confirmed state, and the WhatsApp hand-off below actually delivers the lead
- * to the shop. Replace the body of `handleSubmit` with the POST when the API is
+ * a confirmed state, and the WhatsApp hand-off actually delivers the lead to
+ * the shop. Replace the body of `handleSubmit` with the POST when the API is
  * up — nothing else here needs to change.
  */
 export const WaitlistTeaser: React.FC = () => {
   const [contact, setContact] = useState('');
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [joined, setJoined] = useState(readJoined);
   const [error, setError] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   if (!UPCOMING_RELEASE.active) return null;
 
@@ -61,96 +67,89 @@ export const WaitlistTeaser: React.FC = () => {
   )}`;
 
   return (
-    <section className="mx-auto max-w-[1400px] px-6 py-8">
-      <div className="rounded-panel bg-ink px-8 py-10 text-ink-inverse md:px-12 md:py-12">
-        <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between md:gap-14">
+    <section className="bg-ink py-20 text-center md:py-28">
+      <div className="mx-auto max-w-[1400px] px-6">
+        <p className="eyebrow text-ink-tertiary">{UPCOMING_RELEASE.eyebrow}</p>
 
-          {/* The mention */}
-          <div className="md:max-w-md">
-            <p className="eyebrow flex items-center gap-2 text-ink-inverse/70">
-              <span className="animate-pulse-soft h-1.5 w-1.5 rounded-full bg-brand-amber" />
-              {UPCOMING_RELEASE.eyebrow}
-            </p>
+        <h2 className="mt-3 text-headline font-semibold text-white md:text-display">
+          {UPCOMING_RELEASE.name}
+        </h2>
 
-            <h2 className="mt-3 text-title font-semibold tracking-tight text-white md:text-title-lg">
-              {UPCOMING_RELEASE.name} is on the way.
-            </h2>
+        <p className="mt-4 text-lead text-ink-tertiary">{UPCOMING_RELEASE.tagline}</p>
 
-            <p className="mt-3 text-footnote text-ink-inverse/70">
-              {UPCOMING_RELEASE.blurb}
-            </p>
+        {/* One control at a time: a link, then the field, then the receipt. */}
+        <div className="mt-8 flex min-h-11 items-start justify-center">
+          {joined ? (
+            <div className="animate-fade-in">
+              <p className="flex items-center justify-center gap-2 text-body text-white">
+                <Check className="h-4 w-4 text-success-bright" />
+                You&rsquo;re on the list.
+              </p>
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex min-h-11 items-center text-body text-link-bright hover:underline"
+              >
+                Confirm on WhatsApp <ChevronRight className="ml-0.5 h-4 w-4" />
+              </a>
+            </div>
+          ) : isFormOpen ? (
+            <form onSubmit={handleSubmit} noValidate className="animate-fade-in w-full max-w-md">
+              <label htmlFor="waitlist-contact" className="sr-only">
+                Email or phone number for the {UPCOMING_RELEASE.name} waitlist
+              </label>
 
-            <p className="mt-3 text-caption text-ink-inverse/50">
-              {UPCOMING_RELEASE.window}
-            </p>
-          </div>
+              <div className="flex gap-2">
+                <input
+                  id="waitlist-contact"
+                  ref={inputRef}
+                  type="text"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={contact}
+                  onChange={(event) => {
+                    setContact(event.target.value);
+                    if (error) setError('');
+                  }}
+                  placeholder="Email or phone number"
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? 'waitlist-error' : undefined}
+                  className="min-h-11 flex-1 rounded-full bg-white px-5 text-body text-ink placeholder:text-ink-tertiary focus:outline-none focus:ring-4 focus:ring-white/25"
+                />
 
-          {/* The signup */}
-          <div className="w-full md:max-w-sm">
-            {joined ? (
-              <div className="rounded-card bg-white/10 p-5">
-                <p className="flex items-center gap-2 text-footnote font-semibold text-white">
-                  <Check className="h-4 w-4 text-success-bright" />
-                  You are on the list.
-                </p>
-                <p className="mt-2 text-caption text-ink-inverse/70">
-                  We will reach out before the {UPCOMING_RELEASE.name} goes on general sale.
-                </p>
-                <a
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex min-h-11 items-center gap-2 text-footnote font-medium text-white underline-offset-4 hover:underline"
+                <button
+                  type="submit"
+                  aria-label="Join the waitlist"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white transition-colors hover:bg-accent-hover active:scale-[0.98]"
                 >
-                  <MessageCircle className="h-4 w-4 text-whatsapp" />
-                  Confirm it on WhatsApp
-                </a>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} noValidate>
-                <label htmlFor="waitlist-contact" className="sr-only">
-                  Email or phone number for the {UPCOMING_RELEASE.name} waitlist
-                </label>
 
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <input
-                    id="waitlist-contact"
-                    type="text"
-                    inputMode="email"
-                    autoComplete="email"
-                    value={contact}
-                    onChange={(event) => {
-                      setContact(event.target.value);
-                      if (error) setError('');
-                    }}
-                    placeholder="Email or WhatsApp number"
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={error ? 'waitlist-error' : undefined}
-                    className="min-h-11 flex-1 rounded-full border border-white/20 bg-white/10 px-5 text-footnote text-white placeholder:text-ink-inverse/50 focus:border-white/50 focus:outline-none"
-                  />
-
-                  <button
-                    type="submit"
-                    className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 text-footnote font-semibold text-ink transition-colors hover:bg-ink-inverse"
-                  >
-                    Notify me <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {error ? (
-                  <p id="waitlist-error" className="mt-3 text-caption text-brand-amber">
-                    {error}
-                  </p>
-                ) : (
-                  <p className="mt-3 text-caption text-ink-inverse/50">
-                    No spam. One message when stock lands.
-                  </p>
-                )}
-              </form>
-            )}
-          </div>
-
+              {error && (
+                <p id="waitlist-error" className="mt-3 text-footnote text-critical-bright">
+                  {error}
+                </p>
+              )}
+            </form>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setIsFormOpen(true);
+                // Runs after the field mounts, so the link and the caret feel
+                // like one interaction.
+                requestAnimationFrame(() => inputRef.current?.focus());
+              }}
+              className="inline-flex min-h-11 items-center text-body text-link-bright hover:underline"
+            >
+              Notify me when it arrives <ChevronRight className="ml-0.5 h-4 w-4" />
+            </button>
+          )}
         </div>
+
+        <p className="mt-6 text-caption text-ink-secondary">{UPCOMING_RELEASE.window}</p>
       </div>
     </section>
   );

@@ -40,6 +40,7 @@
   --color-accent-pressed: #0068d1;
   --color-accent-surface: #f0f7ff;
   --color-link: #0066cc;
+  --color-link-bright: #2997ff; /* links on dark tiles — #0066cc goes muddy there */
 
   /* --- Status --- */
   --color-sale: #bf4800;
@@ -48,6 +49,7 @@
   --color-success-surface: #e9f6ea;
   --color-success-border: #cbe7ce;
   --color-critical: #d70015;
+  --color-critical-bright: #ff453a; /* legible on dark surfaces */
   --color-star: #ffb800;
   --color-whatsapp: #25d366;
 

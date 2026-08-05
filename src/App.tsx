@@ -12,6 +12,7 @@ import { ProductRow } from './components/ProductRow';
 import { CatalogView } from './components/CatalogView';
 import { FacetedFilterSidebar } from './components/FacetedFilterSidebar';
 import { TradeInBanner } from './components/TradeInBanner';
+import { WaitlistTeaser } from './components/WaitlistTeaser';
 import { BundleSection } from './components/BundleSection';
 import { CartDrawer } from './components/CartDrawer';
 import { QuickViewModal } from './components/QuickViewModal';
@@ -428,6 +429,9 @@ export default function App() {
 
             <div className="space-y-4 pb-20">
               <ProductRow title="iPhone" products={productsForSection('iphone').slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('iphone')} />
+              {/* Sits under the iPhone row so the next model reads as part of the
+                  line-up rather than as an ad interrupting the page. */}
+              <WaitlistTeaser />
               <ProductRow title="Mac" products={productsForSection('mac')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('mac')} />
               <TradeInBanner onApplyTradeIn={setTradeInQuote} appliedTradeIn={tradeInQuote} />
               <ProductRow title="iPad" products={productsForSection('ipad')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('ipad')} />

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Product, ProductColor, StorageOption } from '../types';
 import { formatNaira } from '../utils';
+import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
 interface QuickViewModalProps {
@@ -106,7 +107,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
               {product.name}
             </p>
             <p className="mt-0.5 text-micro text-ink-secondary md:text-caption">
-              {formatNaira(totalPrice)} or {formatNaira(totalPrice / 24)}/mo.
+              {formatNaira(totalPrice)} or {formatNaira(monthlyInstalment(totalPrice, 24))}/mo.
             </p>
           </div>
 
@@ -288,7 +289,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
                                 <>
                                   +{formatNaira(storage.priceDelta)}
                                   <br />
-                                  +{formatNaira(storage.priceDelta / 24)}/mo.
+                                  +{formatNaira(monthlyInstalment(storage.priceDelta, 24))}/mo.
                                 </>
                               )}
                             </span>
@@ -369,7 +370,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
                         {formatNaira(totalPrice)}
                       </p>
                       <p className="mt-1 text-caption text-ink-secondary">
-                        {formatNaira(totalPrice / 24)}/mo. for 24 months
+                        {formatNaira(monthlyInstalment(totalPrice, 24))}/mo. for 24 months
                       </p>
                     </div>
                     <ShoppingBag className="h-6 w-6 shrink-0 text-ink" />

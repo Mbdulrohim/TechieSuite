@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck, ArrowRight, Tag, CreditCard } from 'lucide-react';
 import { CartItem, TradeInQuote } from '../types';
 import { formatNaira } from '../utils';
+import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
 interface CartDrawerProps {
@@ -168,7 +169,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                               {formatNaira(lineTotal)}
                             </div>
                             <div className="text-caption text-success font-medium">
-                              {formatNaira(lineTotal / 24)}/mo
+                              {formatNaira(monthlyInstalment(lineTotal, 24))}/mo
                             </div>
                           </div>
                         </div>

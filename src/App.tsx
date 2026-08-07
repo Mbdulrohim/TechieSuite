@@ -13,6 +13,7 @@ import { CatalogView } from './components/CatalogView';
 import { FacetedFilterSidebar } from './components/FacetedFilterSidebar';
 import { TradeInBanner } from './components/TradeInBanner';
 import { WaitlistTeaser } from './components/WaitlistTeaser';
+import { SellDeviceSection } from './components/SellDeviceSection';
 import { BundleSection } from './components/BundleSection';
 import { CartDrawer } from './components/CartDrawer';
 import { QuickViewModal } from './components/QuickViewModal';
@@ -22,6 +23,7 @@ import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { JournalIndex, ArticleView } from './components/JournalView';
 import { Footer } from './components/Footer';
 import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
+import { usePersistentState } from './hooks/usePersistentState';
 import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
 
 const CATEGORY_IDS = [
@@ -74,6 +76,11 @@ const INITIAL_FILTERS: FilterState = {
   onSaleOnly: false,
   sortBy: 'featured',
 };
+
+/** Bundles are looked up by id rather than by position — this list has been
+ *  reordered before, and positional indexing silently pointed the home page at
+ *  the wrong products last time. */
+const bundleById = (id: string) => FEATURED_BUNDLES.find((bundle) => bundle.id === id);
 
 const getIphoneModelRank = (product: Product) => {
   if (product.category !== 'iphone') return 0;
@@ -129,10 +136,21 @@ export default function App() {
   const [currentStore, setCurrentStore] = useState<StoreLocation>(STORE_LOCATIONS[0]);
 
   // E-Commerce Cart & Persistence State
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<string[]>(['iphone-16-pro']);
+  // Keys are versioned: if CartItem ever changes shape, bump the suffix and old
+  // carts evaporate instead of needing a migration.
+  const [cart, setCart] = usePersistentState<CartItem[]>('techiebase.cart.v1', [], Array.isArray);
+  const [wishlist, setWishlist] = usePersistentState<string[]>('techiebase.wishlist.v1', [], Array.isArray);
+  /** Session-scoped on purpose — a comparison tray is a train of thought, not a
+   *  saved list, and persisting it would double the stale-product surface. */
   const [compareList, setCompareList] = useState<Product[]>([]);
   const [tradeInQuote, setTradeInQuote] = useState<TradeInQuote | null>(null);
+
+  /** Transient status line. Keyed by id rather than by text so raising the same
+   *  message twice in a row re-triggers the timer instead of looking stuck. */
+  const [notice, setNotice] = useState<{ id: number; text: string } | null>(null);
+  const showNotice = useCallback((text: string) => {
+    setNotice({ id: Date.now(), text });
+  }, []);
 
   // Filters
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
@@ -207,6 +225,70 @@ export default function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, [handleSelectCategory]);
+
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(null), 3200);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
+
+  /**
+   * Reconcile a rehydrated cart against the live catalogue, once, on mount.
+   *
+   * A CartItem embeds a whole Product, so a bag saved last month can come back
+   * holding a price that no longer exists. The catalogue is the price of record:
+   * the stored product is replaced outright, never merged. Colour and storage
+   * are re-resolved by name too, because a discontinued option would otherwise
+   * keep applying a priceDelta the catalogue no longer offers.
+   *
+   * Runs against the mount-time `cart`, not inside the updater, so it stays pure
+   * under StrictMode's double invocation.
+   */
+  useEffect(() => {
+    if (cart.length === 0) return;
+
+    let dropped = 0;
+    let repriced = 0;
+
+    const reconciled = cart.flatMap((item) => {
+      const live = PRODUCTS.find((product) => product.id === item.product.id);
+      if (!live) {
+        dropped += 1;
+        return [];
+      }
+
+      const storage = item.selectedStorage
+        ? live.storageOptions?.find((option) => option.capacity === item.selectedStorage?.capacity)
+        : undefined;
+
+      // The exact configuration is gone — better to drop the line than to
+      // silently sell a different one.
+      if (item.selectedStorage && !storage) {
+        dropped += 1;
+        return [];
+      }
+
+      if (live.price !== item.product.price) repriced += 1;
+
+      return [{
+        ...item,
+        product: live,
+        selectedColor: live.colors.find((colour) => colour.name === item.selectedColor.name) ?? live.colors[0],
+        selectedStorage: storage,
+      }];
+    });
+
+    if (dropped === 0 && repriced === 0) return;
+
+    setCart(reconciled);
+    showNotice(
+      dropped > 0
+        ? `${dropped} item${dropped > 1 ? 's are' : ' is'} no longer available and left your bag.`
+        : 'Prices in your bag have been updated.'
+    );
+    // Mount only — this reconciles what came out of storage, not later edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Filtered & Sorted Product Catalog
   const filteredProducts = useMemo(() => {
@@ -347,7 +429,7 @@ export default function App() {
         return prev.filter((p) => p.id !== product.id);
       }
       if (prev.length >= 3) {
-        alert('You can compare up to 3 models at a time.');
+        showNotice('You can compare up to 3 models at a time.');
         return prev;
       }
       return [...prev, product];
@@ -355,6 +437,9 @@ export default function App() {
   };
 
   const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
+
+  const iphoneBundle = bundleById('bundle-iphone-creator');
+  const gamingBundle = bundleById('bundle-ps5-starter');
 
   return (
     <div className="min-h-screen w-full max-w-full bg-canvas text-ink antialiased flex flex-col justify-between">
@@ -436,15 +521,21 @@ export default function App() {
               <TradeInBanner onApplyTradeIn={setTradeInQuote} appliedTradeIn={tradeInQuote} />
               <ProductRow title="iPad" products={productsForSection('ipad')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('ipad')} />
               <ProductRow title="Apple Watch" products={productsForSection('watch')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('watch')} />
-              <BundleSection bundle={FEATURED_BUNDLES[0]} onAddBundleToCart={handleAddBundleToCart} />
+              {iphoneBundle && <BundleSection bundle={iphoneBundle} onAddBundleToCart={handleAddBundleToCart} />}
               <ProductRow title="AirPods" products={productsForSection('airpods')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('airpods')} />
               <ProductRow title="Samsung" products={productsForSection('samsung')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('samsung')} />
               <ProductRow title="Gaming" products={productsForSection('gaming')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('gaming')} />
-              <BundleSection bundle={FEATURED_BUNDLES[2]} onAddBundleToCart={handleAddBundleToCart} />
+              {gamingBundle && <BundleSection bundle={gamingBundle} onAddBundleToCart={handleAddBundleToCart} />}
               <ProductRow title="Laptops" products={productsForSection('laptops')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('laptops')} />
               <ProductRow title="Audio" products={productsForSection('audio')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('audio')} />
               <ProductRow title="Power" products={productsForSection('power')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('power')} />
               <ProductRow title="Accessories" products={productsForSection('accessories')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('accessories')} />
+
+              {/* Sits well away from TradeInBanner so the two offers stay
+                  distinct — one is cash, the other is credit — and leads
+                  straight into the pre-owned handoff, which is the same loop
+                  from the other end. */}
+              <SellDeviceSection id="sell" />
 
               <PreOwnedHandoff onContinue={() => handleSelectCondition('pre-owned', 'all')} />
             </div>
@@ -584,6 +675,20 @@ export default function App() {
         currentStore={currentStore}
         onSelectStore={setCurrentStore}
       />
+
+      {/* Transient status line — replaces the browser alert() the compare limit
+          used to throw, which blocked the page and looked nothing like the site. */}
+      {notice && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="pointer-events-none fixed inset-x-0 bottom-6 z-[60] flex justify-center px-6"
+        >
+          <p className="animate-fade-in-up rounded-full bg-ink/95 px-5 py-3 text-footnote font-medium text-white shadow-panel">
+            {notice.text}
+          </p>
+        </div>
+      )}
 
       {/* Footer */}
       <Footer />

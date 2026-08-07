@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, CheckCircle2, ShieldCheck, Truck, MapPin, CreditCard, ArrowRight, Package, Sparkles, Landmark } from 'lucide-react';
 import { CartItem, StoreLocation, TradeInQuote } from '../types';
 import { formatNaira } from '../utils';
+import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
 interface CheckoutModalProps {
@@ -228,7 +229,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           Subject to provider approval
                         </div>
                       </div>
-                      <span className="font-semibold text-footnote">{formatNaira(total / 24)}/mo</span>
+                      <span className="font-semibold text-footnote">{formatNaira(monthlyInstalment(total, 24))}/mo</span>
                     </button>
 
                     <button

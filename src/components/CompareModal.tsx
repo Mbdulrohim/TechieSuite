@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Scale, ShoppingBag, Star } from 'lucide-react';
 import { Product } from '../types';
 import { formatNaira } from '../utils';
+import { monthlyInstalment } from '../data/financing';
 
 interface CompareModalProps {
   isOpen: boolean;
@@ -101,7 +102,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                   <td className="p-4 font-medium text-footnote text-ink-secondary bg-canvas">Financing</td>
                   {comparedProducts.map((p) => (
                     <td key={p.id} className="p-4 border-l border-hairline-soft text-footnote text-success font-medium">
-                      {formatNaira(p.monthlyPrice)}/mo for 24 mo.
+                      {formatNaira(monthlyInstalment(p.price, 24))}/mo for 24 mo.
                     </td>
                   ))}
                 </tr>

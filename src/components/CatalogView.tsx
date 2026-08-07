@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowUpRight, Filter, Heart, MapPin, Scale } from 'lucide-react';
 import { Condition, Product } from '../types';
 import { formatNaira } from '../utils';
+import { monthlyInstalment } from '../data/financing';
 
 type CatalogViewProps = {
   category: string;
@@ -207,7 +208,7 @@ const CatalogCard: React.FC<{ product: Product; onOpen: () => void; }> = ({ prod
               : `${product.preOwned.unitsAvailable} in stock`}
           </p>
         ) : (
-          <p className="mt-0.5 text-caption text-ink-secondary">{formatNaira(product.price / 24)}/mo. for 24 months</p>
+          <p className="mt-0.5 text-caption text-ink-secondary">{formatNaira(monthlyInstalment(product.price, 24))}/mo. for 24 months</p>
         )}
       </div>
 

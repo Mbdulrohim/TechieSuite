@@ -56,6 +56,8 @@ const STORE_PANEL: Array<{ heading: string; items: Array<[string, string]> }> = 
       ['audio', 'Audio'],
       ['power', 'Power'],
       ['accessories', 'Accessories'],
+      ['pre-owned', 'Pre-Owned'],
+      ['anker', 'Anker Store'],
       ['deals', 'Deals'],
     ],
   },

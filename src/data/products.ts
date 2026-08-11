@@ -836,7 +836,7 @@ const CATALOG_SEEDS: CatalogSeed[] = [
 
   /* --- Power & charging ------------------------------------------------- */
   {
-    id: 'anker-737-powerbank', name: 'Anker 737 Power Bank (24K)', category: 'power',
+    id: 'anker-737-powerbank', name: 'Anker 737 Power Bank (24K)', category: 'anker',
     tagline: '24,000mAh and 140W — it charges laptops.',
     price: 150, rating: 4.7, reviewCount: 6480,
     image: CATALOG_IMAGES.powerBank, badge: 'BEST SELLER',
@@ -852,7 +852,7 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     description: 'Big enough to charge a MacBook Pro from empty and still refill a phone twice. The digital readout tells you exactly what is going in and out.',
   },
   {
-    id: 'anker-gan-65w', name: 'Anker 65W GaN Charger', category: 'power',
+    id: 'anker-gan-65w', name: 'Anker 65W GaN Charger', category: 'anker',
     tagline: 'One small brick for laptop, tablet and phone.',
     price: 60, rating: 4.8, reviewCount: 9120,
     image: CATALOG_IMAGES.charger, badge: 'POPULAR',
@@ -868,6 +868,54 @@ const CATALOG_SEEDS: CatalogSeed[] = [
       Plug: 'UK three-pin',
     },
     description: 'Replaces the three separate bricks in your bag. Fast-charges a MacBook Air at full speed while topping up a phone and earbuds alongside it.',
+  },
+  {
+    id: 'anker-maggo-3in1', name: 'Anker MagGo 3-in-1 Charging Station', category: 'anker',
+    tagline: 'Foldable 15W Qi2 fast charging stand for iPhone, Watch & AirPods.',
+    price: 110, originalPrice: 130, rating: 4.9, reviewCount: 3410,
+    image: CATALOG_IMAGES.magsafeCharger, badge: 'NEW',
+    colors: [
+      { name: 'Space Black', hex: '#1f2023' },
+      { name: 'Glacier White', hex: '#f2f2f0' },
+    ],
+    specs: {
+      Wireless: '15W Certified Qi2 MagSafe Fast Charge',
+      Structure: 'Ultra-compact foldable design',
+      Compatibility: 'iPhone 12-16 series, Apple Watch Series 1-9/Ultra, AirPods',
+      Included: '40W USB-C PD Wall Charger & 5ft Cable',
+    },
+    description: 'The ultimate desk and travel companion. Snap your iPhone vertically or horizontally for StandBy mode while fast-charging your Apple Watch and wireless earbuds simultaneously.',
+  },
+  {
+    id: 'anker-prime-20k', name: 'Anker Prime 20,000mAh Power Bank (200W)', category: 'anker',
+    tagline: 'An absolute beast: 200W total output with smart app control.',
+    price: 180, originalPrice: 210, rating: 4.9, reviewCount: 1850,
+    image: CATALOG_IMAGES.powerBank, badge: 'HOT DEAL',
+    colors: [{ name: 'Anker Black', hex: '#111215' }],
+    specs: {
+      Capacity: '20,000mAh',
+      Output: '200W maximum dual USB-C + USB-A output',
+      Display: 'Full-color smart LCD screen with real-time health metrics',
+      Recharge: '100W ultra-fast input charging',
+    },
+    description: 'Engineered for power users, developers and video editors. Charge two 14" MacBook Pros simultaneously at 100W each on the go.',
+  },
+  {
+    id: 'anker-soundcore-liberty4', name: 'Anker Soundcore Liberty 4 NC', category: 'anker',
+    tagline: '98.5% noise reduction with Hi-Res Wireless audio.',
+    price: 100, originalPrice: 120, rating: 4.8, reviewCount: 5290,
+    image: CATALOG_IMAGES.airpods, badge: 'BEST SELLER',
+    colors: [
+      { name: 'Velvet Black', hex: '#1a1a1a' },
+      { name: 'Pastel Blue', hex: '#9bbcd4' },
+      { name: 'Clear White', hex: '#f4f4f4' },
+    ],
+    specs: {
+      ANC: 'Adaptive ANC 2.0 with real-time environment calculation',
+      Battery: '10 hours single charge, 50 hours total with case',
+      Audio: '11mm custom driver with LDAC & Hi-Res Wireless certification',
+    },
+    description: 'Industry-leading active noise cancellation paired with rich bass and crystal-clear calls for a fraction of the cost of flagship buds.',
   },
   {
     id: 'baseus-20k-powerbank', name: 'Baseus 20,000mAh Power Bank', category: 'power',

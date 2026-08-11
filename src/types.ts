@@ -54,6 +54,8 @@ export interface Product {
     | 'audio'
     | 'power'
     | 'accessories'
+    | 'anker'
+    | 'pre-owned'
     | 'deals';
   price: number;
   originalPrice?: number;

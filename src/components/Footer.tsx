@@ -2,7 +2,11 @@ import React from 'react';
 import { Truck, RotateCcw, ShieldCheck, CreditCard, Phone, MapPin, Instagram, Twitter, Facebook, Youtube } from 'lucide-react';
 import { formatNaira } from '../utils';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenCookieModal?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenCookieModal }) => {
   return (
     <footer className="bg-canvas border-t border-hairline-soft text-ink mt-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -152,10 +156,19 @@ export const Footer: React.FC = () => {
           <div>
             Copyright © {new Date().getFullYear()} TechieBase Inc. All rights reserved.
           </div>
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center flex-wrap">
             <a href="#" className="hover:underline hover:text-ink-secondary transition-colors">Privacy Policy</a>
             <a href="#" className="hover:underline hover:text-ink-secondary transition-colors">Terms of Sale</a>
             <a href="#" className="hover:underline hover:text-ink-secondary transition-colors">Legal</a>
+            {onOpenCookieModal && (
+              <button
+                type="button"
+                onClick={onOpenCookieModal}
+                className="hover:underline hover:text-accent transition-colors font-medium text-ink-secondary"
+              >
+                Cookie Settings
+              </button>
+            )}
           </div>
         </div>
       </div>

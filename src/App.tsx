@@ -20,6 +20,7 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { JournalIndex, ArticleView } from './components/JournalView';
 import { Footer } from './components/Footer';
+import { CookieModal } from './components/CookieModal';
 import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
 import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
 
@@ -36,6 +37,8 @@ const CATEGORY_IDS = [
   'audio',
   'power',
   'accessories',
+  'pre-owned',
+  'anker',
   'deals',
 ];
 
@@ -143,7 +146,20 @@ export default function App() {
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    try {
+      const consent = localStorage.getItem('techiesuite_cookie_consent');
+      if (!consent) {
+        const timer = setTimeout(() => setIsCookieModalOpen(true), 1200);
+        return () => clearTimeout(timer);
+      }
+    } catch {
+      // fallback
+    }
+  }, []);
 
   const handleSelectCategory = useCallback((category: string, addToHistory = true) => {
     const nextCategory = CATEGORY_IDS.includes(category) ? category : 'all';
@@ -210,7 +226,21 @@ export default function App() {
   // Filtered & Sorted Product Catalog
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((product) => {
-      // Condition gate — the two worlds never mix in a listing.
+      // Pre-owned tab filter
+      if (activeCategory === 'pre-owned') {
+        return product.condition === 'pre-owned';
+      }
+
+      // Anker tab filter
+      if (activeCategory === 'anker') {
+        return (
+          product.category === 'anker' ||
+          product.name.toLowerCase().includes('anker') ||
+          product.description.toLowerCase().includes('anker')
+        );
+      }
+
+      // Condition gate — the two worlds never mix in a standard listing.
       if (product.condition !== activeCondition) return false;
 
       // Category filter
@@ -441,6 +471,8 @@ export default function App() {
               <ProductRow title="Audio" products={productsForSection('audio')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('audio')} />
               <ProductRow title="Power" products={productsForSection('power')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('power')} />
               <ProductRow title="Accessories" products={productsForSection('accessories')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('accessories')} />
+              <ProductRow title="Pre-Owned Certified" products={PRODUCTS.filter((p) => p.condition === 'pre-owned').slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('pre-owned')} />
+              <ProductRow title="Anker Power & Gear" products={PRODUCTS.filter((p) => p.category === 'anker' || p.name.toLowerCase().includes('anker')).slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('anker')} />
 
               <PreOwnedHandoff onContinue={() => handleSelectCondition('pre-owned', 'all')} />
             </div>
@@ -581,8 +613,14 @@ export default function App() {
         onSelectStore={setCurrentStore}
       />
 
+      {/* Cookie Modal */}
+      <CookieModal
+        isOpen={isCookieModalOpen}
+        onClose={() => setIsCookieModalOpen(false)}
+      />
+
       {/* Footer */}
-      <Footer />
+      <Footer onOpenCookieModal={() => setIsCookieModalOpen(true)} />
     </div>
   );
 }

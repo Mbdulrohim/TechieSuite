@@ -44,7 +44,7 @@ export const ProductRow: React.FC<ProductRowProps> = ({
           )}
         </div>
 
-        {/* Scroll Container Wrapper with Right Edge Blur */}
+        {/* Scroll Container Wrapper */}
         <div className="relative">
           <div
             ref={scrollRef}
@@ -60,9 +60,6 @@ export const ProductRow: React.FC<ProductRowProps> = ({
               </div>
             ))}
           </div>
-
-          {/* Right Edge Blur Gradient */}
-          <div className="absolute top-0 bottom-4 right-0 w-24 md:w-40 bg-gradient-to-l from-canvas to-transparent pointer-events-none z-10" />
         </div>
 
         {/* Scroll Controls */}

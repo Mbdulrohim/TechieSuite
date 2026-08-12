@@ -21,6 +21,8 @@ import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { JournalIndex, ArticleView } from './components/JournalView';
 import { Footer } from './components/Footer';
 import { CookieModal } from './components/CookieModal';
+import { BlogPage } from './components/BlogPage';
+import { WaitlistModal } from './components/WaitlistModal';
 import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
 import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
 
@@ -66,6 +68,12 @@ const readJournalFromUrl = (): string | null => {
   if (!params.has('journal')) return null;
   const slug = params.get('journal') ?? '';
   return slug && articleBySlug(slug) ? slug : '';
+};
+
+/** Blog page routing: `?blog` -> show blog page. */
+const readBlogFromUrl = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).has('blog');
 };
 
 const INITIAL_FILTERS: FilterState = {
@@ -128,6 +136,8 @@ export default function App() {
   const [activeCondition, setActiveCondition] = useState<Condition>(readConditionFromUrl);
   /** null = storefront, '' = journal index, otherwise an article slug. */
   const [journalSlug, setJournalSlug] = useState<string | null>(readJournalFromUrl);
+  const [isBlogOpen, setIsBlogOpen] = useState(readBlogFromUrl);
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [currentStore, setCurrentStore] = useState<StoreLocation>(STORE_LOCATIONS[0]);
 
   // E-Commerce Cart & Persistence State
@@ -202,11 +212,36 @@ export default function App() {
   /** Pass a slug to open an article, or nothing to open the journal index. */
   const handleOpenJournal = useCallback((slug = '') => {
     setJournalSlug(slug);
+    setIsBlogOpen(false);
 
     const url = new URL(window.location.href);
     url.searchParams.delete('category');
+    url.searchParams.delete('blog');
     url.searchParams.set('journal', slug);
     window.history.pushState({ journal: slug }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleOpenBlog = useCallback(() => {
+    setIsBlogOpen(true);
+    setJournalSlug(null);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('category');
+    url.searchParams.delete('journal');
+    url.searchParams.set('blog', '');
+    window.history.pushState({ blog: true }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleCloseBlog = useCallback(() => {
+    setIsBlogOpen(false);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('blog');
+    window.history.pushState({}, '', url);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -218,6 +253,7 @@ export default function App() {
       handleSelectCategory(readCategoryFromUrl(), false);
       setActiveCondition(readConditionFromUrl());
       setJournalSlug(readJournalFromUrl());
+      setIsBlogOpen(readBlogFromUrl());
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -410,7 +446,9 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {journalSlug !== null ? (
+        {isBlogOpen ? (
+          <BlogPage onBack={handleCloseBlog} onOpenWaitlist={() => setIsWaitlistOpen(true)} />
+        ) : journalSlug !== null ? (
           journalSlug === '' ? (
             <JournalIndex articles={ARTICLES} onOpenArticle={handleOpenJournal} />
           ) : (
@@ -619,8 +657,18 @@ export default function App() {
         onClose={() => setIsCookieModalOpen(false)}
       />
 
+      {/* Waitlist Modal */}
+      <WaitlistModal
+        isOpen={isWaitlistOpen}
+        onClose={() => setIsWaitlistOpen(false)}
+      />
+
       {/* Footer */}
-      <Footer onOpenCookieModal={() => setIsCookieModalOpen(true)} />
+      <Footer
+        onOpenCookieModal={() => setIsCookieModalOpen(true)}
+        onOpenBlog={handleOpenBlog}
+        onOpenWaitlist={() => setIsWaitlistOpen(true)}
+      />
     </div>
   );
 }

@@ -873,7 +873,7 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     id: 'anker-maggo-3in1', name: 'Anker MagGo 3-in-1 Charging Station', category: 'anker',
     tagline: 'Foldable 15W Qi2 fast charging stand for iPhone, Watch & AirPods.',
     price: 110, originalPrice: 130, rating: 4.9, reviewCount: 3410,
-    image: CATALOG_IMAGES.magsafeCharger, badge: 'NEW',
+    image: CATALOG_IMAGES.charger, badge: 'NEW',
     colors: [
       { name: 'Space Black', hex: '#1f2023' },
       { name: 'Glacier White', hex: '#f2f2f0' },
@@ -904,7 +904,7 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     id: 'anker-soundcore-liberty4', name: 'Anker Soundcore Liberty 4 NC', category: 'anker',
     tagline: '98.5% noise reduction with Hi-Res Wireless audio.',
     price: 100, originalPrice: 120, rating: 4.8, reviewCount: 5290,
-    image: CATALOG_IMAGES.airpods, badge: 'BEST SELLER',
+    image: CATALOG_IMAGES.headphonesAlt, badge: 'BEST SELLER',
     colors: [
       { name: 'Velvet Black', hex: '#1a1a1a' },
       { name: 'Pastel Blue', hex: '#9bbcd4' },

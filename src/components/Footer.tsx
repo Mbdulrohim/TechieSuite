@@ -4,9 +4,11 @@ import { formatNaira } from '../utils';
 
 interface FooterProps {
   onOpenCookieModal?: () => void;
+  onOpenBlog?: () => void;
+  onOpenWaitlist?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenCookieModal }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenCookieModal, onOpenBlog, onOpenWaitlist }) => {
   return (
     <footer className="bg-canvas border-t border-hairline-soft text-ink mt-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -119,6 +121,28 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCookieModal }) => {
               <li><a href="#" className="hover:text-link transition-colors">Genius Bar</a></li>
               <li><a href="#" className="hover:text-link transition-colors">Today at TechieBase</a></li>
               <li><a href="#" className="hover:text-link transition-colors">Trade-In &amp; Offers</a></li>
+              {onOpenBlog && (
+                <li>
+                  <button
+                    type="button"
+                    onClick={onOpenBlog}
+                    className="hover:text-link transition-colors"
+                  >
+                    Blog
+                  </button>
+                </li>
+              )}
+              {onOpenWaitlist && (
+                <li>
+                  <button
+                    type="button"
+                    onClick={onOpenWaitlist}
+                    className="hover:text-link transition-colors text-sale font-medium"
+                  >
+                    iPhone 18 Waitlist 🔥
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 

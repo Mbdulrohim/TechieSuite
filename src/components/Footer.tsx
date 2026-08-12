@@ -29,6 +29,8 @@ const DIRECTORY: {
       // "Today at Apple" sessions programme.
       { label: 'Workshops & Events', href: '#' },
       { label: 'Trade-In & Offers', href: '#' },
+      { label: 'Blog', href: '#blog' },
+      { label: 'iPhone 18 Waitlist 🔥', href: '#waitlist' },
     ],
   },
   {
@@ -72,9 +74,17 @@ const linkClass = 'hover:text-ink hover:underline transition-colors';
 export interface FooterProps {
   /** Opens a policy by slug, or the legal index when called with nothing. */
   onOpenLegal?: (slug?: string) => void;
+  onOpenBlog?: () => void;
+  onOpenWaitlist?: () => void;
+  onOpenCookieModal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenLegal }) => {
+export const Footer: React.FC<FooterProps> = ({
+  onOpenLegal,
+  onOpenBlog,
+  onOpenWaitlist,
+  onOpenCookieModal,
+}) => {
   return (
     <footer className="mt-20 border-t border-hairline-soft bg-canvas text-ink">
       <div className="mx-auto max-w-7xl px-6">
@@ -124,19 +134,41 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegal }) => {
             <div key={column.heading}>
               <h3 className="text-caption font-semibold text-ink">{column.heading}</h3>
               <ul className="mt-3 space-y-2.5 text-caption text-ink-secondary">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className={linkClass}
-                      {...(link.external
-                        ? { target: '_blank', rel: 'noopener noreferrer' }
-                        : {})}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+                {column.links.map((link) => {
+                  // Intercept action links
+                  if (link.href === '#blog' && onOpenBlog) {
+                    return (
+                      <li key={link.label}>
+                        <button type="button" onClick={onOpenBlog} className={linkClass}>
+                          {link.label}
+                        </button>
+                      </li>
+                    );
+                  }
+                  if (link.href === '#waitlist' && onOpenWaitlist) {
+                    return (
+                      <li key={link.label}>
+                        <button type="button" onClick={onOpenWaitlist} className={`${linkClass} text-sale font-medium`}>
+                          {link.label}
+                        </button>
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        className={linkClass}
+                        {...(link.external
+                          ? { target: '_blank', rel: 'noopener noreferrer' }
+                          : {})}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
@@ -189,6 +221,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegal }) => {
                 </button>
               </li>
             ))}
+            {onOpenCookieModal && (
+              <li>
+                <button type="button" onClick={onOpenCookieModal} className={linkClass}>
+                  Cookie Settings
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>

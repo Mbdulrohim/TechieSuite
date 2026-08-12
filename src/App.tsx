@@ -23,6 +23,9 @@ import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { JournalIndex, ArticleView } from './components/JournalView';
 import { LegalIndex, LegalDocumentView } from './components/LegalView';
 import { Footer } from './components/Footer';
+import { CookieModal } from './components/CookieModal';
+import { BlogPage } from './components/BlogPage';
+import { WaitlistModal } from './components/WaitlistModal';
 import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
 import { LEGAL_DOCUMENTS, legalBySlug } from './data/legal';
 import { usePersistentState } from './hooks/usePersistentState';
@@ -80,6 +83,12 @@ const readLegalFromUrl = (): string | null => {
   if (!params.has('legal')) return null;
   const slug = params.get('legal') ?? '';
   return slug && legalBySlug(slug) ? slug : '';
+};
+
+/** Blog page routing: `?blog` -> show blog page. */
+const readBlogFromUrl = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).has('blog');
 };
 
 const INITIAL_FILTERS: FilterState = {
@@ -149,6 +158,9 @@ export default function App() {
   const [journalSlug, setJournalSlug] = useState<string | null>(readJournalFromUrl);
   /** null = storefront, '' = legal index, otherwise a policy slug. */
   const [legalSlug, setLegalSlug] = useState<string | null>(readLegalFromUrl);
+  const [isBlogOpen, setIsBlogOpen] = useState(readBlogFromUrl);
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
   const [currentStore, setCurrentStore] = useState<StoreLocation>(STORE_LOCATIONS[0]);
 
   // E-Commerce Cart & Persistence State
@@ -180,15 +192,32 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
+  // Cookie consent auto-show
+  useEffect(() => {
+    try {
+      const consent = localStorage.getItem('techiesuite_cookie_consent');
+      if (!consent) {
+        const timer = setTimeout(() => setIsCookieModalOpen(true), 1200);
+        return () => clearTimeout(timer);
+      }
+    } catch {
+      // fallback
+    }
+  }, []);
+
   const handleSelectCategory = useCallback((category: string, addToHistory = true) => {
     const nextCategory = CATEGORY_IDS.includes(category) ? category : 'all';
     setActiveCategory(nextCategory);
     setJournalSlug(null);
+    setLegalSlug(null);
+    setIsBlogOpen(false);
     setFilters(INITIAL_FILTERS);
 
     if (addToHistory) {
       const url = new URL(window.location.href);
       url.searchParams.delete('journal');
+      url.searchParams.delete('legal');
+      url.searchParams.delete('blog');
       if (nextCategory === 'all') url.searchParams.delete('category');
       else url.searchParams.set('category', nextCategory);
       window.history.pushState({ category: nextCategory }, '', url);
@@ -202,6 +231,8 @@ export default function App() {
   const handleSelectCondition = useCallback((condition: Condition, category?: string) => {
     setActiveCondition(condition);
     setJournalSlug(null);
+    setLegalSlug(null);
+    setIsBlogOpen(false);
     setFilters(INITIAL_FILTERS);
 
     const nextCategory = category ?? readCategoryFromUrl();
@@ -209,6 +240,8 @@ export default function App() {
 
     const url = new URL(window.location.href);
     url.searchParams.delete('journal');
+    url.searchParams.delete('legal');
+    url.searchParams.delete('blog');
     if (condition === 'new') url.searchParams.delete('condition');
     else url.searchParams.set('condition', condition);
     if (nextCategory === 'all') url.searchParams.delete('category');
@@ -221,13 +254,13 @@ export default function App() {
   /** Pass a slug to open an article, or nothing to open the journal index. */
   const handleOpenJournal = useCallback((slug = '') => {
     setJournalSlug(slug);
-    // Journal and legal are separate full-page views; leaving the other param
-    // in the URL would make Back land on a page that is not what was showing.
     setLegalSlug(null);
+    setIsBlogOpen(false);
 
     const url = new URL(window.location.href);
     url.searchParams.delete('category');
     url.searchParams.delete('legal');
+    url.searchParams.delete('blog');
     url.searchParams.set('journal', slug);
     window.history.pushState({ journal: slug }, '', url);
 
@@ -238,12 +271,39 @@ export default function App() {
   const handleOpenLegal = useCallback((slug = '') => {
     setLegalSlug(slug);
     setJournalSlug(null);
+    setIsBlogOpen(false);
 
     const url = new URL(window.location.href);
     url.searchParams.delete('category');
     url.searchParams.delete('journal');
+    url.searchParams.delete('blog');
     url.searchParams.set('legal', slug);
     window.history.pushState({ legal: slug }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleOpenBlog = useCallback(() => {
+    setIsBlogOpen(true);
+    setJournalSlug(null);
+    setLegalSlug(null);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('category');
+    url.searchParams.delete('journal');
+    url.searchParams.delete('legal');
+    url.searchParams.set('blog', '');
+    window.history.pushState({ blog: true }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleCloseBlog = useCallback(() => {
+    setIsBlogOpen(false);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('blog');
+    window.history.pushState({}, '', url);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -256,6 +316,7 @@ export default function App() {
       setActiveCondition(readConditionFromUrl());
       setJournalSlug(readJournalFromUrl());
       setLegalSlug(readLegalFromUrl());
+      setIsBlogOpen(readBlogFromUrl());
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -501,7 +562,9 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {legalSlug !== null ? (
+        {isBlogOpen ? (
+          <BlogPage onBack={handleCloseBlog} onOpenWaitlist={() => setIsWaitlistOpen(true)} />
+        ) : legalSlug !== null ? (
           legalSlug === '' ? (
             <LegalIndex onOpenDocument={handleOpenLegal} />
           ) : (
@@ -736,8 +799,25 @@ export default function App() {
         </div>
       )}
 
+      {/* Cookie Modal */}
+      <CookieModal
+        isOpen={isCookieModalOpen}
+        onClose={() => setIsCookieModalOpen(false)}
+      />
+
+      {/* Waitlist Modal */}
+      <WaitlistModal
+        isOpen={isWaitlistOpen}
+        onClose={() => setIsWaitlistOpen(false)}
+      />
+
       {/* Footer */}
-      <Footer onOpenLegal={handleOpenLegal} />
+      <Footer
+        onOpenLegal={handleOpenLegal}
+        onOpenBlog={handleOpenBlog}
+        onOpenWaitlist={() => setIsWaitlistOpen(true)}
+        onOpenCookieModal={() => setIsCookieModalOpen(true)}
+      />
     </div>
   );
 }

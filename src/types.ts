@@ -53,6 +53,7 @@ export interface Product {
     | 'laptops'
     | 'audio'
     | 'power'
+    | 'anker'
     | 'accessories'
     | 'deals';
   price: number;

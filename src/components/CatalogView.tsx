@@ -120,6 +120,18 @@ const CATEGORY_COPY: Record<string, { eyebrow: string; title: string; descriptio
     description: 'Power banks, fast chargers, surge protection and portable stations — built for Nigerian mains.',
     accent: 'from-[#f4eddc] via-canvas to-[#e4efe6]',
   },
+  anker: {
+    eyebrow: 'Anker at TechieBase',
+    title: 'Power, without the guesswork.',
+    description: 'Fast chargers, serious power banks and everyday audio selected for Nigerian workdays and travel.',
+    accent: 'from-[#dfe8f5] via-canvas to-[#e8eef2]',
+  },
+  'pre-owned': {
+    eyebrow: 'TechieBase Certified',
+    title: 'Certified. Tested. Guaranteed.',
+    description: 'Every device passes a 30-point inspection, arrives factory reset, and carries a TechieBase warranty.',
+    accent: PRE_OWNED_ACCENT,
+  },
   deals: {
     eyebrow: 'TechieBase Offers',
     title: 'More ways to save.',

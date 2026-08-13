@@ -44,6 +44,8 @@ const CATEGORY_IDS = [
   'audio',
   'power',
   'accessories',
+  'pre-owned',
+  'anker',
   'deals',
 ];
 
@@ -207,7 +209,9 @@ export default function App() {
 
   const handleSelectCategory = useCallback((category: string, addToHistory = true) => {
     const nextCategory = CATEGORY_IDS.includes(category) ? category : 'all';
+    const nextCondition = nextCategory === 'pre-owned' ? 'pre-owned' : activeCondition;
     setActiveCategory(nextCategory);
+    if (nextCategory === 'pre-owned') setActiveCondition('pre-owned');
     setJournalSlug(null);
     setLegalSlug(null);
     setIsBlogOpen(false);
@@ -218,13 +222,15 @@ export default function App() {
       url.searchParams.delete('journal');
       url.searchParams.delete('legal');
       url.searchParams.delete('blog');
+      if (nextCondition === 'pre-owned') url.searchParams.set('condition', 'pre-owned');
+      else url.searchParams.delete('condition');
       if (nextCategory === 'all') url.searchParams.delete('category');
       else url.searchParams.set('category', nextCategory);
       window.history.pushState({ category: nextCategory }, '', url);
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [activeCondition]);
 
   /** Switching condition keeps you in the same category, so "pre-owned iPhone"
    *  is one click from "new iPhone". */
@@ -389,6 +395,10 @@ export default function App() {
   // Filtered & Sorted Product Catalog
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((product) => {
+      if (activeCategory === 'pre-owned') {
+        return product.condition === 'pre-owned';
+      }
+
       // Condition gate — the two worlds never mix in a listing.
       if (product.condition !== activeCondition) return false;
 
@@ -638,7 +648,9 @@ export default function App() {
               <ProductRow title="Laptops" products={productsForSection('laptops')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('laptops')} />
               <ProductRow title="Audio" products={productsForSection('audio')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('audio')} />
               <ProductRow title="Power" products={productsForSection('power')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('power')} />
+              <ProductRow title="Anker Power & Gear" products={productsForSection('anker')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('anker')} />
               <ProductRow title="Accessories" products={productsForSection('accessories')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('accessories')} />
+              <ProductRow title="Pre-Owned Certified" products={PRODUCTS.filter((product) => product.condition === 'pre-owned').slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('pre-owned')} />
 
               {/* Sits well away from TradeInBanner so the two offers stay
                   distinct — one is cash, the other is credit — and leads

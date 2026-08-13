@@ -21,8 +21,10 @@ import { CompareModal } from './components/CompareModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { JournalIndex, ArticleView } from './components/JournalView';
+import { LegalIndex, LegalDocumentView } from './components/LegalView';
 import { Footer } from './components/Footer';
 import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
+import { LEGAL_DOCUMENTS, legalBySlug } from './data/legal';
 import { usePersistentState } from './hooks/usePersistentState';
 import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
 
@@ -66,6 +68,18 @@ const readJournalFromUrl = (): string | null => {
   if (!params.has('journal')) return null;
   const slug = params.get('journal') ?? '';
   return slug && articleBySlug(slug) ? slug : '';
+};
+
+/** Same one-param scheme as the journal: no `legal` param -> storefront,
+ *  `?legal` -> index, `?legal=slug` -> a single policy. An unknown slug falls
+ *  back to the index rather than 404ing, since a stale link to a renamed policy
+ *  should still land somewhere useful. */
+const readLegalFromUrl = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has('legal')) return null;
+  const slug = params.get('legal') ?? '';
+  return slug && legalBySlug(slug) ? slug : '';
 };
 
 const INITIAL_FILTERS: FilterState = {
@@ -133,6 +147,8 @@ export default function App() {
   const [activeCondition, setActiveCondition] = useState<Condition>(readConditionFromUrl);
   /** null = storefront, '' = journal index, otherwise an article slug. */
   const [journalSlug, setJournalSlug] = useState<string | null>(readJournalFromUrl);
+  /** null = storefront, '' = legal index, otherwise a policy slug. */
+  const [legalSlug, setLegalSlug] = useState<string | null>(readLegalFromUrl);
   const [currentStore, setCurrentStore] = useState<StoreLocation>(STORE_LOCATIONS[0]);
 
   // E-Commerce Cart & Persistence State
@@ -205,22 +221,41 @@ export default function App() {
   /** Pass a slug to open an article, or nothing to open the journal index. */
   const handleOpenJournal = useCallback((slug = '') => {
     setJournalSlug(slug);
+    // Journal and legal are separate full-page views; leaving the other param
+    // in the URL would make Back land on a page that is not what was showing.
+    setLegalSlug(null);
 
     const url = new URL(window.location.href);
     url.searchParams.delete('category');
+    url.searchParams.delete('legal');
     url.searchParams.set('journal', slug);
     window.history.pushState({ journal: slug }, '', url);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  /** Pass a slug to open one policy, or nothing to open the legal index. */
+  const handleOpenLegal = useCallback((slug = '') => {
+    setLegalSlug(slug);
+    setJournalSlug(null);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('category');
+    url.searchParams.delete('journal');
+    url.searchParams.set('legal', slug);
+    window.history.pushState({ legal: slug }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   useEffect(() => {
     const handlePopState = () => {
-      // Re-read every route from the URL so Back works across store, condition
-      // and journal.
+      // Re-read every route from the URL so Back works across store, condition,
+      // journal and legal.
       handleSelectCategory(readCategoryFromUrl(), false);
       setActiveCondition(readConditionFromUrl());
       setJournalSlug(readJournalFromUrl());
+      setLegalSlug(readLegalFromUrl());
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -466,7 +501,18 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {journalSlug !== null ? (
+        {legalSlug !== null ? (
+          legalSlug === '' ? (
+            <LegalIndex onOpenDocument={handleOpenLegal} />
+          ) : (
+            <LegalDocumentView
+              // readLegalFromUrl only ever yields a slug that resolves, but the
+              // state is also set by hand above, so the index is the fallback.
+              document={legalBySlug(legalSlug) ?? LEGAL_DOCUMENTS[0]}
+              onBack={() => handleOpenLegal()}
+            />
+          )
+        ) : journalSlug !== null ? (
           journalSlug === '' ? (
             <JournalIndex articles={ARTICLES} onOpenArticle={handleOpenJournal} />
           ) : (
@@ -691,7 +737,7 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <Footer />
+      <Footer onOpenLegal={handleOpenLegal} />
     </div>
   );
 }

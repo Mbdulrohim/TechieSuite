@@ -40,6 +40,13 @@ Practical buying guides written for the Nigerian market.
 - [Keeping gear alive through outages](https://techiebaseng.com/?journal=keeping-gear-alive-through-outages): power protection for Nigerian conditions.
 - [Galaxy or iPhone](https://techiebaseng.com/?journal=galaxy-or-iphone)
 
+## Legal
+
+The registered business name is Techie Base Enterprise.
+
+- [Warranty Service Policy & Procedures](https://techiebaseng.com/?legal=warranty): pre-owned devices are covered by Techie Base Enterprise for a stated period; new devices carry the standard manufacturer's warranty, redeemable at authorised manufacturer service centres in Nigeria. Claims require the original invoice or sales slip showing date of purchase, dealer, model and serial number. Warranty on used products is void if repaired by an unauthorised service centre. The warranty is non-transferable and excludes wear and tear, misuse, liquid and surge damage, unauthorised modification, and use of non-approved chargers.
+- [All policies](https://techiebaseng.com/?legal)
+
 ## Notes
 
 - Built by mbdulrohim — https://mbdulrohim.dev

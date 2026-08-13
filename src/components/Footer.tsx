@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatNaira } from '../utils';
+import { LEGAL_ENTITY } from '../data/legal';
 
 /** Directory columns. Plain text links only — no icons, no chips. The footer is
  *  a reference index, so it is set at caption size and stays monochrome; the
@@ -52,15 +53,28 @@ const DIRECTORY: {
   },
 ];
 
-const LEGAL_LINKS = [
-  { label: 'Privacy Policy', href: '#' },
-  { label: 'Terms of Sale', href: '#' },
-  { label: 'Legal', href: '#' },
+/**
+ * Only policies that actually exist are listed.
+ *
+ * "Privacy Policy" and "Terms of Sale" used to sit here pointing at `#`. Both
+ * are now removed rather than left dead: a footer link labelled "Privacy
+ * Policy" tells a customer one exists, which is a worse position to be in than
+ * visibly not having one. They go back the moment the documents are written —
+ * add them to `LEGAL_DOCUMENTS` in `data/legal.ts` and they appear here.
+ */
+const LEGAL_LINKS: { label: string; slug: string }[] = [
+  { label: 'Warranty', slug: 'warranty' },
+  { label: 'Legal', slug: '' },
 ];
 
 const linkClass = 'hover:text-ink hover:underline transition-colors';
 
-export const Footer: React.FC = () => {
+export interface FooterProps {
+  /** Opens a policy by slug, or the legal index when called with nothing. */
+  onOpenLegal?: (slug?: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenLegal }) => {
   return (
     <footer className="mt-20 border-t border-hairline-soft bg-canvas text-ink">
       <div className="mx-auto max-w-7xl px-6">
@@ -80,9 +94,24 @@ export const Footer: React.FC = () => {
           </p>
           <p>Free and easy returns: 14 days, hassle-free, with a prepaid return kit.</p>
           <p>Flexible financing: pay securely by card, bank transfer or in instalments.</p>
+          {/* Corrected against the signed warranty document. This previously
+              read "full repair coverage and 24/7 specialist support, provided
+              by TechieBase", which the policy contradicts outright: TechieBase
+              services pre-owned stock, while new devices go to the
+              manufacturer's own centres. */}
           <p>
-            TechieBase Warranty: full repair coverage and 24/7 specialist support, provided by
-            TechieBase.
+            Warranty: pre-owned devices are covered by {LEGAL_ENTITY} for a stated period. New
+            devices carry the standard manufacturer's warranty, redeemable at authorised
+            manufacturer service centres in Nigeria.{' '}
+            {onOpenLegal && (
+              <button
+                type="button"
+                onClick={() => onOpenLegal('warranty')}
+                className={`${linkClass} underline`}
+              >
+                Read the full warranty policy
+              </button>
+            )}
           </p>
         </div>
 
@@ -140,17 +169,24 @@ export const Footer: React.FC = () => {
             </span>
             <span className="text-ink-tertiary">Technology &amp; You</span>
             <span aria-hidden="true" className="text-hairline">|</span>
+            {/* Was "TechieBase Inc.", which claims an incorporated company that
+                does not exist. The registered name on the warranty document is
+                an Enterprise — a Nigerian business-name registration. */}
             <span>
-              Copyright © {new Date().getFullYear()} TechieBase Inc. All rights reserved.
+              Copyright © {new Date().getFullYear()} {LEGAL_ENTITY}. All rights reserved.
             </span>
           </div>
 
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
             {LEGAL_LINKS.map((link) => (
               <li key={link.label}>
-                <a href={link.href} className={linkClass}>
+                <button
+                  type="button"
+                  onClick={() => onOpenLegal?.(link.slug)}
+                  className={linkClass}
+                >
                   {link.label}
-                </a>
+                </button>
               </li>
             ))}
           </ul>

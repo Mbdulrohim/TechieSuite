@@ -20,4 +20,6 @@
   <url><loc>https://techiebaseng.com/?journal=ps5-vs-xbox-series-x</loc><priority>0.6</priority></url>
   <url><loc>https://techiebaseng.com/?journal=keeping-gear-alive-through-outages</loc><priority>0.6</priority></url>
   <url><loc>https://techiebaseng.com/?journal=galaxy-or-iphone</loc><priority>0.6</priority></url>
+  <url><loc>https://techiebaseng.com/?legal</loc><priority>0.4</priority></url>
+  <url><loc>https://techiebaseng.com/?legal=warranty</loc><priority>0.4</priority></url>
 </urlset>

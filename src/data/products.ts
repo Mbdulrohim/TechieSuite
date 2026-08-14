@@ -67,12 +67,12 @@ const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: stri
     gallery: ['/images/products/apple/iphone-air-profile.webp'],
   },
   'iphone-17-pro': {
-    main: '/images/products/apple/iphone-17-pro.webp',
-    gallery: ['/images/products/apple/iphone-17-pro-orange.webp'],
+    main: '/images/products/apple/iphone-17-pro-cutout.webp',
+    gallery: ['/images/products/apple/iphone-17-pro-orange-cutout.webp'],
   },
   'iphone-17-pro-max': {
-    main: '/images/products/apple/iphone-17-pro.webp',
-    gallery: ['/images/products/apple/iphone-17-pro-orange.webp'],
+    main: '/images/products/apple/iphone-17-pro-cutout.webp',
+    gallery: ['/images/products/apple/iphone-17-pro-orange-cutout.webp'],
   },
   'iphone-16e': {
     main: '/images/products/apple/iphone-16e.webp',
@@ -95,11 +95,11 @@ const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: stri
     gallery: ['/images/products/apple/iphone15lineup.webp'],
   },
   'iphone-15-pro': {
-    main: '/images/products/apple/iphone15pro.webp',
+    main: '/images/products/apple/iphone15pro-cutout.webp',
     gallery: ['/images/products/apple/iphone15prolineup.webp'],
   },
   'iphone-15-pro-max': {
-    main: '/images/products/apple/iphone15pro.webp',
+    main: '/images/products/apple/iphone15pro-cutout.webp',
     gallery: ['/images/products/apple/iphone15prolineup.webp'],
   },
   'iphone-14': {
@@ -111,11 +111,11 @@ const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: stri
     gallery: ['/images/products/apple/iphone14lineup.webp'],
   },
   'iphone-14-pro': {
-    main: '/images/products/apple/iphone14pro.webp',
+    main: '/images/products/apple/iphone14pro-cutout.webp',
     gallery: ['/images/products/apple/iphone14prolineup.webp'],
   },
   'iphone-14-pro-max': {
-    main: '/images/products/apple/iphone14pro.webp',
+    main: '/images/products/apple/iphone14pro-cutout.webp',
     gallery: ['/images/products/apple/iphone14prolineup.webp'],
   },
   'iphone-13-mini': {
@@ -1426,9 +1426,9 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Only 3 left for pickup in Ikeja',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: '/images/products/apple/iphone-16-pro.webp',
+    imageUrl: '/images/products/apple/iphone-16-pro-cutout.webp',
     additionalImages: [
-      '/images/products/apple/iphone-16-pro-lineup.webp'
+      '/images/products/apple/iphone-16-pro-lineup-cutout.webp'
     ],
     colors: [
       { name: 'Desert Titanium', hex: '#C2A385' },
@@ -1487,9 +1487,9 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'High Demand — Order within 1 hr for Free Express Delivery',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: '/images/products/apple/iphone-16-pro.webp',
+    imageUrl: '/images/products/apple/iphone-16-pro-cutout.webp',
     additionalImages: [
-      '/images/products/apple/iphone-16-pro-lineup.webp'
+      '/images/products/apple/iphone-16-pro-lineup-cutout.webp'
     ],
     colors: [
       { name: 'Desert Titanium', hex: '#C2A385' },

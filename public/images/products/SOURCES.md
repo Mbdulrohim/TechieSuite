@@ -11,13 +11,17 @@ Newsroom originals; the phone pixels are unchanged and only the connected black 
 | `iphone-17e.webp`, `iphone-17e-lineup.webp` | iPhone 17e | https://www.apple.com/newsroom/2026/03/apple-introduces-iphone-17e/ |
 | `iphone-air.webp`, `iphone-air-profile.webp` | iPhone Air | https://www.apple.com/newsroom/2025/09/introducing-iphone-air-a-powerful-new-iphone-with-a-breakthrough-design/ |
 | `iphone-17-pro.webp`, `iphone-17-pro-orange.webp`, and their `-cutout.webp` derivatives | iPhone 17 Pro and iPhone 17 Pro Max | https://www.apple.com/newsroom/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max/ |
+| `iphone17pro-case.webp`, `iphone17pro-silicone.webp` | iPhone 17 Pro and iPhone 17 Pro Max cases | https://www.apple.com/newsroom/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max/ |
 | `iphone-16.webp`, `iphone-16-lineup.webp` | iPhone 16 and iPhone 16 Plus | https://www.apple.com/newsroom/2024/09/apple-introduces-iphone-16-and-iphone-16-plus/ |
 | `iphone-16e.webp`, `iphone-16e-lineup.webp` | iPhone 16e | https://www.apple.com/newsroom/2025/02/apple-debuts-iphone-16e-a-powerful-new-member-of-the-iphone-16-family/ |
 | `iphone-16-pro.webp`, `iphone-16-pro-lineup.webp`, and their `-cutout.webp` derivatives | iPhone 16 Pro and iPhone 16 Pro Max | https://www.apple.com/newsroom/2024/09/apple-debuts-iphone-16-pro-and-iphone-16-pro-max/ |
+| `iphone16pro-store.webp`, `iphone16-camera-control.webp` | iPhone 16 Pro and Camera Control | https://www.apple.com/newsroom/2024/09/get-ready-to-upgrade-to-the-new-iphone-16-apple-watch-and-airpods-lineups/ |
 | `iphone15.webp`, `iphone15lineup.webp` | iPhone 15 and iPhone 15 Plus | https://www.apple.com/newsroom/2023/09/apple-debuts-iphone-15-and-iphone-15-plus/ |
 | `iphone15pro.webp`, `iphone15pro-cutout.webp`, `iphone15prolineup.webp` | iPhone 15 Pro and iPhone 15 Pro Max | https://www.apple.com/newsroom/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/ |
+| `iphone15pro-natural.webp` | iPhone 15 Pro and iPhone 15 Pro Max in natural titanium | https://www.apple.com/newsroom/2023/09/apple-offers-more-ways-to-order-the-all-new-iphone-15-and-apple-watch-lineups/ |
 | `iphone14.webp`, `iphone14lineup.webp` | iPhone 14 and iPhone 14 Plus | https://www.apple.com/newsroom/2022/09/apple-introduces-iphone-14-and-iphone-14-plus/ |
 | `iphone14pro.webp`, `iphone14pro-cutout.webp`, `iphone14prolineup.webp` | iPhone 14 Pro and iPhone 14 Pro Max | https://www.apple.com/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/ |
+| `iphone14pro-space-black.webp`, `iphone14pro-camera.webp`, `iphone14pro-purple.webp` | iPhone 14 Pro and iPhone 14 Pro Max detail views | https://www.apple.com/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/ |
 | `iphone13.webp`, `iphone13lineup.webp` | iPhone 13 and iPhone 13 mini | https://www.apple.com/newsroom/2021/09/apple-introduces-iphone-13-and-iphone-13-mini/ |
 | `iphone13pro.webp`, `iphone13prolineup.webp` | iPhone 13 Pro and iPhone 13 Pro Max | https://www.apple.com/newsroom/2021/09/apple-unveils-iphone-13-pro-and-iphone-13-pro-max-more-pro-than-ever-before/ |
 

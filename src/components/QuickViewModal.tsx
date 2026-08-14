@@ -156,7 +156,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
                   <img
                     src={activeImage}
                     alt={`${product.name} in ${selectedColor.name}`}
-                    className="max-h-[290px] w-full max-w-[580px] rounded-card object-cover shadow-panel transition-all duration-500 sm:max-h-[410px] lg:max-h-[520px]"
+                    className="max-h-[290px] w-full max-w-[580px] rounded-card object-contain shadow-panel transition-all duration-500 sm:max-h-[410px] lg:max-h-[520px]"
                   />
                 </div>
 

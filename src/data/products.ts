@@ -18,6 +18,7 @@ type IPhoneSeed = {
   storage: string[];
   tagline: string;
   finish: 'classic' | 'modern' | 'pro' | 'air';
+  colors?: ProductColor[];
   badge?: Product['badge'];
 };
 
@@ -52,16 +53,63 @@ const IPHONE_IMAGES = {
   latest: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=900&q=85',
 };
 
+const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: string[] }>> = {
+  'iphone-17e': {
+    main: '/images/products/apple/iphone-17e-lineup.webp',
+    gallery: ['/images/products/apple/iphone-17e.webp'],
+  },
+  'iphone-17': {
+    main: '/images/products/apple/iphone-17.webp',
+    gallery: ['/images/products/apple/iphone-17-lineup.webp'],
+  },
+  'iphone-air': {
+    main: '/images/products/apple/iphone-air.webp',
+    gallery: ['/images/products/apple/iphone-air-profile.webp'],
+  },
+  'iphone-17-pro': {
+    main: '/images/products/apple/iphone-17-pro.webp',
+    gallery: ['/images/products/apple/iphone-17-pro-orange.webp'],
+  },
+  'iphone-17-pro-max': {
+    main: '/images/products/apple/iphone-17-pro.webp',
+    gallery: ['/images/products/apple/iphone-17-pro-orange.webp'],
+  },
+  'iphone-16e': {
+    main: '/images/products/apple/iphone-16e.webp',
+    gallery: ['/images/products/apple/iphone-16e-lineup.webp'],
+  },
+  'iphone-16': {
+    main: '/images/products/apple/iphone-16.webp',
+    gallery: ['/images/products/apple/iphone-16-lineup.webp'],
+  },
+  'iphone-16-plus': {
+    main: '/images/products/apple/iphone-16.webp',
+    gallery: ['/images/products/apple/iphone-16-lineup.webp'],
+  },
+};
+
 const IPHONE_SEEDS: IPhoneSeed[] = [
   {
     id: 'iphone-17e', name: 'iPhone 17e', generation: 17, price: 599,
     display: '6.1-inch Super Retina XDR display', chip: 'A19 chip', camera: '48MP Fusion camera',
     storage: ['256GB', '512GB'], tagline: 'Essential power. Exceptional value.', finish: 'modern', badge: 'NEW',
+    colors: [
+      { name: 'Black', hex: '#202124' },
+      { name: 'White', hex: '#f4f3ef' },
+      { name: 'Soft Pink', hex: '#ebcfd0' },
+    ],
   },
   {
     id: 'iphone-17', name: 'iPhone 17', generation: 17, price: 799,
     display: '6.3-inch Super Retina XDR display with ProMotion', chip: 'A19 chip', camera: '48MP Dual Fusion camera system',
     storage: ['256GB', '512GB'], tagline: 'More delightful. More durable. More capable.', finish: 'modern', badge: 'NEW',
+    colors: [
+      { name: 'Black', hex: '#272729' },
+      { name: 'Lavender', hex: '#d3cae1' },
+      { name: 'Mist Blue', hex: '#c6d9e4' },
+      { name: 'Sage', hex: '#b9c5ad' },
+      { name: 'White', hex: '#f3f2ee' },
+    ],
   },
   {
     id: 'iphone-air', name: 'iPhone Air', generation: 17, price: 999,
@@ -72,26 +120,54 @@ const IPHONE_SEEDS: IPhoneSeed[] = [
     id: 'iphone-17-pro', name: 'iPhone 17 Pro', generation: 17, price: 1099,
     display: '6.3-inch Super Retina XDR display with ProMotion', chip: 'A19 Pro chip', camera: '48MP Pro Fusion camera system',
     storage: ['256GB', '512GB', '1TB'], tagline: 'The most powerful iPhone experience.', finish: 'pro', badge: 'NEW',
+    colors: [
+      { name: 'Deep Blue', hex: '#263147' },
+      { name: 'Cosmic Orange', hex: '#d96b32' },
+      { name: 'Silver', hex: '#d7d5cf' },
+    ],
   },
   {
     id: 'iphone-17-pro-max', name: 'iPhone 17 Pro Max', generation: 17, price: 1199,
     display: '6.9-inch Super Retina XDR display with ProMotion', chip: 'A19 Pro chip', camera: '48MP Pro Fusion camera system',
     storage: ['256GB', '512GB', '1TB', '2TB'], tagline: 'Maximum performance. Maximum battery life.', finish: 'pro', badge: 'NEW',
+    colors: [
+      { name: 'Deep Blue', hex: '#263147' },
+      { name: 'Cosmic Orange', hex: '#d96b32' },
+      { name: 'Silver', hex: '#d7d5cf' },
+    ],
   },
   {
     id: 'iphone-16e', name: 'iPhone 16e', generation: 16, price: 599,
     display: '6.1-inch Super Retina XDR display', chip: 'A18 chip', camera: '48MP 2-in-1 camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Built for Apple Intelligence. Priced for more people.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'White', hex: '#f2f1ed' },
+    ],
   },
   {
     id: 'iphone-16', name: 'iPhone 16', generation: 16, price: 799,
     display: '6.1-inch Super Retina XDR display', chip: 'A18 chip', camera: '48MP Fusion camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Camera Control. Action button. A18 power.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'White', hex: '#f2f1ed' },
+      { name: 'Pink', hex: '#e8b9ca' },
+      { name: 'Teal', hex: '#7aa6a1' },
+      { name: 'Ultramarine', hex: '#6267a9' },
+    ],
   },
   {
     id: 'iphone-16-plus', name: 'iPhone 16 Plus', generation: 16, price: 899,
     display: '6.7-inch Super Retina XDR display', chip: 'A18 chip', camera: '48MP Fusion camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'A bigger display and outstanding battery life.', finish: 'modern',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'White', hex: '#f2f1ed' },
+      { name: 'Pink', hex: '#e8b9ca' },
+      { name: 'Teal', hex: '#7aa6a1' },
+      { name: 'Ultramarine', hex: '#6267a9' },
+    ],
   },
   {
     id: 'iphone-15', name: 'iPhone 15', generation: 15, price: 699,
@@ -191,11 +267,13 @@ const IPHONE_SEEDS: IPhoneSeed[] = [
 ];
 
 const IPHONE_VARIANTS: Product[] = IPHONE_SEEDS.map((seed, index) => {
-  const imageUrl = seed.generation >= 16
+  const productMedia = IPHONE_PRODUCT_MEDIA[seed.id];
+  const fallbackImageUrl = seed.generation >= 16
     ? IPHONE_IMAGES.latest
     : seed.generation >= 13
       ? IPHONE_IMAGES.modern
       : IPHONE_IMAGES.classic;
+  const imageUrl = productMedia?.main ?? fallbackImageUrl;
 
   return {
     id: seed.id,
@@ -208,13 +286,13 @@ const IPHONE_VARIANTS: Product[] = IPHONE_SEEDS.map((seed, index) => {
     monthlyPrice: Number((seed.price / 24).toFixed(2)),
     rating: seed.generation >= 16 ? 4.9 : seed.generation >= 14 ? 4.8 : 4.7,
     reviewCount: Math.max(420, 9800 - index * 287),
-    colors: IPHONE_FINISHES[seed.finish],
+    colors: seed.colors ?? IPHONE_FINISHES[seed.finish],
     storageOptions: seed.storage.map((capacity, storageIndex) => ({
       capacity,
       priceDelta: [0, 100, 300, 500][storageIndex] || storageIndex * 200,
     })),
     imageUrl,
-    additionalImages: [IPHONE_IMAGES.latest, IPHONE_IMAGES.modern, IPHONE_IMAGES.classic]
+    additionalImages: productMedia?.gallery ?? [IPHONE_IMAGES.latest, IPHONE_IMAGES.modern, IPHONE_IMAGES.classic]
       .filter((image) => image !== imageUrl),
     badge: seed.badge,
     stockUrgency: seed.generation >= 16
@@ -1222,11 +1300,9 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Only 3 left for pickup in Ikeja',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/iphone-16-pro.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/iphone-16-pro-lineup.webp'
     ],
     colors: [
       { name: 'Desert Titanium', hex: '#C2A385' },
@@ -1285,10 +1361,9 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'High Demand — Order within 1 hr for Free Express Delivery',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/iphone-16-pro.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/iphone-16-pro-lineup.webp'
     ],
     colors: [
       { name: 'Desert Titanium', hex: '#C2A385' },

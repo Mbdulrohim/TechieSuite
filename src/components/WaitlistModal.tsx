@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Smartphone, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 
-const WAITLIST_BG = new URL('../../assets/images/iPhone 18 Waitlist.png', import.meta.url).href;
+const WAITLIST_IMG = new URL('../../assets/images/iphone-18-camera.png', import.meta.url).href;
 
 /** Normalize a Nigerian phone number to international format +234XXXXXXXXXX */
 const normalizeNigerianNumber = (raw: string): string | null => {
@@ -174,17 +174,8 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
         role="dialog"
         aria-modal="true"
         aria-labelledby="waitlist-title"
-        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-[#0f0f14] shadow-2xl animate-scale-in"
+        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-black shadow-2xl animate-scale-in"
       >
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src={WAITLIST_BG}
-            alt=""
-            className="w-full h-full object-cover object-bottom opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f14] via-[#0f0f14]/60 to-[#0f0f14]/20" />
-        </div>
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -194,8 +185,23 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
           <X className="w-5 h-5" />
         </button>
 
+        {/* Hero Image — visible on top */}
+        <div className="relative flex items-center justify-center pt-10 pb-2">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div className="h-40 w-40 rounded-full bg-[#dc143c]/10 blur-[60px]" />
+          </div>
+          <img
+            src={WAITLIST_IMG}
+            alt="iPhone 18 camera system"
+            className="relative z-10 w-[50%] max-w-[220px] drop-shadow-2xl"
+          />
+        </div>
+
         {/* Hero Section */}
-        <div className="relative z-10 px-7 pt-12 pb-8 sm:px-10 sm:pt-14 sm:pb-10 text-center">
+        <div className="relative z-10 px-7 pb-8 sm:px-10 sm:pb-10 text-center">
           {/* Subtle cherry glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-[#dc143c]/10 rounded-full blur-3xl" />
 

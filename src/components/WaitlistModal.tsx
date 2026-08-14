@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Smartphone, ChevronRight, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { X, Smartphone, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const WAITLIST_BG = new URL('../../assets/images/iPhone 18 Waitlist.png', import.meta.url).href;
 
@@ -15,32 +15,6 @@ const normalizeNigerianNumber = (raw: string): string | null => {
   return null;
 };
 
-/** Check if the number is likely valid for WhatsApp by attempting the wa.me redirect.
- *  This opens a hidden fetch to https://wa.me/<number> — if the page exists,
- *  the number is registered. We fall back to format-only validation if the
- *  fetch is blocked by CORS (which it will be in browser). */
-const validateWhatsAppNumber = async (number: string): Promise<'valid' | 'invalid_format' | 'not_whatsapp'> => {
-  const normalized = normalizeNigerianNumber(number);
-  if (!normalized) return 'invalid_format';
-
-  try {
-    // wa.me doesn't support CORS, so we can only do a no-cors fetch.
-    // A successful fetch (no network error) means the URL resolved.
-    // This is a best-effort heuristic — in production you'd use the
-    // WhatsApp Business API's contacts endpoint.
-    const res = await fetch(`https://wa.me/${normalized.replace('+', '')}`, {
-      method: 'HEAD',
-      mode: 'no-cors',
-    });
-    // no-cors always returns opaque response, so if we get here without
-    // a network error the number format is accepted by wa.me
-    return 'valid';
-  } catch {
-    // Network error — could be offline or blocked. Fall back to format check.
-    return 'valid'; // Trust format validation
-  }
-};
-
 interface WaitlistModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -50,7 +24,7 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
   const [email, setEmail] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [whatsappStatus, setWhatsappStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid_format' | 'not_whatsapp'>('idle');
+  const [whatsappStatus, setWhatsappStatus] = useState<'idle' | 'valid' | 'invalid_format'>('idle');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced WhatsApp validation when user types
@@ -66,12 +40,9 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
       return;
     }
 
-    setWhatsappStatus('checking');
-
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(async () => {
-      const result = await validateWhatsAppNumber(whatsapp);
-      setWhatsappStatus(result);
+    debounceRef.current = setTimeout(() => {
+      setWhatsappStatus(normalizeNigerianNumber(whatsapp) ? 'valid' : 'invalid_format');
     }, 600);
 
     return () => {
@@ -104,22 +75,44 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
     };
   }, [isCollapsed]);
 
+  useEffect(() => {
+    if (!isOpen || isCollapsed) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isCollapsed, isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !whatsapp.trim()) return;
-    if (whatsappStatus === 'invalid_format') return;
+    const normalized = normalizeNigerianNumber(whatsapp);
+    if (!normalized) {
+      setWhatsappStatus('invalid_format');
+      return;
+    }
 
     // Save to localStorage for demo
     try {
       const entries = JSON.parse(localStorage.getItem('techiebase_waitlist') || '[]');
-      entries.push({ email, whatsapp, timestamp: new Date().toISOString() });
+      entries.push({ email, whatsapp: normalized, timestamp: new Date().toISOString() });
       localStorage.setItem('techiebase_waitlist', JSON.stringify(entries));
     } catch {
       // ignore
     }
 
+    const message = encodeURIComponent(
+      `Hi TechieBase, please add me to the iPhone 18 waitlist.\nEmail: ${email.trim()}\nWhatsApp: ${normalized}`,
+    );
+    window.open(`https://wa.me/2348143270982?text=${message}`, '_blank', 'noopener,noreferrer');
     setIsSubmitted(true);
     setTimeout(() => {
       setIsCollapsed(true);
@@ -171,8 +164,18 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-[#0f0f14] rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-scale-in">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm sm:p-6"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="waitlist-title"
+        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-[#0f0f14] shadow-2xl animate-scale-in"
+      >
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
@@ -202,7 +205,7 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
               Pre-Order Waitlist Open
             </div>
 
-            <h2 className="text-headline font-semibold text-white sm:text-display-sm leading-tight">
+            <h2 id="waitlist-title" className="text-headline font-semibold text-white sm:text-display-sm leading-tight">
               iPhone 18 is
               <br />
               <span className="bg-gradient-to-r from-[#dc143c] via-[#ff4d6d] to-[#dc143c] bg-clip-text text-transparent">
@@ -251,20 +254,17 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
                     className={`w-full px-4 py-3 pr-10 bg-white/5 border rounded-xl text-white text-body placeholder:text-gray-600 focus:outline-none focus:ring-2 transition-all ${
                       whatsappStatus === 'valid'
                         ? 'border-emerald-500/50 focus:ring-emerald-500/30 focus:border-emerald-500/50'
-                        : whatsappStatus === 'invalid_format' || whatsappStatus === 'not_whatsapp'
+                        : whatsappStatus === 'invalid_format'
                           ? 'border-red-500/50 focus:ring-red-500/30 focus:border-red-500/50'
                           : 'border-white/10 focus:ring-[#dc143c]/50 focus:border-[#dc143c]/50'
                     }`}
                   />
                   {/* Validation indicator */}
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    {whatsappStatus === 'checking' && (
-                      <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
-                    )}
                     {whatsappStatus === 'valid' && (
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                     )}
-                    {(whatsappStatus === 'invalid_format' || whatsappStatus === 'not_whatsapp') && (
+                    {whatsappStatus === 'invalid_format' && (
                       <AlertCircle className="w-4 h-4 text-red-400" />
                     )}
                   </div>
@@ -276,22 +276,21 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
                 )}
                 {whatsappStatus === 'valid' && (
                   <p className="mt-1.5 text-[11px] text-emerald-400">
-                    ✓ Valid WhatsApp number
+                    Nigerian number format looks right
                   </p>
                 )}
               </div>
 
               <button
                 type="submit"
-                disabled={whatsappStatus === 'invalid_format' || whatsappStatus === 'checking'}
+                disabled={whatsappStatus !== 'valid'}
                 className="w-full mt-2 py-3.5 rounded-full bg-[#dc143c] hover:bg-[#c41235] text-white font-semibold text-body transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-[#dc143c]/25 hover:shadow-[#dc143c]/40 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Join the Waitlist
+                Continue on WhatsApp
               </button>
 
               <p className="text-center text-[11px] text-gray-600 pt-1">
-                We'll only message you about iPhone 18 availability.
-                <br />No spam. Unsubscribe anytime.
+                WhatsApp will open with a prepared message. Send it to complete your signup.
               </p>
             </form>
           ) : (
@@ -301,7 +300,7 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
               </div>
               <h3 className="text-title font-semibold text-white">You're on the list!</h3>
               <p className="text-body text-gray-400 max-w-xs mx-auto">
-                We'll reach you on WhatsApp and email the moment iPhone 18 pre-orders go live at TechieBase.
+                Your prepared WhatsApp message is open. Send it to TechieBase to confirm your place.
               </p>
             </div>
           )}

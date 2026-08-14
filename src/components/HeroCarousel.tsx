@@ -52,13 +52,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     {
       id: 'iphone-16-pro',
       headline: 'Hello, Apple Intelligence.',
-      image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1200&q=80',
       productId: 'iphone-16-pro',
     },
     {
       id: 'macbook-air-m3',
       headline: 'Lean. Mean. M3 machine.',
-      image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80',
       productId: 'macbook-air-m3',
     },
   ];
@@ -170,11 +168,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
         </div>
 
         {/* Bottom — Image */}
-        <div className="relative flex justify-center items-end mt-10 md:mt-16 w-full h-full flex-1 px-4">
+        <div className="relative mt-10 flex h-full w-full flex-1 items-end justify-center px-6 pb-6 md:mt-16 md:px-10 md:pb-10">
           <img
-            src={slide.image}
+            src={targetProduct.imageUrl}
             alt={targetProduct?.name || 'Apple Product'}
-            className="relative z-10 max-h-[300px] md:max-h-[420px] w-auto object-contain transition-transform duration-700 hover:scale-[1.02] cursor-pointer"
+            className="relative z-10 h-auto max-h-[260px] w-auto max-w-[82vw] cursor-pointer object-contain transition-transform duration-700 hover:scale-[1.02] md:max-h-[380px] md:max-w-[760px]"
             onClick={() => onSelectProduct(targetProduct)}
           />
         </div>

@@ -1,0 +1,52 @@
+# TechieBase
+
+> A Lagos-based independent retailer selling new and pre-owned phones, laptops,
+> tablets, audio and gaming hardware across Nigeria, with trade-in, outright
+> device buy-back, nationwide delivery, in-store pickup and instalment payments.
+> TechieBase is not affiliated with Apple, Samsung or any other manufacturer.
+
+Two physical stores, both in Lagos: 2A Olaide Tomori Street, Ikeja, and
+Admiralty Way, Lekki Phase 1. Contact: +234 814 327 0982 (WhatsApp).
+Prices are quoted in Nigerian naira. Every device is sold with a warranty;
+pre-owned stock is graded Excellent, Very good or Good and carries a stated
+battery health, warranty length and description of wear.
+
+## Shop
+
+- [All products](https://techiebaseng.com/): full catalogue across twelve categories.
+- [Pre-owned](https://techiebaseng.com/?condition=pre-owned): graded, tested, individually described used devices.
+- [iPhone](https://techiebaseng.com/?category=iphone)
+- [Mac](https://techiebaseng.com/?category=mac)
+- [Samsung](https://techiebaseng.com/?category=samsung)
+- [Laptops](https://techiebaseng.com/?category=laptops)
+- [Gaming](https://techiebaseng.com/?category=gaming)
+- [Audio](https://techiebaseng.com/?category=audio)
+
+## Services
+
+- Trade-in: credit toward a new purchase, quoted from device and condition.
+- Sell your device: outright cash purchase, no purchase required, paid on inspection.
+- Instalments: monthly payment plans on devices above a price floor.
+- Delivery nationwide, or same-day pickup at either Lagos store.
+
+## Journal
+
+Practical buying guides written for the Nigerian market.
+
+- [How to spot a genuine iPhone](https://techiebaseng.com/?journal=how-to-spot-a-genuine-iphone): five-minute checks that catch almost all clones.
+- [What your old iPhone is worth](https://techiebaseng.com/?journal=what-your-old-iphone-is-worth): how trade-in and resale values are actually calculated.
+- [Buying a laptop in Nigeria](https://techiebaseng.com/?journal=buying-a-laptop-in-nigeria)
+- [PS5 vs Xbox Series X](https://techiebaseng.com/?journal=ps5-vs-xbox-series-x)
+- [Keeping gear alive through outages](https://techiebaseng.com/?journal=keeping-gear-alive-through-outages): power protection for Nigerian conditions.
+- [Galaxy or iPhone](https://techiebaseng.com/?journal=galaxy-or-iphone)
+
+## Legal
+
+The registered business name is Techie Base Enterprise.
+
+- [Warranty Service Policy & Procedures](https://techiebaseng.com/?legal=warranty): pre-owned devices are covered by Techie Base Enterprise for a stated period; new devices carry the standard manufacturer's warranty, redeemable at authorised manufacturer service centres in Nigeria. Claims require the original invoice or sales slip showing date of purchase, dealer, model and serial number. Warranty on used products is void if repaired by an unauthorised service centre. The warranty is non-transferable and excludes wear and tear, misuse, liquid and surge damage, unauthorised modification, and use of non-approved chargers.
+- [All policies](https://techiebaseng.com/?legal)
+
+## Notes
+
+- Built by mbdulrohim — https://mbdulrohim.dev

@@ -94,8 +94,8 @@ export const FacetedFilterSidebar: React.FC<FacetedFilterSidebarProps> = ({
             <input
               type="range"
               min={50}
-              max={2500}
-              step={50}
+              max={8000}
+              step={100}
               value={filters.priceRange[1]}
               onChange={(e) =>
                 onChangeFilter({ priceRange: [filters.priceRange[0], Number(e.target.value)] })
@@ -104,8 +104,8 @@ export const FacetedFilterSidebar: React.FC<FacetedFilterSidebarProps> = ({
             />
             <div className="flex justify-between text-caption text-ink-tertiary mt-2">
               <span>{formatNaira(50)}</span>
-              <span>{formatNaira(1250)}</span>
-              <span>{formatNaira(2500)}+</span>
+              <span>{formatNaira(4000)}</span>
+              <span>{formatNaira(8000)}+</span>
             </div>
           </div>
 

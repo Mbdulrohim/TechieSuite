@@ -18,6 +18,7 @@ type IPhoneSeed = {
   storage: string[];
   tagline: string;
   finish: 'classic' | 'modern' | 'pro' | 'air';
+  colors?: ProductColor[];
   badge?: Product['badge'];
 };
 
@@ -46,10 +47,148 @@ const IPHONE_FINISHES: Record<IPhoneSeed['finish'], ProductColor[]> = {
   ],
 };
 
-const IPHONE_IMAGES = {
-  classic: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=85',
-  modern: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=900&q=85',
-  latest: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=900&q=85',
+const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: string[] }>> = {
+  'iphone-17e': {
+    main: '/images/products/apple/iphone-17e-lineup.webp',
+    gallery: ['/images/products/apple/iphone-17e.webp'],
+  },
+  'iphone-17': {
+    main: '/images/products/apple/iphone-17.webp',
+    gallery: ['/images/products/apple/iphone-17-lineup.webp'],
+  },
+  'iphone-air': {
+    main: '/images/products/apple/iphone-air.webp',
+    gallery: ['/images/products/apple/iphone-air-profile.webp'],
+  },
+  'iphone-17-pro': {
+    main: '/images/products/apple/iphone-17-pro-cutout.webp',
+    gallery: [
+      '/images/products/apple/iphone-17-pro-orange-cutout.webp',
+      '/images/products/apple/iphone17pro-case.webp',
+      '/images/products/apple/iphone17pro-silicone.webp',
+    ],
+  },
+  'iphone-17-pro-max': {
+    main: '/images/products/apple/iphone-17-pro-cutout.webp',
+    gallery: [
+      '/images/products/apple/iphone-17-pro-orange-cutout.webp',
+      '/images/products/apple/iphone17pro-case.webp',
+      '/images/products/apple/iphone17pro-silicone.webp',
+    ],
+  },
+  'iphone-16e': {
+    main: '/images/products/apple/iphone-16e.webp',
+    gallery: ['/images/products/apple/iphone-16e-lineup.webp'],
+  },
+  'iphone-16': {
+    main: '/images/products/apple/iphone-16.webp',
+    gallery: ['/images/products/apple/iphone-16-lineup.webp'],
+  },
+  'iphone-16-plus': {
+    main: '/images/products/apple/iphone-16.webp',
+    gallery: ['/images/products/apple/iphone-16-lineup.webp'],
+  },
+  'iphone-15': {
+    main: '/images/products/apple/iphone15.webp',
+    gallery: ['/images/products/apple/iphone15lineup.webp'],
+  },
+  'iphone-15-plus': {
+    main: '/images/products/apple/iphone15.webp',
+    gallery: ['/images/products/apple/iphone15lineup.webp'],
+  },
+  'iphone-15-pro': {
+    main: '/images/products/apple/iphone15pro-cutout.webp',
+    gallery: [
+      '/images/products/apple/iphone15prolineup.webp',
+      '/images/products/apple/iphone15pro-natural.webp',
+    ],
+  },
+  'iphone-15-pro-max': {
+    main: '/images/products/apple/iphone15pro-cutout.webp',
+    gallery: [
+      '/images/products/apple/iphone15prolineup.webp',
+      '/images/products/apple/iphone15pro-natural.webp',
+    ],
+  },
+  'iphone-14': {
+    main: '/images/products/apple/iphone14.webp',
+    gallery: ['/images/products/apple/iphone14lineup.webp'],
+  },
+  'iphone-14-plus': {
+    main: '/images/products/apple/iphone14.webp',
+    gallery: ['/images/products/apple/iphone14lineup.webp'],
+  },
+  'iphone-14-pro': {
+    main: '/images/products/apple/iphone14pro-cutout.webp',
+    gallery: [
+      '/images/products/apple/iphone14prolineup.webp',
+      '/images/products/apple/iphone14pro-space-black.webp',
+      '/images/products/apple/iphone14pro-camera.webp',
+      '/images/products/apple/iphone14pro-purple.webp',
+    ],
+  },
+  'iphone-14-pro-max': {
+    main: '/images/products/apple/iphone14pro-cutout.webp',
+    gallery: [
+      '/images/products/apple/iphone14prolineup.webp',
+      '/images/products/apple/iphone14pro-space-black.webp',
+      '/images/products/apple/iphone14pro-camera.webp',
+      '/images/products/apple/iphone14pro-purple.webp',
+    ],
+  },
+  'iphone-13-mini': {
+    main: '/images/products/apple/iphone13.webp',
+    gallery: ['/images/products/apple/iphone13lineup.webp'],
+  },
+  'iphone-13': {
+    main: '/images/products/apple/iphone13.webp',
+    gallery: ['/images/products/apple/iphone13lineup.webp'],
+  },
+  'iphone-13-pro': {
+    main: '/images/products/apple/iphone13pro.webp',
+    gallery: ['/images/products/apple/iphone13prolineup.webp'],
+  },
+  'iphone-13-pro-max': {
+    main: '/images/products/apple/iphone13pro.webp',
+    gallery: ['/images/products/apple/iphone13prolineup.webp'],
+  },
+  'iphone-12-mini': {
+    main: '/images/products/apple/iphone12-pair.webp',
+    gallery: [
+      '/images/products/apple/iphone12-main.webp',
+      '/images/products/apple/iphone12-blue.webp',
+    ],
+  },
+  'iphone-12': {
+    main: '/images/products/apple/iphone12-main.webp',
+    gallery: [
+      '/images/products/apple/iphone12-pair.webp',
+      '/images/products/apple/iphone12-blue.webp',
+    ],
+  },
+  'iphone-12-pro': {
+    main: '/images/products/apple/iphone12pro-gold-cutout.webp',
+    gallery: ['/images/products/apple/iphone12pro-camera.webp'],
+  },
+  'iphone-12-pro-max': {
+    main: '/images/products/apple/iphone12pro-gold-cutout.webp',
+    gallery: ['/images/products/apple/iphone12pro-camera.webp'],
+  },
+  'iphone-11': {
+    main: '/images/products/apple/iphone11-main.webp',
+    gallery: [
+      '/images/products/apple/iphone11-screen.webp',
+      '/images/products/apple/iphone11-lineup.webp',
+    ],
+  },
+  'iphone-11-pro': {
+    main: '/images/products/apple/iphone11pro-colors.webp',
+    gallery: [],
+  },
+  'iphone-11-pro-max': {
+    main: '/images/products/apple/iphone11pro-colors.webp',
+    gallery: [],
+  },
 };
 
 const IPHONE_SEEDS: IPhoneSeed[] = [
@@ -57,11 +196,23 @@ const IPHONE_SEEDS: IPhoneSeed[] = [
     id: 'iphone-17e', name: 'iPhone 17e', generation: 17, price: 599,
     display: '6.1-inch Super Retina XDR display', chip: 'A19 chip', camera: '48MP Fusion camera',
     storage: ['256GB', '512GB'], tagline: 'Essential power. Exceptional value.', finish: 'modern', badge: 'NEW',
+    colors: [
+      { name: 'Black', hex: '#202124' },
+      { name: 'White', hex: '#f4f3ef' },
+      { name: 'Soft Pink', hex: '#ebcfd0' },
+    ],
   },
   {
     id: 'iphone-17', name: 'iPhone 17', generation: 17, price: 799,
     display: '6.3-inch Super Retina XDR display with ProMotion', chip: 'A19 chip', camera: '48MP Dual Fusion camera system',
     storage: ['256GB', '512GB'], tagline: 'More delightful. More durable. More capable.', finish: 'modern', badge: 'NEW',
+    colors: [
+      { name: 'Black', hex: '#272729' },
+      { name: 'Lavender', hex: '#d3cae1' },
+      { name: 'Mist Blue', hex: '#c6d9e4' },
+      { name: 'Sage', hex: '#b9c5ad' },
+      { name: 'White', hex: '#f3f2ee' },
+    ],
   },
   {
     id: 'iphone-air', name: 'iPhone Air', generation: 17, price: 999,
@@ -72,86 +223,192 @@ const IPHONE_SEEDS: IPhoneSeed[] = [
     id: 'iphone-17-pro', name: 'iPhone 17 Pro', generation: 17, price: 1099,
     display: '6.3-inch Super Retina XDR display with ProMotion', chip: 'A19 Pro chip', camera: '48MP Pro Fusion camera system',
     storage: ['256GB', '512GB', '1TB'], tagline: 'The most powerful iPhone experience.', finish: 'pro', badge: 'NEW',
+    colors: [
+      { name: 'Deep Blue', hex: '#263147' },
+      { name: 'Cosmic Orange', hex: '#d96b32' },
+      { name: 'Silver', hex: '#d7d5cf' },
+    ],
   },
   {
     id: 'iphone-17-pro-max', name: 'iPhone 17 Pro Max', generation: 17, price: 1199,
     display: '6.9-inch Super Retina XDR display with ProMotion', chip: 'A19 Pro chip', camera: '48MP Pro Fusion camera system',
     storage: ['256GB', '512GB', '1TB', '2TB'], tagline: 'Maximum performance. Maximum battery life.', finish: 'pro', badge: 'NEW',
+    colors: [
+      { name: 'Deep Blue', hex: '#263147' },
+      { name: 'Cosmic Orange', hex: '#d96b32' },
+      { name: 'Silver', hex: '#d7d5cf' },
+    ],
   },
   {
     id: 'iphone-16e', name: 'iPhone 16e', generation: 16, price: 599,
     display: '6.1-inch Super Retina XDR display', chip: 'A18 chip', camera: '48MP 2-in-1 camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Built for Apple Intelligence. Priced for more people.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'White', hex: '#f2f1ed' },
+    ],
   },
   {
     id: 'iphone-16', name: 'iPhone 16', generation: 16, price: 799,
     display: '6.1-inch Super Retina XDR display', chip: 'A18 chip', camera: '48MP Fusion camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Camera Control. Action button. A18 power.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'White', hex: '#f2f1ed' },
+      { name: 'Pink', hex: '#e8b9ca' },
+      { name: 'Teal', hex: '#7aa6a1' },
+      { name: 'Ultramarine', hex: '#6267a9' },
+    ],
   },
   {
     id: 'iphone-16-plus', name: 'iPhone 16 Plus', generation: 16, price: 899,
     display: '6.7-inch Super Retina XDR display', chip: 'A18 chip', camera: '48MP Fusion camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'A bigger display and outstanding battery life.', finish: 'modern',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'White', hex: '#f2f1ed' },
+      { name: 'Pink', hex: '#e8b9ca' },
+      { name: 'Teal', hex: '#7aa6a1' },
+      { name: 'Ultramarine', hex: '#6267a9' },
+    ],
   },
   {
     id: 'iphone-15', name: 'iPhone 15', generation: 15, price: 699,
     display: '6.1-inch Super Retina XDR display with Dynamic Island', chip: 'A16 Bionic chip', camera: '48MP Main camera',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Dynamic Island. USB-C. A huge leap for the camera.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'Blue', hex: '#cad7dc' },
+      { name: 'Green', hex: '#cad4c5' },
+      { name: 'Yellow', hex: '#e8dfa9' },
+      { name: 'Pink', hex: '#e6c7c9' },
+    ],
   },
   {
     id: 'iphone-15-plus', name: 'iPhone 15 Plus', generation: 15, price: 799,
     display: '6.7-inch Super Retina XDR display with Dynamic Island', chip: 'A16 Bionic chip', camera: '48MP Main camera',
     storage: ['128GB', '256GB', '512GB'], tagline: 'More screen. More battery. More to love.', finish: 'modern',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'Blue', hex: '#cad7dc' },
+      { name: 'Green', hex: '#cad4c5' },
+      { name: 'Yellow', hex: '#e8dfa9' },
+      { name: 'Pink', hex: '#e6c7c9' },
+    ],
   },
   {
     id: 'iphone-15-pro', name: 'iPhone 15 Pro', generation: 15, price: 899,
     display: '6.1-inch Super Retina XDR display with ProMotion', chip: 'A17 Pro chip', camera: '48MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'Titanium design. A17 Pro. Action button.', finish: 'pro', badge: 'POPULAR',
+    colors: [
+      { name: 'Black Titanium', hex: '#3c3b3a' },
+      { name: 'White Titanium', hex: '#f2f1ed' },
+      { name: 'Blue Titanium', hex: '#4d5965' },
+      { name: 'Natural Titanium', hex: '#a99f91' },
+    ],
   },
   {
     id: 'iphone-15-pro-max', name: 'iPhone 15 Pro Max', generation: 15, price: 999,
     display: '6.7-inch Super Retina XDR display with ProMotion', chip: 'A17 Pro chip', camera: '48MP Pro system with 5x Telephoto',
     storage: ['256GB', '512GB', '1TB'], tagline: 'The ultimate titanium iPhone with 5x zoom.', finish: 'pro',
+    colors: [
+      { name: 'Black Titanium', hex: '#3c3b3a' },
+      { name: 'White Titanium', hex: '#f2f1ed' },
+      { name: 'Blue Titanium', hex: '#4d5965' },
+      { name: 'Natural Titanium', hex: '#a99f91' },
+    ],
   },
   {
     id: 'iphone-14', name: 'iPhone 14', generation: 14, price: 599,
     display: '6.1-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Advanced dual-camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'A brilliant display with dependable all-day power.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Midnight', hex: '#252b2d' },
+      { name: 'Blue', hex: '#a9c1d0' },
+      { name: 'Starlight', hex: '#f0ebe3' },
+      { name: 'Purple', hex: '#d5ced8' },
+      { name: '(PRODUCT)RED', hex: '#b51f2a' },
+    ],
   },
   {
     id: 'iphone-14-plus', name: 'iPhone 14 Plus', generation: 14, price: 699,
     display: '6.7-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Advanced dual-camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Big-screen versatility and excellent battery life.', finish: 'modern',
+    colors: [
+      { name: 'Midnight', hex: '#252b2d' },
+      { name: 'Blue', hex: '#a9c1d0' },
+      { name: 'Starlight', hex: '#f0ebe3' },
+      { name: 'Purple', hex: '#d5ced8' },
+      { name: '(PRODUCT)RED', hex: '#b51f2a' },
+    ],
   },
   {
     id: 'iphone-14-pro', name: 'iPhone 14 Pro', generation: 14, price: 799,
     display: '6.1-inch Always-On display with ProMotion', chip: 'A16 Bionic chip', camera: '48MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'Dynamic Island and a powerful 48MP Pro camera.', finish: 'pro',
+    colors: [
+      { name: 'Space Black', hex: '#343437' },
+      { name: 'Silver', hex: '#e3e2dd' },
+      { name: 'Gold', hex: '#d4c5b2' },
+      { name: 'Deep Purple', hex: '#5b5664' },
+    ],
   },
   {
     id: 'iphone-14-pro-max', name: 'iPhone 14 Pro Max', generation: 14, price: 899,
     display: '6.7-inch Always-On display with ProMotion', chip: 'A16 Bionic chip', camera: '48MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'The expansive Pro experience with all-day battery.', finish: 'pro',
+    colors: [
+      { name: 'Space Black', hex: '#343437' },
+      { name: 'Silver', hex: '#e3e2dd' },
+      { name: 'Gold', hex: '#d4c5b2' },
+      { name: 'Deep Purple', hex: '#5b5664' },
+    ],
   },
   {
     id: 'iphone-13-mini', name: 'iPhone 13 mini', generation: 13, price: 449,
     display: '5.4-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Dual 12MP camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Serious power in a delightfully compact design.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Pink', hex: '#e8c7c8' },
+      { name: 'Blue', hex: '#56798b' },
+      { name: 'Midnight', hex: '#232a2d' },
+      { name: 'Starlight', hex: '#f1ebe1' },
+      { name: '(PRODUCT)RED', hex: '#b8202a' },
+    ],
   },
   {
     id: 'iphone-13', name: 'iPhone 13', generation: 13, price: 499,
     display: '6.1-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Dual 12MP camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'A bright OLED display and excellent everyday camera.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Pink', hex: '#e8c7c8' },
+      { name: 'Blue', hex: '#56798b' },
+      { name: 'Midnight', hex: '#232a2d' },
+      { name: 'Starlight', hex: '#f1ebe1' },
+      { name: '(PRODUCT)RED', hex: '#b8202a' },
+    ],
   },
   {
     id: 'iphone-13-pro', name: 'iPhone 13 Pro', generation: 13, price: 599,
     display: '6.1-inch Super Retina XDR display with ProMotion', chip: 'A15 Bionic chip', camera: '12MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'ProMotion, pro cameras, and enduring performance.', finish: 'pro',
+    colors: [
+      { name: 'Graphite', hex: '#54524f' },
+      { name: 'Gold', hex: '#d9c7ad' },
+      { name: 'Silver', hex: '#e7e4df' },
+      { name: 'Sierra Blue', hex: '#9bb5c7' },
+    ],
   },
   {
     id: 'iphone-13-pro-max', name: 'iPhone 13 Pro Max', generation: 13, price: 649,
     display: '6.7-inch Super Retina XDR display with ProMotion', chip: 'A15 Bionic chip', camera: '12MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'A cinematic camera and a massive ProMotion display.', finish: 'pro',
+    colors: [
+      { name: 'Graphite', hex: '#54524f' },
+      { name: 'Gold', hex: '#d9c7ad' },
+      { name: 'Silver', hex: '#e7e4df' },
+      { name: 'Sierra Blue', hex: '#9bb5c7' },
+    ],
   },
   {
     id: 'iphone-12-mini', name: 'iPhone 12 mini', generation: 12, price: 349,
@@ -191,11 +448,8 @@ const IPHONE_SEEDS: IPhoneSeed[] = [
 ];
 
 const IPHONE_VARIANTS: Product[] = IPHONE_SEEDS.map((seed, index) => {
-  const imageUrl = seed.generation >= 16
-    ? IPHONE_IMAGES.latest
-    : seed.generation >= 13
-      ? IPHONE_IMAGES.modern
-      : IPHONE_IMAGES.classic;
+  const productMedia = IPHONE_PRODUCT_MEDIA[seed.id];
+  const imageUrl = productMedia?.main ?? '/images/products/apple/iphone11-main.webp';
 
   return {
     id: seed.id,
@@ -208,14 +462,13 @@ const IPHONE_VARIANTS: Product[] = IPHONE_SEEDS.map((seed, index) => {
     monthlyPrice: Number((seed.price / 24).toFixed(2)),
     rating: seed.generation >= 16 ? 4.9 : seed.generation >= 14 ? 4.8 : 4.7,
     reviewCount: Math.max(420, 9800 - index * 287),
-    colors: IPHONE_FINISHES[seed.finish],
+    colors: seed.colors ?? IPHONE_FINISHES[seed.finish],
     storageOptions: seed.storage.map((capacity, storageIndex) => ({
       capacity,
       priceDelta: [0, 100, 300, 500][storageIndex] || storageIndex * 200,
     })),
     imageUrl,
-    additionalImages: [IPHONE_IMAGES.latest, IPHONE_IMAGES.modern, IPHONE_IMAGES.classic]
-      .filter((image) => image !== imageUrl),
+    additionalImages: productMedia?.gallery ?? [],
     badge: seed.badge,
     stockUrgency: seed.generation >= 16
       ? 'Available for express delivery or pickup in Ikeja'
@@ -282,6 +535,7 @@ type CatalogSeed = {
   colors: ProductColor[];
   storage?: string[];
   image: string;
+  gallery?: string[];
   badge?: Product['badge'];
   stockUrgency?: string;
   inStock?: boolean;
@@ -306,6 +560,7 @@ const buildProduct = (seed: CatalogSeed): Product => ({
     priceDelta: [0, 100, 250, 450][index] ?? index * 200,
   })),
   imageUrl: seed.image,
+  additionalImages: seed.gallery,
   badge: seed.badge,
   stockUrgency: seed.stockUrgency,
   inStock: seed.inStock ?? true,
@@ -316,6 +571,186 @@ const buildProduct = (seed: CatalogSeed): Product => ({
 });
 
 const CATALOG_SEEDS: CatalogSeed[] = [
+  /* --- Current Apple silicon Macs ------------------------------------- */
+  {
+    id: 'macbook-air-13-m5', name: 'MacBook Air 13" (M5)', category: 'mac',
+    tagline: 'M5 power in the world’s most portable Mac.', price: 1099,
+    rating: 4.9, reviewCount: 1840, storage: ['512GB / 16GB', '1TB / 24GB', '2TB / 32GB'],
+    image: '/images/products/apple/mac/current/macbook-air-m5-hero.webp',
+    gallery: ['/images/products/apple/mac/current/macbook-air-m5-lifestyle.webp', '/images/products/apple/mac/macbook-air-m3-front.webp'], badge: 'NEW',
+    colors: [{ name: 'Sky Blue', hex: '#b8c9d6' }, { name: 'Midnight', hex: '#2c3641' }, { name: 'Starlight', hex: '#e2d8c3' }, { name: 'Silver', hex: '#e3e4e5' }],
+    specs: { Chip: 'Apple M5 with 10-core CPU and up to 10-core GPU', Display: '13.6-inch Liquid Retina', Memory: '16GB unified memory standard', Wireless: 'Wi-Fi 7 and Bluetooth 6', Battery: 'Up to 18 hours' },
+    description: 'The 13-inch MacBook Air combines M5 performance, 512GB starting storage, Wi-Fi 7 and all-day battery life in a silent, fanless design.',
+  },
+  {
+    id: 'macbook-air-15-m5', name: 'MacBook Air 15" (M5)', category: 'mac',
+    tagline: 'More room to work. Still impossibly light.', price: 1299,
+    rating: 4.9, reviewCount: 1320, storage: ['512GB / 16GB', '1TB / 24GB', '2TB / 32GB'],
+    image: '/images/products/apple/mac/current/macbook-air-m5-hero.webp',
+    gallery: ['/images/products/apple/mac/current/macbook-air-m5-lifestyle.webp', '/images/products/apple/mac/macbook-air-m3-keyboard.webp'], badge: 'NEW',
+    colors: [{ name: 'Sky Blue', hex: '#b8c9d6' }, { name: 'Midnight', hex: '#2c3641' }, { name: 'Starlight', hex: '#e2d8c3' }, { name: 'Silver', hex: '#e3e4e5' }],
+    specs: { Chip: 'Apple M5 with 10-core CPU and up to 10-core GPU', Display: '15.3-inch Liquid Retina', Memory: '16GB unified memory standard', Camera: '12MP Center Stage camera', Battery: 'Up to 18 hours' },
+    description: 'The 15-inch MacBook Air delivers the same fanless M5 performance with a larger canvas, six-speaker audio and roomier keyboard deck.',
+  },
+  {
+    id: 'macbook-pro-14-m5', name: 'MacBook Pro 14" (M5)', category: 'mac',
+    tagline: 'Pro display. M5 speed. All-day endurance.', price: 1699,
+    rating: 4.9, reviewCount: 1760, storage: ['1TB / 16GB', '2TB / 24GB', '4TB / 32GB'],
+    image: '/images/products/apple/mac/current/macbook-pro-m5-cutout.webp',
+    gallery: ['/images/products/apple/mac/macbook-pro-m3-side.webp', '/images/products/apple/mac/macbook-pro-m3-top.webp'], badge: 'NEW',
+    colors: [{ name: 'Space Black', hex: '#1f2022' }, { name: 'Silver', hex: '#e3e4e5' }],
+    specs: { Chip: 'Apple M5 with next-generation GPU', Display: '14.2-inch Liquid Retina XDR', Storage: '1TB SSD standard', Camera: '12MP Center Stage camera', Battery: 'Up to 24 hours' },
+    description: 'The 14-inch MacBook Pro with M5 brings faster storage, next-generation AI performance and the Liquid Retina XDR display to everyday pro workflows.',
+  },
+  {
+    id: 'macbook-pro-14-m5-pro', name: 'MacBook Pro 14" (M5 Pro)', category: 'mac',
+    tagline: 'Breakthrough pro performance, wherever work takes you.', price: 2199,
+    rating: 4.9, reviewCount: 980, storage: ['1TB / 24GB', '2TB / 48GB', '4TB / 64GB'],
+    image: '/images/products/apple/mac/current/macbook-pro-m5-cutout.webp',
+    gallery: ['/images/products/apple/mac/macbook-pro-m3-keyboard.webp', '/images/products/apple/mac/macbook-pro-m3-side.webp'], badge: 'NEW',
+    colors: [{ name: 'Space Black', hex: '#1f2022' }, { name: 'Silver', hex: '#e3e4e5' }],
+    specs: { Chip: 'Apple M5 Pro with up to 18-core CPU', Graphics: 'Next-generation GPU with Neural Accelerators', Display: '14.2-inch Liquid Retina XDR', Ports: 'Thunderbolt 5, HDMI, SDXC and MagSafe 3', Battery: 'Up to 24 hours' },
+    description: 'M5 Pro gives developers, photographers and engineers more CPU, graphics and memory bandwidth in a compact 14-inch pro notebook.',
+  },
+  {
+    id: 'macbook-pro-16-m5-pro-max', name: 'MacBook Pro 16" (M5 Pro / Max)', category: 'mac',
+    tagline: 'The ultimate Mac laptop for the biggest workflows.', price: 2699,
+    rating: 4.9, reviewCount: 740, storage: ['1TB / M5 Pro', '2TB / M5 Max', '4TB / M5 Max', '8TB / M5 Max'],
+    image: '/images/products/apple/mac/current/macbook-pro-m5-cutout.webp',
+    gallery: ['/images/products/apple/mac/macbook-pro-m3-keyboard.webp', '/images/products/apple/mac/macbook-pro-m3-top.webp'], badge: 'NEW',
+    colors: [{ name: 'Space Black', hex: '#1f2022' }, { name: 'Silver', hex: '#e3e4e5' }],
+    specs: { Chip: 'Apple M5 Pro or M5 Max', Display: '16.2-inch Liquid Retina XDR', Memory: 'Up to 128GB unified memory', Storage: 'Up to 8TB SSD', Connectivity: 'Thunderbolt 5, HDMI, SDXC and MagSafe 3' },
+    description: 'The 16-inch MacBook Pro is the maximum-performance Apple notebook, configurable with M5 Pro or M5 Max for massive media, 3D and AI workloads.',
+  },
+  {
+    id: 'imac-24-m4', name: 'iMac 24" (M4)', category: 'mac',
+    tagline: 'A brilliant all-in-one in seven joyful colours.', price: 1299,
+    rating: 4.8, reviewCount: 2960, storage: ['256GB / 16GB', '512GB / 24GB', '1TB / 32GB'],
+    image: '/images/products/apple/mac/current/imac-m4-hero.webp',
+    gallery: ['/images/products/apple/mac/current/imac-m4-photoshop.webp'], badge: 'POPULAR',
+    colors: [{ name: 'Blue', hex: '#8fb4d3' }, { name: 'Green', hex: '#9cc7ad' }, { name: 'Pink', hex: '#e7a1ad' }, { name: 'Orange', hex: '#e8a06a' }, { name: 'Purple', hex: '#a99ac8' }, { name: 'Yellow', hex: '#ead674' }, { name: 'Silver', hex: '#dedfe0' }],
+    specs: { Chip: 'Apple M4', Display: '24-inch 4.5K Retina display', Camera: '12MP Center Stage camera with Desk View', Memory: '16GB unified memory standard', Connectivity: 'Up to four Thunderbolt 4 ports' },
+    description: 'iMac pairs the M4 chip with a 24-inch 4.5K display, excellent camera and colour-matched accessories in an exceptionally thin all-in-one.',
+  },
+  {
+    id: 'mac-mini-m4', name: 'Mac mini (M4)', category: 'mac',
+    tagline: 'Five inches square. Giant capability.', price: 599,
+    rating: 4.8, reviewCount: 4120, storage: ['256GB / 16GB', '512GB / 24GB', '1TB / 32GB'],
+    image: '/images/products/apple/mac/current/mac-mini-m4-hero.webp',
+    gallery: ['/images/products/apple/mac/current/mac-mini-m4-studio.webp'], badge: 'BEST SELLER',
+    colors: [{ name: 'Silver', hex: '#dedfe0' }],
+    specs: { Chip: 'Apple M4 with 10-core CPU and 10-core GPU', Memory: '16GB unified memory standard', Size: '5 by 5-inch enclosure', Ports: 'Front USB-C plus three rear Thunderbolt 4 ports', Displays: 'Supports up to three displays' },
+    description: 'The redesigned Mac mini puts M4 performance and useful front ports into a remarkably small desktop made for home, studio and business setups.',
+  },
+  {
+    id: 'mac-mini-m4-pro', name: 'Mac mini (M4 Pro)', category: 'mac',
+    tagline: 'Small footprint. Serious pro power.', price: 1399,
+    rating: 4.9, reviewCount: 1870, storage: ['512GB / 24GB', '1TB / 48GB', '2TB / 64GB'],
+    image: '/images/products/apple/mac/current/mac-mini-m4-hero.webp',
+    gallery: ['/images/products/apple/mac/current/mac-mini-m4-studio.webp'], badge: 'POPULAR',
+    colors: [{ name: 'Silver', hex: '#dedfe0' }],
+    specs: { Chip: 'Apple M4 Pro with up to 14-core CPU and 20-core GPU', Memory: 'Up to 64GB unified memory', Ports: 'Three Thunderbolt 5 ports plus front USB-C', Size: '5 by 5-inch enclosure', Displays: 'Supports up to three displays' },
+    description: 'Mac mini with M4 Pro adds Thunderbolt 5, more memory bandwidth and substantial CPU and GPU headroom for compact pro workstations.',
+  },
+  {
+    id: 'mac-studio-m4-max', name: 'Mac Studio (M4 Max)', category: 'mac',
+    tagline: 'A compact creative studio with colossal performance.', price: 1999,
+    rating: 4.9, reviewCount: 860, storage: ['512GB / 36GB', '1TB / 64GB', '2TB / 128GB'],
+    image: '/images/products/apple/mac/current/mac-studio-hero.webp',
+    gallery: ['/images/products/apple/mac/current/mac-studio-workflow.webp'], badge: 'NEW',
+    colors: [{ name: 'Silver', hex: '#dedfe0' }],
+    specs: { Chip: 'Apple M4 Max with up to 16-core CPU and 40-core GPU', Memory: 'Up to 128GB unified memory', Storage: 'Up to 8TB SSD', Ports: 'Thunderbolt 5, HDMI, 10Gb Ethernet, SDXC', Displays: 'Supports up to five displays' },
+    description: 'Mac Studio with M4 Max is built for video, photography, code and 3D work that needs desktop-class performance without a tower.',
+  },
+  {
+    id: 'mac-studio-m3-ultra', name: 'Mac Studio (M3 Ultra)', category: 'mac',
+    tagline: 'The most extreme unified-memory Mac.', price: 3999,
+    rating: 4.9, reviewCount: 420, storage: ['1TB / 96GB', '2TB / 256GB', '4TB / 512GB'],
+    image: '/images/products/apple/mac/current/mac-studio-hero.webp',
+    gallery: ['/images/products/apple/mac/current/mac-studio-workflow.webp'], badge: 'NEW',
+    colors: [{ name: 'Silver', hex: '#dedfe0' }],
+    specs: { Chip: 'Apple M3 Ultra with up to 32-core CPU and 80-core GPU', Memory: 'Up to 512GB unified memory', Bandwidth: 'Over 800GB/s memory bandwidth', Storage: 'Up to 16TB SSD', Displays: 'Supports up to eight displays' },
+    description: 'Mac Studio with M3 Ultra is designed for giant datasets, local AI models, feature-film timelines and other workloads that need up to 512GB of unified memory.',
+  },
+  {
+    id: 'mac-pro-m2-ultra', name: 'Mac Pro (M2 Ultra)', category: 'mac',
+    tagline: 'Apple silicon power with PCIe expansion.', price: 6999,
+    rating: 4.8, reviewCount: 190, storage: ['1TB / 64GB', '2TB / 128GB', '4TB / 192GB'],
+    image: '/images/products/apple/mac/current/mac-pro-m2-internal.webp',
+    gallery: ['/images/products/apple/mac/current/mac-pro-lineup.webp'],
+    colors: [{ name: 'Silver', hex: '#dedfe0' }],
+    specs: { Chip: 'Apple M2 Ultra with 24-core CPU', Graphics: 'Up to 76-core GPU', Memory: 'Up to 192GB unified memory', Expansion: 'Seven PCIe expansion slots', Connectivity: 'Eight Thunderbolt 4 ports and dual 10Gb Ethernet' },
+    description: 'Mac Pro combines M2 Ultra performance with seven PCIe slots for specialized audio, video and networking workflows that require internal expansion.',
+  },
+
+  /* --- Current iPad, Watch and AirPods essentials --------------------- */
+  {
+    id: 'ipad-air-11-m3', name: 'iPad Air 11" (M3)', category: 'ipad',
+    tagline: 'Serious M3 performance in a wonderfully portable iPad.', price: 599,
+    rating: 4.8, reviewCount: 2740, storage: ['128GB', '256GB', '512GB', '1TB'],
+    image: '/images/products/apple/ipad/current/ipad-air-m3-hero.webp', gallery: ['/images/products/apple/ipad/current/ipad-air-m3-keyboard.webp'], badge: 'BEST SELLER',
+    colors: [{ name: 'Blue', hex: '#a7b8c7' }, { name: 'Purple', hex: '#b4acc3' }, { name: 'Starlight', hex: '#e5dfd5' }, { name: 'Space Gray', hex: '#68696b' }],
+    specs: { Chip: 'Apple M3', Display: '11-inch Liquid Retina', Camera: '12MP landscape Center Stage camera', Accessories: 'Apple Pencil Pro and Magic Keyboard support', Connectivity: 'Wi-Fi 6E with optional 5G' },
+    description: 'The 11-inch iPad Air brings M3 graphics, Apple Intelligence and Pencil Pro support to a light, versatile tablet for work and creativity.',
+  },
+  {
+    id: 'ipad-air-13-m3', name: 'iPad Air 13" (M3)', category: 'ipad',
+    tagline: 'A bigger canvas for work, study and creativity.', price: 799,
+    rating: 4.8, reviewCount: 1960, storage: ['128GB', '256GB', '512GB', '1TB'],
+    image: '/images/products/apple/ipad/current/ipad-air-m3-hero.webp', gallery: ['/images/products/apple/ipad/current/ipad-air-m3-keyboard.webp'], badge: 'POPULAR',
+    colors: [{ name: 'Blue', hex: '#a7b8c7' }, { name: 'Purple', hex: '#b4acc3' }, { name: 'Starlight', hex: '#e5dfd5' }, { name: 'Space Gray', hex: '#68696b' }],
+    specs: { Chip: 'Apple M3', Display: '13-inch Liquid Retina', Camera: '12MP landscape Center Stage camera', Accessories: 'Apple Pencil Pro and Magic Keyboard support', Connectivity: 'Wi-Fi 6E with optional 5G' },
+    description: 'The 13-inch iPad Air gives notes, illustration, video and multitasking more room while keeping the thin, portable Air design.',
+  },
+  {
+    id: 'airpods-4', name: 'AirPods 4', category: 'airpods',
+    tagline: 'A redesigned open-ear fit with H2-powered sound.', price: 129,
+    rating: 4.7, reviewCount: 8320, image: '/images/products/apple/audio/current/airpods4-hero.webp', gallery: ['/images/products/apple/audio/current/airpods4-charging.webp'], badge: 'BEST SELLER',
+    colors: [{ name: 'White', hex: '#f4f4f2' }],
+    specs: { Chip: 'Apple H2', Audio: 'Personalized Spatial Audio and Voice Isolation', Controls: 'Force sensor on each stem', Case: 'USB-C charging case', Battery: 'Up to 30 hours with the case' },
+    description: 'AirPods 4 improve comfort, sound and calls with the H2 chip, Personalized Spatial Audio and Apple’s smallest USB-C AirPods case.',
+  },
+  {
+    id: 'airpods-4-anc', name: 'AirPods 4 with ANC', category: 'airpods',
+    tagline: 'Active Noise Cancellation in an open-ear design.', price: 179,
+    rating: 4.8, reviewCount: 6470, image: '/images/products/apple/audio/current/airpods4-hero.webp', gallery: ['/images/products/apple/audio/current/airpods4-charging.webp'], badge: 'POPULAR',
+    colors: [{ name: 'White', hex: '#f4f4f2' }],
+    specs: { Chip: 'Apple H2', Audio: 'Active Noise Cancellation and Adaptive Audio', Awareness: 'Transparency and Conversation Awareness', Case: 'Wireless charging with Find My speaker', Battery: 'Up to 30 hours with the case' },
+    description: 'AirPods 4 with ANC add noise control, Adaptive Audio and a wireless charging case while retaining the comfortable open-ear fit.',
+  },
+  {
+    id: 'airpods-pro-3', name: 'AirPods Pro 3', category: 'airpods',
+    tagline: 'Next-generation ANC, heart-rate sensing and a more secure fit.', price: 249,
+    rating: 4.9, reviewCount: 4160, image: '/images/products/apple/audio/current/airpods-pro3-hero.webp', badge: 'NEW',
+    colors: [{ name: 'White', hex: '#f4f4f2' }],
+    specs: { Audio: 'Next-generation Adaptive EQ and spatial audio', Cancellation: 'Up to 2x more ANC than AirPods Pro 2', Fitness: 'Heart-rate sensing for workouts', Fit: 'Five foam-infused ear-tip sizes', Battery: 'Up to 8 hours with ANC' },
+    description: 'AirPods Pro 3 improve noise cancellation, fit and battery life, and add heart-rate sensing for workouts plus Live Translation support.',
+  },
+  {
+    id: 'apple-watch-series-11', name: 'Apple Watch Series 11', category: 'watch',
+    tagline: 'Health insights, sleep score and 24-hour battery life.', price: 399,
+    rating: 4.9, reviewCount: 3820, image: '/images/products/apple/watch/current/watch-series11-hero.webp', gallery: ['/images/products/apple/watch/current/watch-series11-health.webp'], badge: 'NEW',
+    colors: [{ name: 'Jet Black', hex: '#111214' }, { name: 'Space Gray', hex: '#55575a' }, { name: 'Rose Gold', hex: '#d7aa9c' }, { name: 'Silver', hex: '#dedfe0' }],
+    specs: { Display: 'Always-On Retina display with tougher Ion-X glass', Health: 'Hypertension notifications, ECG and sleep score', Battery: 'Up to 24 hours', Charging: '15 minutes provides up to 8 hours', Connectivity: 'Optional 5G cellular' },
+    description: 'Series 11 adds longer battery life, sleep score and hypertension insights in the familiar thin Apple Watch design.',
+  },
+  {
+    id: 'apple-watch-ultra-3', name: 'Apple Watch Ultra 3', category: 'watch',
+    tagline: 'The ultimate adventure watch, now with satellite connection.', price: 799,
+    rating: 4.9, reviewCount: 2140, image: '/images/products/apple/watch/current/watch-ultra3-cutout.webp', badge: 'NEW',
+    colors: [{ name: 'Natural Titanium', hex: '#a8a9ab' }, { name: 'Black Titanium', hex: '#1c1d1f' }],
+    specs: { Display: 'Largest Apple Watch display with LTPO3', Safety: 'Emergency SOS and Messages via satellite', GPS: 'Precision dual-frequency GPS', Battery: 'Up to 42 hours, 72 in Low Power Mode', Water: 'WR100 and recreational scuba support' },
+    description: 'Ultra 3 adds satellite communication, a larger display, 5G and 42-hour battery life for athletes and off-grid adventures.',
+  },
+  {
+    id: 'apple-watch-se-3', name: 'Apple Watch SE 3', category: 'watch',
+    tagline: 'Essential Apple Watch features at the best value.', price: 249,
+    rating: 4.7, reviewCount: 3280, image: '/images/products/apple/watch/current/watch-se3-hero.webp', badge: 'POPULAR',
+    colors: [{ name: 'Midnight', hex: '#272729' }, { name: 'Starlight', hex: '#e5dfd5' }],
+    specs: { Chip: 'Apple S10', Display: 'Always-On Retina display', Health: 'Sleep score, temperature sensing and sleep apnea notifications', Battery: '18 hours with fast charging', Connectivity: 'Optional 5G cellular' },
+    description: 'Apple Watch SE 3 brings the Always-On display, fast charging, S10 gestures and key health and safety features to the value line.',
+  },
+
   /* --- Samsung --------------------------------------------------------- */
   {
     id: 'galaxy-s25-ultra', name: 'Galaxy S25 Ultra', category: 'samsung',
@@ -836,7 +1271,7 @@ const CATALOG_SEEDS: CatalogSeed[] = [
 
   /* --- Power & charging ------------------------------------------------- */
   {
-    id: 'anker-737-powerbank', name: 'Anker 737 Power Bank (24K)', category: 'power',
+    id: 'anker-737-powerbank', name: 'Anker 737 Power Bank (24K)', category: 'anker',
     tagline: '24,000mAh and 140W — it charges laptops.',
     price: 150, rating: 4.7, reviewCount: 6480,
     image: CATALOG_IMAGES.powerBank, badge: 'BEST SELLER',
@@ -852,7 +1287,7 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     description: 'Big enough to charge a MacBook Pro from empty and still refill a phone twice. The digital readout tells you exactly what is going in and out.',
   },
   {
-    id: 'anker-gan-65w', name: 'Anker 65W GaN Charger', category: 'power',
+    id: 'anker-gan-65w', name: 'Anker 65W GaN Charger', category: 'anker',
     tagline: 'One small brick for laptop, tablet and phone.',
     price: 60, rating: 4.8, reviewCount: 9120,
     image: CATALOG_IMAGES.charger, badge: 'POPULAR',
@@ -868,6 +1303,55 @@ const CATALOG_SEEDS: CatalogSeed[] = [
       Plug: 'UK three-pin',
     },
     description: 'Replaces the three separate bricks in your bag. Fast-charges a MacBook Air at full speed while topping up a phone and earbuds alongside it.',
+  },
+  {
+    id: 'anker-maggo-3in1', name: 'Anker MagGo 3-in-1 Charging Station', category: 'anker',
+    tagline: 'Foldable 15W Qi2 charging for iPhone, Watch and AirPods.',
+    price: 110, originalPrice: 130, rating: 4.9, reviewCount: 3410,
+    image: CATALOG_IMAGES.charger, badge: 'NEW',
+    colors: [
+      { name: 'Space Black', hex: '#1f2023' },
+      { name: 'Glacier White', hex: '#f2f2f0' },
+    ],
+    specs: {
+      Wireless: '15W Qi2 fast charging',
+      Structure: 'Compact foldable design',
+      Compatibility: 'iPhone 12 and later, Apple Watch and AirPods',
+      Included: '40W USB-C wall charger and cable',
+    },
+    description: 'A tidy desk and travel charger. Set your iPhone upright for StandBy while charging your Watch and wireless earbuds at the same time.',
+  },
+  {
+    id: 'anker-prime-20k', name: 'Anker Prime 20,000mAh Power Bank (200W)', category: 'anker',
+    tagline: '200W total output for laptops, phones and everything between.',
+    price: 180, originalPrice: 210, rating: 4.9, reviewCount: 1850,
+    image: CATALOG_IMAGES.powerBank, badge: 'HOT DEAL',
+    colors: [{ name: 'Anker Black', hex: '#111215' }],
+    specs: {
+      Capacity: '20,000mAh',
+      Output: '200W total across two USB-C ports and USB-A',
+      Display: 'Colour status display with live power metrics',
+      Recharge: 'Up to 100W USB-C input',
+    },
+    description: 'Built for demanding travel days. It can fast-charge two laptops and gives a clear live readout of power, temperature and remaining runtime.',
+  },
+  {
+    id: 'anker-soundcore-liberty4', name: 'Anker Soundcore Liberty 4 NC', category: 'anker',
+    tagline: 'Adaptive noise cancellation with long-haul battery life.',
+    price: 100, originalPrice: 120, rating: 4.8, reviewCount: 5290,
+    image: CATALOG_IMAGES.headphonesAlt, badge: 'BEST SELLER',
+    colors: [
+      { name: 'Velvet Black', hex: '#1a1a1a' },
+      { name: 'Pastel Blue', hex: '#9bbcd4' },
+      { name: 'Clear White', hex: '#f4f4f4' },
+    ],
+    specs: {
+      ANC: 'Adaptive ANC 2.0',
+      Battery: 'Up to 10 hours, 50 hours with the case',
+      Audio: '11mm driver with LDAC support',
+      Calls: 'Six-microphone call system',
+    },
+    description: 'Strong noise cancellation, dependable calls and enough battery for a full week of commuting at a much more approachable price.',
   },
   {
     id: 'baseus-20k-powerbank', name: 'Baseus 20,000mAh Power Bank', category: 'power',
@@ -953,7 +1437,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-15-pro-max', name: 'iPhone 15 Pro Max', category: 'iphone',
     tagline: 'Titanium Pro Max, inspected and battery-tested.',
     price: 780, originalPrice: 999, rating: 4.8, reviewCount: 0,
-    storage: ['256GB'], image: IPHONE_IMAGES.modern,
+    storage: ['256GB'], image: '/images/products/apple/iphone15pro-cutout.webp',
+    gallery: ['/images/products/apple/iphone15pro-natural.webp'],
     grade: 'Excellent', batteryHealth: 92, warrantyMonths: 6, unitsAvailable: 2,
     note: 'Faint micro-scratches on the frame, screen is flawless. Original box included.',
     colors: [{ name: 'Natural Titanium', hex: '#aaa196' }],
@@ -970,7 +1455,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-14-pro', name: 'iPhone 14 Pro', category: 'iphone',
     tagline: 'Dynamic Island and a 48MP Pro camera, for much less.',
     price: 520, originalPrice: 799, rating: 4.7, reviewCount: 0,
-    storage: ['128GB', '256GB'], image: IPHONE_IMAGES.modern, badge: 'POPULAR',
+    storage: ['128GB', '256GB'], image: '/images/products/apple/iphone14pro-cutout.webp', badge: 'POPULAR',
+    gallery: ['/images/products/apple/iphone14pro-purple.webp'],
     grade: 'Very good', batteryHealth: 88, warrantyMonths: 6, unitsAvailable: 4,
     note: 'Light wear on the corners from case use. No screen marks.',
     colors: [{ name: 'Deep Purple', hex: '#584f61' }, { name: 'Space Black', hex: '#2f3032' }],
@@ -987,7 +1473,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-13', name: 'iPhone 13', category: 'iphone',
     tagline: 'Still the best-value iPhone we stock.',
     price: 330, originalPrice: 499, rating: 4.6, reviewCount: 0,
-    storage: ['128GB'], image: IPHONE_IMAGES.modern, badge: 'BEST SELLER',
+    storage: ['128GB'], image: '/images/products/apple/iphone13.webp', badge: 'BEST SELLER',
+    gallery: ['/images/products/apple/iphone13lineup.webp'],
     grade: 'Very good', batteryHealth: 86, warrantyMonths: 6, unitsAvailable: 7,
     note: 'Visible but minor scuffs on the frame. Screen and camera glass clean.',
     colors: [{ name: 'Midnight', hex: '#272729' }, { name: 'Starlight', hex: '#f3f2ee' }],
@@ -1004,7 +1491,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-12', name: 'iPhone 12', category: 'iphone',
     tagline: 'OLED and 5G on a tight budget.',
     price: 240, originalPrice: 399, rating: 4.5, reviewCount: 0,
-    storage: ['64GB', '128GB'], image: IPHONE_IMAGES.classic,
+    storage: ['64GB', '128GB'], image: '/images/products/apple/iphone12-main.webp',
+    gallery: ['/images/products/apple/iphone12-blue.webp'],
     grade: 'Good', batteryHealth: 83, warrantyMonths: 3, unitsAvailable: 5,
     note: 'Honest daily wear on the frame and back. Fully functional, screen unmarked.',
     colors: [{ name: 'Black', hex: '#202124' }, { name: 'Blue', hex: '#31577d' }],
@@ -1021,7 +1509,11 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-macbook-air-m2', name: 'MacBook Air 13" (M2)', category: 'mac',
     tagline: 'Silent, light, and plenty fast for years yet.',
     price: 720, originalPrice: 1099, rating: 4.8, reviewCount: 0,
-    storage: ['256GB', '512GB'], image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=85',
+    storage: ['256GB', '512GB'], image: '/images/products/apple/mac/macbook-air-m2-hero.webp',
+    gallery: [
+      '/images/products/apple/mac/macbook-air-m2-colors.webp',
+      '/images/products/apple/mac/macbook-air-m2-ports.webp',
+    ],
     grade: 'Excellent', batteryHealth: 94, warrantyMonths: 6, unitsAvailable: 3,
     note: 'Under 80 charge cycles. No marks on the lid or palm rest.',
     colors: [{ name: 'Midnight', hex: '#2e3642' }, { name: 'Starlight', hex: '#efe6d8' }],
@@ -1038,7 +1530,11 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-macbook-pro-14-m1', name: 'MacBook Pro 14" (M1 Pro)', category: 'mac',
     tagline: 'Pro display, ports, and real sustained performance.',
     price: 950, originalPrice: 1599, rating: 4.8, reviewCount: 0,
-    storage: ['512GB', '1TB'], image: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=900&q=85',
+    storage: ['512GB', '1TB'], image: '/images/products/apple/mac/macbook-pro-m1-hero.webp',
+    gallery: [
+      '/images/products/apple/mac/macbook-pro-m1-body.webp',
+      '/images/products/apple/mac/macbook-pro-m1-ports.webp',
+    ],
     grade: 'Very good', batteryHealth: 89, warrantyMonths: 6, unitsAvailable: 2,
     note: 'Light scuffing on the base. Screen and keyboard in excellent order.',
     colors: [{ name: 'Space Grey', hex: '#575759' }],
@@ -1089,7 +1585,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-ipad-pro-11-m1', name: 'iPad Pro 11" (M1)', category: 'ipad',
     tagline: 'Desktop-class chip, tablet price.',
     price: 430, originalPrice: 899, rating: 4.7, reviewCount: 0,
-    storage: ['128GB', '256GB'], image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=900&q=85',
+    storage: ['128GB', '256GB'], image: '/images/products/apple/ipad/ipad-pro-m1-hero.webp',
+    gallery: ['/images/products/apple/ipad/ipad-pro-m1-keyboard.webp'],
     grade: 'Excellent', batteryHealth: 93, warrantyMonths: 6, unitsAvailable: 2,
     note: 'No visible wear. Screen protector fitted from new.',
     colors: [{ name: 'Space Grey', hex: '#575759' }, { name: 'Silver', hex: '#dcdde0' }],
@@ -1123,7 +1620,7 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-apple-watch-s9', name: 'Apple Watch Series 9', category: 'watch',
     tagline: 'Double tap and a brighter display, pre-owned.',
     price: 210, originalPrice: 399, rating: 4.6, reviewCount: 0,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=85',
+    image: '/images/products/apple/watch/watch-series-9-lineup.webp',
     grade: 'Excellent', batteryHealth: 91, warrantyMonths: 6, unitsAvailable: 3,
     note: 'Case and screen unmarked. Supplied with a new replacement band.',
     colors: [{ name: 'Midnight', hex: '#272729' }, { name: 'Starlight', hex: '#f3f2ee' }],
@@ -1140,7 +1637,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-airpods-pro-2', name: 'AirPods Pro (2nd gen)', category: 'airpods',
     tagline: 'Sanitised, tested, with new ear tips.',
     price: 130, originalPrice: 249, rating: 4.5, reviewCount: 0,
-    image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=900&q=85',
+    image: '/images/products/apple/audio/airpods-pro-2-hero.webp',
+    gallery: ['/images/products/apple/audio/airpods-pro-2-usbc.webp'],
     grade: 'Very good', warrantyMonths: 3, unitsAvailable: 5,
     note: 'Case shows light scuffing. Ear tips replaced with new, buds sanitised.',
     colors: [{ name: 'White', hex: '#f4f4f2' }],
@@ -1173,11 +1671,11 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Only 3 left for pickup in Ikeja',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/iphone-16-pro-cutout.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/iphone-16-pro-lineup-cutout.webp',
+      '/images/products/apple/iphone16pro-store.webp',
+      '/images/products/apple/iphone16-camera-control.webp',
     ],
     colors: [
       { name: 'Desert Titanium', hex: '#C2A385' },
@@ -1236,10 +1734,11 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'High Demand — Order within 1 hr for Free Express Delivery',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/iphone-16-pro-cutout.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/iphone-16-pro-lineup-cutout.webp',
+      '/images/products/apple/iphone16pro-store.webp',
+      '/images/products/apple/iphone16-camera-control.webp',
     ],
     colors: [
       { name: 'Desert Titanium', hex: '#C2A385' },
@@ -1287,10 +1786,10 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Includes a free ₦225,000 education store credit',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/mac/macbook-air-m3-hero.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/mac/macbook-air-m3-front.webp',
+      '/images/products/apple/mac/macbook-air-m3-keyboard.webp',
     ],
     colors: [
       { name: 'Midnight', hex: '#2C3641' },
@@ -1338,9 +1837,10 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'In stock for pickup today in Ikeja',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/mac/macbook-pro-m3-keyboard.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/mac/macbook-pro-m3-side.webp',
+      '/images/products/apple/mac/macbook-pro-m3-top.webp',
     ],
     colors: [
       { name: 'Space Black', hex: '#1F2022' },
@@ -1385,7 +1885,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Ships Free in 2 Days',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/ipad/ipad-pro-m4-silver.webp',
+    additionalImages: ['/images/products/apple/ipad/ipad-pro-m4-profile.webp'],
     colors: [
       { name: 'Space Black', hex: '#212224' },
       { name: 'Silver', hex: '#E2E3E5' }
@@ -1428,7 +1929,7 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Order in next 2 hours for Same-Day Store Pickup',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/watch/watch-ultra-2-trail-cutout.webp',
     colors: [
       { name: 'Satin Black Titanium', hex: '#1C1D1F' },
       { name: 'Natural Titanium', hex: '#A8A9AB' }
@@ -1468,7 +1969,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Save $50 Instant Discount — Free Engraving Available',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/audio/airpods-pro-2-hero.webp',
+    additionalImages: ['/images/products/apple/audio/airpods-pro-2-usbc.webp'],
     colors: [
       { name: 'White', hex: '#FFFFFF' }
     ],
@@ -1505,7 +2007,7 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'In Stock in Midnight and Starlight',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/audio/airpods-max-colors.webp',
     colors: [
       { name: 'Midnight', hex: '#212B35' },
       { name: 'Starlight', hex: '#E4DDD2' },
@@ -1535,7 +2037,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Top Seller — Over 5,000 bought this week',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1628191081676-8f40d4ce6c44?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/accessories/airtag-hero.webp',
+    additionalImages: ['/images/products/apple/accessories/airtag-accessories.webp'],
     colors: [
       { name: 'Silver / White', hex: '#EDEDED' }
     ],
@@ -1560,7 +2063,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Frequently Bought with iPhone 16 Pro',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/accessories/magsafe-charger.webp',
+    additionalImages: ['/images/products/apple/accessories/magsafe-charger-angle.webp'],
     colors: [
       { name: 'Woven Braided White', hex: '#F0ECE8' }
     ],
@@ -1583,7 +2087,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     reviewCount: 2840,
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/accessories/iphone16pro-case.webp',
+    additionalImages: ['/images/products/apple/accessories/iphone16pro-case-angle.webp'],
     colors: [
       { name: 'Star Fruit', hex: '#E9E47A' },
       { name: 'Ultramarine', hex: '#3C4983' },
@@ -1613,7 +2118,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Save $30 Instant Savings Today',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/watch/watch-series-10-hero.webp',
+    additionalImages: ['/images/products/apple/watch/watch-series-10-lineup.webp'],
     colors: [
       { name: 'Jet Black', hex: '#0D0E10' },
       { name: 'Rose Gold', hex: '#E0B5A6' },

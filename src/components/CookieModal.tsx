@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Cookie, X } from 'lucide-react';
 
 interface CookieModalProps {
@@ -6,75 +6,135 @@ interface CookieModalProps {
   onClose: () => void;
 }
 
+const CONSENT_KEY = 'techiesuite_cookie_consent';
+
 export const CookieModal: React.FC<CookieModalProps> = ({ isOpen, onClose }) => {
+  const [showPreferences, setShowPreferences] = useState(false);
+  const [analytics, setAnalytics] = useState(false);
+  const [personalisation, setPersonalisation] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
-  const handleAccept = () => {
+  const saveConsent = (next: { analytics: boolean; personalisation: boolean }) => {
     try {
-      localStorage.setItem('techiesuite_cookie_consent', 'accepted');
+      localStorage.setItem(
+        CONSENT_KEY,
+        JSON.stringify({ essential: true, ...next, updatedAt: new Date().toISOString() }),
+      );
     } catch {
-      // ignore storage errors
-    }
-    onClose();
-  };
-
-  const handlePreferences = () => {
-    try {
-      localStorage.setItem('techiesuite_cookie_consent', 'preferences');
-    } catch {
-      // ignore storage errors
+      // The choice still applies for this visit when storage is unavailable.
     }
     onClose();
   };
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-[100] max-w-md w-full">
-      <div className="relative bg-white rounded-2xl p-6 shadow-2xl border border-hairline-soft/80 animate-scale-in">
-        {/* Clickaway cancel at top right corner */}
+    <section
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cookie-title"
+      className="fixed inset-x-4 bottom-4 z-[100] ml-auto w-auto max-w-md sm:bottom-6 sm:right-6"
+    >
+      <div className="relative rounded-2xl border border-hairline-soft/80 bg-white p-6 shadow-2xl animate-scale-in">
         <button
+          type="button"
           onClick={onClose}
-          aria-label="Close cookie message"
-          className="absolute top-4 right-4 p-1.5 text-ink-tertiary hover:text-ink hover:bg-canvas rounded-full transition-colors"
+          aria-label="Close cookie settings"
+          className="absolute right-4 top-4 rounded-full p-1.5 text-ink-tertiary transition-colors hover:bg-canvas hover:text-ink"
         >
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" />
         </button>
 
-        {/* Content & Layout */}
         <div className="flex items-start gap-3.5 pr-6">
-          <div className="p-2.5 bg-accent/10 text-accent rounded-xl shrink-0 mt-0.5">
-            <Cookie className="w-5 h-5" />
+          <div className="mt-0.5 shrink-0 rounded-xl bg-accent/10 p-2.5 text-accent">
+            <Cookie className="h-5 w-5" />
           </div>
+          <div className="min-w-0 flex-1">
+            <h2 id="cookie-title" className="text-body font-semibold text-ink">Your privacy, your choice.</h2>
+            <p className="mt-1.5 text-footnote leading-relaxed text-ink-secondary">
+              Essential storage keeps your bag and preferences working. Optional cookies help us
+              understand visits and tailor recommendations.
+            </p>
 
-          <div className="flex-1 space-y-4">
-            <div>
-              <h3 className="text-body font-semibold text-ink">
-                We value your privacy
-              </h3>
-              <p className="text-footnote text-ink-secondary mt-1.5 leading-relaxed">
-                We use cookies to enhance your browsing experience, serve personalized recommendations, remember your saved items, and analyze site traffic.
-              </p>
-            </div>
+            {showPreferences && (
+              <div className="mt-5 space-y-3 border-y border-hairline-soft py-4 text-footnote">
+                <PreferenceRow label="Essential" detail="Always on" checked disabled />
+                <PreferenceRow
+                  label="Analytics"
+                  detail="Helps improve the store"
+                  checked={analytics}
+                  onChange={setAnalytics}
+                />
+                <PreferenceRow
+                  label="Personalisation"
+                  detail="More relevant recommendations"
+                  checked={personalisation}
+                  onChange={setPersonalisation}
+                />
+              </div>
+            )}
 
-            {/* 2 Buttons aligned directly with the text area */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
+            <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
+              {showPreferences ? (
+                <button
+                  type="button"
+                  onClick={() => saveConsent({ analytics, personalisation })}
+                  className="min-h-10 flex-1 rounded-full border border-hairline px-4 text-footnote font-medium text-ink hover:bg-canvas"
+                >
+                  Save choices
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowPreferences(true)}
+                  className="min-h-10 flex-1 rounded-full border border-hairline px-4 text-footnote font-medium text-ink hover:bg-canvas"
+                >
+                  Customise
+                </button>
+              )}
               <button
                 type="button"
-                onClick={handlePreferences}
-                className="flex-1 py-2 px-3.5 rounded-full border border-hairline text-footnote font-medium text-ink-secondary hover:text-ink hover:bg-canvas transition-colors text-center whitespace-nowrap"
+                onClick={() => saveConsent({ analytics: true, personalisation: true })}
+                className="min-h-10 flex-1 rounded-full bg-ink px-4 text-footnote font-semibold text-white hover:bg-black"
               >
-                Cookies Preference
-              </button>
-              <button
-                type="button"
-                onClick={handleAccept}
-                className="flex-1 py-2 px-3.5 rounded-full bg-ink text-white text-footnote font-semibold hover:bg-black transition-colors text-center shadow-sm whitespace-nowrap"
-              >
-                Accept Cookies
+                Accept all
               </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
+
+interface PreferenceRowProps {
+  label: string;
+  detail: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange?: (checked: boolean) => void;
+}
+
+const PreferenceRow: React.FC<PreferenceRowProps> = ({ label, detail, checked, disabled, onChange }) => (
+  <label className="flex items-center justify-between gap-4">
+    <span>
+      <span className="block font-medium text-ink">{label}</span>
+      <span className="text-caption text-ink-tertiary">{detail}</span>
+    </span>
+    <input
+      type="checkbox"
+      checked={checked}
+      disabled={disabled}
+      onChange={(event) => onChange?.(event.target.checked)}
+      className="h-5 w-5 accent-ink"
+    />
+  </label>
+);

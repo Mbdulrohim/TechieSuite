@@ -1,2 +1,6 @@
+# esbuild ships a platform-specific binary and needs its install script to run.
+# Vite bundles through it, so a blocked build script fails the build outright —
+# locally it is masked by an existing node_modules, and only shows up on a clean
+# CI install as ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true

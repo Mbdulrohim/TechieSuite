@@ -86,6 +86,54 @@ const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: stri
     main: '/images/products/apple/iphone-16.webp',
     gallery: ['/images/products/apple/iphone-16-lineup.webp'],
   },
+  'iphone-15': {
+    main: '/images/products/apple/iphone15.webp',
+    gallery: ['/images/products/apple/iphone15lineup.webp'],
+  },
+  'iphone-15-plus': {
+    main: '/images/products/apple/iphone15.webp',
+    gallery: ['/images/products/apple/iphone15lineup.webp'],
+  },
+  'iphone-15-pro': {
+    main: '/images/products/apple/iphone15pro.webp',
+    gallery: ['/images/products/apple/iphone15prolineup.webp'],
+  },
+  'iphone-15-pro-max': {
+    main: '/images/products/apple/iphone15pro.webp',
+    gallery: ['/images/products/apple/iphone15prolineup.webp'],
+  },
+  'iphone-14': {
+    main: '/images/products/apple/iphone14.webp',
+    gallery: ['/images/products/apple/iphone14lineup.webp'],
+  },
+  'iphone-14-plus': {
+    main: '/images/products/apple/iphone14.webp',
+    gallery: ['/images/products/apple/iphone14lineup.webp'],
+  },
+  'iphone-14-pro': {
+    main: '/images/products/apple/iphone14pro.webp',
+    gallery: ['/images/products/apple/iphone14prolineup.webp'],
+  },
+  'iphone-14-pro-max': {
+    main: '/images/products/apple/iphone14pro.webp',
+    gallery: ['/images/products/apple/iphone14prolineup.webp'],
+  },
+  'iphone-13-mini': {
+    main: '/images/products/apple/iphone13.webp',
+    gallery: ['/images/products/apple/iphone13lineup.webp'],
+  },
+  'iphone-13': {
+    main: '/images/products/apple/iphone13.webp',
+    gallery: ['/images/products/apple/iphone13lineup.webp'],
+  },
+  'iphone-13-pro': {
+    main: '/images/products/apple/iphone13pro.webp',
+    gallery: ['/images/products/apple/iphone13prolineup.webp'],
+  },
+  'iphone-13-pro-max': {
+    main: '/images/products/apple/iphone13pro.webp',
+    gallery: ['/images/products/apple/iphone13prolineup.webp'],
+  },
 };
 
 const IPHONE_SEEDS: IPhoneSeed[] = [
@@ -173,61 +221,139 @@ const IPHONE_SEEDS: IPhoneSeed[] = [
     id: 'iphone-15', name: 'iPhone 15', generation: 15, price: 699,
     display: '6.1-inch Super Retina XDR display with Dynamic Island', chip: 'A16 Bionic chip', camera: '48MP Main camera',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Dynamic Island. USB-C. A huge leap for the camera.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'Blue', hex: '#cad7dc' },
+      { name: 'Green', hex: '#cad4c5' },
+      { name: 'Yellow', hex: '#e8dfa9' },
+      { name: 'Pink', hex: '#e6c7c9' },
+    ],
   },
   {
     id: 'iphone-15-plus', name: 'iPhone 15 Plus', generation: 15, price: 799,
     display: '6.7-inch Super Retina XDR display with Dynamic Island', chip: 'A16 Bionic chip', camera: '48MP Main camera',
     storage: ['128GB', '256GB', '512GB'], tagline: 'More screen. More battery. More to love.', finish: 'modern',
+    colors: [
+      { name: 'Black', hex: '#242426' },
+      { name: 'Blue', hex: '#cad7dc' },
+      { name: 'Green', hex: '#cad4c5' },
+      { name: 'Yellow', hex: '#e8dfa9' },
+      { name: 'Pink', hex: '#e6c7c9' },
+    ],
   },
   {
     id: 'iphone-15-pro', name: 'iPhone 15 Pro', generation: 15, price: 899,
     display: '6.1-inch Super Retina XDR display with ProMotion', chip: 'A17 Pro chip', camera: '48MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'Titanium design. A17 Pro. Action button.', finish: 'pro', badge: 'POPULAR',
+    colors: [
+      { name: 'Black Titanium', hex: '#3c3b3a' },
+      { name: 'White Titanium', hex: '#f2f1ed' },
+      { name: 'Blue Titanium', hex: '#4d5965' },
+      { name: 'Natural Titanium', hex: '#a99f91' },
+    ],
   },
   {
     id: 'iphone-15-pro-max', name: 'iPhone 15 Pro Max', generation: 15, price: 999,
     display: '6.7-inch Super Retina XDR display with ProMotion', chip: 'A17 Pro chip', camera: '48MP Pro system with 5x Telephoto',
     storage: ['256GB', '512GB', '1TB'], tagline: 'The ultimate titanium iPhone with 5x zoom.', finish: 'pro',
+    colors: [
+      { name: 'Black Titanium', hex: '#3c3b3a' },
+      { name: 'White Titanium', hex: '#f2f1ed' },
+      { name: 'Blue Titanium', hex: '#4d5965' },
+      { name: 'Natural Titanium', hex: '#a99f91' },
+    ],
   },
   {
     id: 'iphone-14', name: 'iPhone 14', generation: 14, price: 599,
     display: '6.1-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Advanced dual-camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'A brilliant display with dependable all-day power.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Midnight', hex: '#252b2d' },
+      { name: 'Blue', hex: '#a9c1d0' },
+      { name: 'Starlight', hex: '#f0ebe3' },
+      { name: 'Purple', hex: '#d5ced8' },
+      { name: '(PRODUCT)RED', hex: '#b51f2a' },
+    ],
   },
   {
     id: 'iphone-14-plus', name: 'iPhone 14 Plus', generation: 14, price: 699,
     display: '6.7-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Advanced dual-camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Big-screen versatility and excellent battery life.', finish: 'modern',
+    colors: [
+      { name: 'Midnight', hex: '#252b2d' },
+      { name: 'Blue', hex: '#a9c1d0' },
+      { name: 'Starlight', hex: '#f0ebe3' },
+      { name: 'Purple', hex: '#d5ced8' },
+      { name: '(PRODUCT)RED', hex: '#b51f2a' },
+    ],
   },
   {
     id: 'iphone-14-pro', name: 'iPhone 14 Pro', generation: 14, price: 799,
     display: '6.1-inch Always-On display with ProMotion', chip: 'A16 Bionic chip', camera: '48MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'Dynamic Island and a powerful 48MP Pro camera.', finish: 'pro',
+    colors: [
+      { name: 'Space Black', hex: '#343437' },
+      { name: 'Silver', hex: '#e3e2dd' },
+      { name: 'Gold', hex: '#d4c5b2' },
+      { name: 'Deep Purple', hex: '#5b5664' },
+    ],
   },
   {
     id: 'iphone-14-pro-max', name: 'iPhone 14 Pro Max', generation: 14, price: 899,
     display: '6.7-inch Always-On display with ProMotion', chip: 'A16 Bionic chip', camera: '48MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'The expansive Pro experience with all-day battery.', finish: 'pro',
+    colors: [
+      { name: 'Space Black', hex: '#343437' },
+      { name: 'Silver', hex: '#e3e2dd' },
+      { name: 'Gold', hex: '#d4c5b2' },
+      { name: 'Deep Purple', hex: '#5b5664' },
+    ],
   },
   {
     id: 'iphone-13-mini', name: 'iPhone 13 mini', generation: 13, price: 449,
     display: '5.4-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Dual 12MP camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'Serious power in a delightfully compact design.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Pink', hex: '#e8c7c8' },
+      { name: 'Blue', hex: '#56798b' },
+      { name: 'Midnight', hex: '#232a2d' },
+      { name: 'Starlight', hex: '#f1ebe1' },
+      { name: '(PRODUCT)RED', hex: '#b8202a' },
+    ],
   },
   {
     id: 'iphone-13', name: 'iPhone 13', generation: 13, price: 499,
     display: '6.1-inch Super Retina XDR display', chip: 'A15 Bionic chip', camera: 'Dual 12MP camera system',
     storage: ['128GB', '256GB', '512GB'], tagline: 'A bright OLED display and excellent everyday camera.', finish: 'modern', badge: 'POPULAR',
+    colors: [
+      { name: 'Pink', hex: '#e8c7c8' },
+      { name: 'Blue', hex: '#56798b' },
+      { name: 'Midnight', hex: '#232a2d' },
+      { name: 'Starlight', hex: '#f1ebe1' },
+      { name: '(PRODUCT)RED', hex: '#b8202a' },
+    ],
   },
   {
     id: 'iphone-13-pro', name: 'iPhone 13 Pro', generation: 13, price: 599,
     display: '6.1-inch Super Retina XDR display with ProMotion', chip: 'A15 Bionic chip', camera: '12MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'ProMotion, pro cameras, and enduring performance.', finish: 'pro',
+    colors: [
+      { name: 'Graphite', hex: '#54524f' },
+      { name: 'Gold', hex: '#d9c7ad' },
+      { name: 'Silver', hex: '#e7e4df' },
+      { name: 'Sierra Blue', hex: '#9bb5c7' },
+    ],
   },
   {
     id: 'iphone-13-pro-max', name: 'iPhone 13 Pro Max', generation: 13, price: 649,
     display: '6.7-inch Super Retina XDR display with ProMotion', chip: 'A15 Bionic chip', camera: '12MP Pro camera system',
     storage: ['128GB', '256GB', '512GB', '1TB'], tagline: 'A cinematic camera and a massive ProMotion display.', finish: 'pro',
+    colors: [
+      { name: 'Graphite', hex: '#54524f' },
+      { name: 'Gold', hex: '#d9c7ad' },
+      { name: 'Silver', hex: '#e7e4df' },
+      { name: 'Sierra Blue', hex: '#9bb5c7' },
+    ],
   },
   {
     id: 'iphone-12-mini', name: 'iPhone 12 mini', generation: 12, price: 349,

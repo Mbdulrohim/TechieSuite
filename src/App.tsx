@@ -24,6 +24,7 @@ import { JournalIndex, ArticleView } from './components/JournalView';
 import { LegalIndex, LegalDocumentView } from './components/LegalView';
 import { Footer } from './components/Footer';
 import { CookieModal } from './components/CookieModal';
+import { BlogPage } from './components/BlogPage';
 import { WaitlistModal } from './components/WaitlistModal';
 import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
 import { LEGAL_DOCUMENTS, legalBySlug } from './data/legal';
@@ -72,6 +73,12 @@ const readJournalFromUrl = (): string | null => {
   if (!params.has('journal')) return null;
   const slug = params.get('journal') ?? '';
   return slug && articleBySlug(slug) ? slug : '';
+};
+
+/** Blog page routing: `?blog` -> show blog page. */
+const readBlogFromUrl = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).has('blog');
 };
 
 /** Same one-param scheme as the journal: no `legal` param -> storefront,
@@ -151,6 +158,7 @@ export default function App() {
   const [activeCondition, setActiveCondition] = useState<Condition>(readConditionFromUrl);
   /** null = storefront, '' = journal index, otherwise an article slug. */
   const [journalSlug, setJournalSlug] = useState<string | null>(readJournalFromUrl);
+  const [isBlogOpen, setIsBlogOpen] = useState(readBlogFromUrl);
   /** null = storefront, '' = legal index, otherwise a policy slug. */
   const [legalSlug, setLegalSlug] = useState<string | null>(readLegalFromUrl);
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
@@ -206,12 +214,14 @@ export default function App() {
     if (nextCategory === 'pre-owned') setActiveCondition('pre-owned');
     setJournalSlug(null);
     setLegalSlug(null);
+    setIsBlogOpen(false);
     setFilters(INITIAL_FILTERS);
 
     if (addToHistory) {
       const url = new URL(window.location.href);
       url.searchParams.delete('journal');
       url.searchParams.delete('legal');
+      url.searchParams.delete('blog');
       if (nextCondition === 'pre-owned') url.searchParams.set('condition', 'pre-owned');
       else url.searchParams.delete('condition');
       if (nextCategory === 'all') url.searchParams.delete('category');
@@ -228,6 +238,7 @@ export default function App() {
     setActiveCondition(condition);
     setJournalSlug(null);
     setLegalSlug(null);
+    setIsBlogOpen(false);
     setFilters(INITIAL_FILTERS);
 
     const nextCategory = category ?? readCategoryFromUrl();
@@ -236,6 +247,7 @@ export default function App() {
     const url = new URL(window.location.href);
     url.searchParams.delete('journal');
     url.searchParams.delete('legal');
+    url.searchParams.delete('blog');
     if (condition === 'new') url.searchParams.delete('condition');
     else url.searchParams.set('condition', condition);
     if (nextCategory === 'all') url.searchParams.delete('category');
@@ -248,10 +260,12 @@ export default function App() {
   /** Pass a slug to open an article, or nothing to open the journal index. */
   const handleOpenJournal = useCallback((slug = '') => {
     setJournalSlug(slug);
+    setIsBlogOpen(false);
     setLegalSlug(null);
 
     const url = new URL(window.location.href);
     url.searchParams.delete('category');
+    url.searchParams.delete('blog');
     url.searchParams.delete('legal');
     url.searchParams.set('journal', slug);
     window.history.pushState({ journal: slug }, '', url);
@@ -259,14 +273,39 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  /** Pass a slug to open one policy, or nothing to open the legal index. */
-  const handleOpenLegal = useCallback((slug = '') => {
-    setLegalSlug(slug);
+  const handleOpenBlog = useCallback(() => {
+    setIsBlogOpen(true);
     setJournalSlug(null);
+    setLegalSlug(null);
 
     const url = new URL(window.location.href);
     url.searchParams.delete('category');
     url.searchParams.delete('journal');
+    url.searchParams.delete('legal');
+    url.searchParams.set('blog', '');
+    window.history.pushState({ blog: true }, '', url);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleCloseBlog = useCallback(() => {
+    setIsBlogOpen(false);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('blog');
+    window.history.pushState({}, '', url);
+  }, []);
+
+  /** Pass a slug to open one policy, or nothing to open the legal index. */
+  const handleOpenLegal = useCallback((slug = '') => {
+    setLegalSlug(slug);
+    setJournalSlug(null);
+    setIsBlogOpen(false);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('category');
+    url.searchParams.delete('journal');
+    url.searchParams.delete('blog');
     url.searchParams.set('legal', slug);
     window.history.pushState({ legal: slug }, '', url);
 
@@ -276,10 +315,11 @@ export default function App() {
   useEffect(() => {
     const handlePopState = () => {
       // Re-read every route from the URL so Back works across store, condition,
-      // journal and legal.
+      // journal, blog and legal.
       handleSelectCategory(readCategoryFromUrl(), false);
       setActiveCondition(readConditionFromUrl());
       setJournalSlug(readJournalFromUrl());
+      setIsBlogOpen(readBlogFromUrl());
       setLegalSlug(readLegalFromUrl());
     };
     window.addEventListener('popstate', handlePopState);
@@ -530,7 +570,9 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {legalSlug !== null ? (
+        {isBlogOpen ? (
+          <BlogPage onBack={handleCloseBlog} onOpenWaitlist={() => setIsWaitlistOpen(true)} />
+        ) : legalSlug !== null ? (
           legalSlug === '' ? (
             <LegalIndex onOpenDocument={handleOpenLegal} />
           ) : (
@@ -781,6 +823,7 @@ export default function App() {
 
       {/* Footer */}
       <Footer
+        onOpenBlog={handleOpenBlog}
         onOpenLegal={handleOpenLegal}
         onOpenJournal={() => handleOpenJournal()}
         onOpenWaitlist={() => setIsWaitlistOpen(true)}

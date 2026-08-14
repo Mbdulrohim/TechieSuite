@@ -29,6 +29,7 @@ const DIRECTORY: {
       // "Today at Apple" sessions programme.
       { label: 'Workshops & Events', href: '#' },
       { label: 'Trade-In & Offers', href: '#' },
+      { label: 'Blog', href: '#blog' },
       { label: 'Journal', href: '#journal' },
       { label: 'iPhone 18 Waitlist 🔥', href: '#waitlist' },
     ],
@@ -72,6 +73,7 @@ const LEGAL_LINKS: { label: string; slug: string }[] = [
 const linkClass = 'hover:text-ink hover:underline transition-colors';
 
 export interface FooterProps {
+  onOpenBlog?: () => void;
   /** Opens a policy by slug, or the legal index when called with nothing. */
   onOpenLegal?: (slug?: string) => void;
   onOpenJournal?: () => void;
@@ -80,6 +82,7 @@ export interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({
+  onOpenBlog,
   onOpenLegal,
   onOpenJournal,
   onOpenWaitlist,
@@ -136,6 +139,15 @@ export const Footer: React.FC<FooterProps> = ({
               <ul className="mt-3 space-y-2.5 text-caption text-ink-secondary">
                 {column.links.map((link) => {
                   // Intercept action links
+                  if (link.href === '#blog' && onOpenBlog) {
+                    return (
+                      <li key={link.label}>
+                        <button type="button" onClick={onOpenBlog} className={linkClass}>
+                          {link.label}
+                        </button>
+                      </li>
+                    );
+                  }
                   if (link.href === '#journal' && onOpenJournal) {
                     return (
                       <li key={link.label}>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Smartphone, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 
+const WAITLIST_IMG = new URL('../../assets/images/iphone-18-camera.png', import.meta.url).href;
+
 /** Normalize a Nigerian phone number to international format +234XXXXXXXXXX */
 const normalizeNigerianNumber = (raw: string): string | null => {
   const digits = raw.replace(/[^\d]/g, '');
@@ -172,16 +174,8 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
         role="dialog"
         aria-modal="true"
         aria-labelledby="waitlist-title"
-        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-[#0f0f14] shadow-2xl animate-scale-in"
+        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-black shadow-2xl animate-scale-in"
       >
-        {/* Lightweight art direction replaces the missing 7.5 MB source image. */}
-        <div aria-hidden="true" className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute -right-16 -top-24 h-80 w-80 rounded-full bg-[#dc143c]/20 blur-3xl" />
-          <div className="absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-[#4c1d95]/25 blur-3xl" />
-          <div className="absolute -right-5 bottom-[-7rem] h-[25rem] w-48 rotate-[-12deg] rounded-[3.4rem] border border-white/15 bg-gradient-to-br from-white/15 to-white/[0.02] shadow-2xl">
-            <div className="mx-auto mt-3 h-5 w-20 rounded-full bg-black/60" />
-          </div>
-        </div>
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -191,8 +185,23 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
           <X className="w-5 h-5" />
         </button>
 
+        {/* Hero Image — visible on top */}
+        <div className="relative flex items-center justify-center pt-10 pb-2">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div className="h-40 w-40 rounded-full bg-[#dc143c]/10 blur-[60px]" />
+          </div>
+          <img
+            src={WAITLIST_IMG}
+            alt="iPhone 18 camera system"
+            className="relative z-10 w-[50%] max-w-[220px] drop-shadow-2xl"
+          />
+        </div>
+
         {/* Hero Section */}
-        <div className="relative z-10 px-7 pt-12 pb-8 sm:px-10 sm:pt-14 sm:pb-10 text-center">
+        <div className="relative z-10 px-7 pb-8 sm:px-10 sm:pb-10 text-center">
           {/* Subtle cherry glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-[#dc143c]/10 rounded-full blur-3xl" />
 
@@ -211,8 +220,8 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
             </h2>
 
             <p className="mt-5 text-body text-gray-400 max-w-sm mx-auto leading-relaxed">
-              Be the first to know when iPhone 18 drops at TechieBase.
-              Priority access. Exclusive trade-in rates. Zero spam.
+              Be the first to know when iPhone 18 is available for Pre-order.
+
             </p>
           </div>
         </div>
@@ -248,13 +257,12 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder="+234 814 327 0982"
-                    className={`w-full px-4 py-3 pr-10 bg-white/5 border rounded-xl text-white text-body placeholder:text-gray-600 focus:outline-none focus:ring-2 transition-all ${
-                      whatsappStatus === 'valid'
+                    className={`w-full px-4 py-3 pr-10 bg-white/5 border rounded-xl text-white text-body placeholder:text-gray-600 focus:outline-none focus:ring-2 transition-all ${whatsappStatus === 'valid'
                         ? 'border-emerald-500/50 focus:ring-emerald-500/30 focus:border-emerald-500/50'
                         : whatsappStatus === 'invalid_format'
                           ? 'border-red-500/50 focus:ring-red-500/30 focus:border-red-500/50'
                           : 'border-white/10 focus:ring-[#dc143c]/50 focus:border-[#dc143c]/50'
-                    }`}
+                      }`}
                   />
                   {/* Validation indicator */}
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">

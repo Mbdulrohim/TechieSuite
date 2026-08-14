@@ -220,8 +220,8 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
             </h2>
 
             <p className="mt-5 text-body text-gray-400 max-w-sm mx-auto leading-relaxed">
-              Be the first to know when iPhone 18 drops at TechieBase.
-              Priority access. Exclusive trade-in rates. Zero spam.
+              Be the first to know when iPhone 18 is available for Pre-order.
+
             </p>
           </div>
         </div>
@@ -257,13 +257,12 @@ export const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose })
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder="+234 814 327 0982"
-                    className={`w-full px-4 py-3 pr-10 bg-white/5 border rounded-xl text-white text-body placeholder:text-gray-600 focus:outline-none focus:ring-2 transition-all ${
-                      whatsappStatus === 'valid'
+                    className={`w-full px-4 py-3 pr-10 bg-white/5 border rounded-xl text-white text-body placeholder:text-gray-600 focus:outline-none focus:ring-2 transition-all ${whatsappStatus === 'valid'
                         ? 'border-emerald-500/50 focus:ring-emerald-500/30 focus:border-emerald-500/50'
                         : whatsappStatus === 'invalid_format'
                           ? 'border-red-500/50 focus:ring-red-500/30 focus:border-red-500/50'
                           : 'border-white/10 focus:ring-[#dc143c]/50 focus:border-[#dc143c]/50'
-                    }`}
+                      }`}
                   />
                   {/* Validation indicator */}
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">

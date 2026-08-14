@@ -163,7 +163,11 @@ const CatalogCard: React.FC<{ product: Product; onOpen: () => void; }> = ({ prod
       <img
         src={product.imageUrl}
         alt={product.name}
-        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
+        className={`h-full w-full transition-transform duration-700 group-hover:scale-[1.025] ${
+          product.imageUrl.startsWith('/images/products/')
+            ? 'object-contain p-4 sm:p-6'
+            : 'object-cover'
+        }`}
       />
       {/* Condition always reads first — it is the thing a shopper most needs
           to know, and it is deliberately distinct from the marketing badge. */}

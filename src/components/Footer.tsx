@@ -29,7 +29,7 @@ const DIRECTORY: {
       // "Today at Apple" sessions programme.
       { label: 'Workshops & Events', href: '#' },
       { label: 'Trade-In & Offers', href: '#' },
-      { label: 'Blog', href: '#blog' },
+      { label: 'Journal', href: '#journal' },
       { label: 'iPhone 18 Waitlist 🔥', href: '#waitlist' },
     ],
   },
@@ -74,14 +74,14 @@ const linkClass = 'hover:text-ink hover:underline transition-colors';
 export interface FooterProps {
   /** Opens a policy by slug, or the legal index when called with nothing. */
   onOpenLegal?: (slug?: string) => void;
-  onOpenBlog?: () => void;
+  onOpenJournal?: () => void;
   onOpenWaitlist?: () => void;
   onOpenCookieModal?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onOpenLegal,
-  onOpenBlog,
+  onOpenJournal,
   onOpenWaitlist,
   onOpenCookieModal,
 }) => {
@@ -136,10 +136,10 @@ export const Footer: React.FC<FooterProps> = ({
               <ul className="mt-3 space-y-2.5 text-caption text-ink-secondary">
                 {column.links.map((link) => {
                   // Intercept action links
-                  if (link.href === '#blog' && onOpenBlog) {
+                  if (link.href === '#journal' && onOpenJournal) {
                     return (
                       <li key={link.label}>
-                        <button type="button" onClick={onOpenBlog} className={linkClass}>
+                        <button type="button" onClick={onOpenJournal} className={linkClass}>
                           {link.label}
                         </button>
                       </li>

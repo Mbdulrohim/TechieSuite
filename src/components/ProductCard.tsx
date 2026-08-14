@@ -19,12 +19,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image */}
       <div
         onClick={() => onQuickView(product)}
-        className="w-full h-32 md:h-72 flex items-center justify-center cursor-pointer mb-4 md:mb-8"
+        className="mb-4 flex h-32 w-full cursor-pointer items-center justify-center overflow-hidden md:mb-8 md:h-72"
       >
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="max-h-24 md:max-h-64 w-auto object-contain transition-transform duration-500 hover:scale-105"
+          className="h-full w-full object-contain p-2 transition-transform duration-500 hover:scale-[1.03] md:p-4"
         />
       </div>
 

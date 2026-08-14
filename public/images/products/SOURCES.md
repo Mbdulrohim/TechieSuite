@@ -42,5 +42,17 @@ Newsroom originals; the phone pixels are unchanged and only the connected black 
 | `apple/accessories/airtag-*.webp` | AirTag | https://www.apple.com/newsroom/2021/04/apple-introduces-airtag/ |
 | `apple/accessories/magsafe-charger*.webp` | MagSafe Charger (2m) | https://www.apple.com/shop/product/mgdm4ll/a/magsafe-charger-2-m |
 | `apple/accessories/iphone16pro-case*.webp` | iPhone 16 Pro Silicone Case with MagSafe | https://www.apple.com/shop/product/myyl3zm/a/iphone-16-pro-silicone-case-with-magsafe-stone-gray |
+| `apple/mac/current/macbook-air-m5-*.webp` | MacBook Air 13-inch and 15-inch with M5 | https://www.apple.com/ie/newsroom/2026/03/apple-introduces-the-new-macbook-air-with-m5/ |
+| `apple/mac/current/macbook-pro-m5-cutout.webp` | MacBook Pro 14-inch and 16-inch with M5 family | https://www.apple.com/newsroom/2026/03/apple-introduces-macbook-pro-with-all-new-m5-pro-and-m5-max/ |
+| `apple/mac/current/imac-m4-*.webp` | iMac 24-inch with M4 | https://www.apple.com/ie/newsroom/2024/10/apple-introduces-new-imac-supercharged-by-m4-and-apple-intelligence/ |
+| `apple/mac/current/mac-mini-m4-*.webp` | Mac mini with M4 and M4 Pro | https://www.apple.com/newsroom/2024/10/apples-new-mac-mini-is-more-mighty-more-mini-and-built-for-apple-intelligence/ |
+| `apple/mac/current/mac-studio-*.webp` | Mac Studio with M4 Max and M3 Ultra | https://www.apple.com/ie/newsroom/2025/03/apple-unveils-new-mac-studio-the-most-powerful-mac-ever/ |
+| `apple/mac/current/mac-pro-*.webp` | Mac Pro with M2 Ultra | https://www.apple.com/newsroom/2023/06/new-15-inch-macbook-air-mac-studio-and-mac-pro-are-available-today/ |
+| `apple/ipad/current/ipad-air-m3-*.webp` | iPad Air 11-inch and 13-inch with M3 | https://www.apple.com/newsroom/2025/03/apple-introduces-ipad-air-with-powerful-m3-chip-and-new-magic-keyboard/ |
+| `apple/audio/current/airpods4-*.webp` | AirPods 4 and AirPods 4 with Active Noise Cancellation | https://www.apple.com/newsroom/2024/09/apple-introduces-airpods-4-and-a-hearing-health-experience-with-airpods-pro-2/ |
+| `apple/audio/current/airpods-pro3-hero.webp` | AirPods Pro 3 | https://www.apple.com/newsroom/2025/09/introducing-airpods-pro-3-the-ultimate-audio-experience/ |
+| `apple/watch/current/watch-series11-*.webp` | Apple Watch Series 11 | https://www.apple.com/ie/newsroom/2025/09/apple-debuts-apple-watch-series-11-featuring-groundbreaking-health-insights/ |
+| `apple/watch/current/watch-ultra3-cutout.webp` | Apple Watch Ultra 3 | https://www.apple.com/newsroom/2025/09/introducing-apple-watch-ultra-3/ |
+| `apple/watch/current/watch-se3-hero.webp` | Apple Watch SE 3 | https://www.apple.com/newsroom/2025/09/apple-introduces-apple-watch-se-3/ |
 
 Apple retains ownership of its photography. Confirm reseller or written usage permission before production launch.

@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Check,
+  ChevronLeft,
+  ChevronRight,
   Heart,
   PackageCheck,
   Scale,
@@ -49,11 +51,21 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
   const [protection, setProtection] = useState(false);
   const [activeImage, setActiveImage] = useState(selectedColor.image || product.imageUrl);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
   const galleryImages = useMemo(
     () => Array.from(new Set([product.imageUrl, ...(product.additionalImages || [])])),
     [product]
   );
+  const activeImageIndex = Math.max(0, galleryImages.indexOf(activeImage));
+
+  const showImage = (index: number) => {
+    const wrappedIndex = (index + galleryImages.length) % galleryImages.length;
+    setActiveImage(galleryImages[wrappedIndex]);
+  };
+
+  const showPreviousImage = () => showImage(activeImageIndex - 1);
+  const showNextImage = () => showImage(activeImageIndex + 1);
 
   const storageDelta = selectedStorage?.priceDelta || 0;
   const basePrice = product.price + storageDelta;
@@ -71,6 +83,8 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
+      if (event.key === 'ArrowLeft' && galleryImages.length > 1) showPreviousImage();
+      if (event.key === 'ArrowRight' && galleryImages.length > 1) showNextImage();
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -80,7 +94,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
       window.removeEventListener('keydown', handleKeyDown);
       previousFocus?.focus();
     };
-  }, [onClose]);
+  }, [activeImageIndex, galleryImages.length, onClose]);
 
   const handleAddToBag = () => {
     onAddToCart(product, selectedColor, selectedStorage, protection);
@@ -152,30 +166,73 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
                   </div>
                 </div>
 
-                <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-card">
+                <div
+                  className="group relative flex min-h-0 flex-1 touch-pan-y items-center justify-center overflow-hidden rounded-card"
+                  onTouchStart={(event) => {
+                    touchStartXRef.current = event.touches[0]?.clientX ?? null;
+                  }}
+                  onTouchEnd={(event) => {
+                    const startX = touchStartXRef.current;
+                    const endX = event.changedTouches[0]?.clientX;
+                    touchStartXRef.current = null;
+                    if (startX == null || endX == null || Math.abs(endX - startX) < 45) return;
+                    if (endX < startX) showNextImage();
+                    else showPreviousImage();
+                  }}
+                >
                   <img
                     src={activeImage}
                     alt={`${product.name} in ${selectedColor.name}`}
                     className="max-h-[290px] w-full max-w-[580px] rounded-card object-contain shadow-panel transition-all duration-500 sm:max-h-[410px] lg:max-h-[520px]"
                   />
+
+                  {galleryImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={showPreviousImage}
+                        aria-label="Previous product image"
+                        className="absolute left-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow-card backdrop-blur transition hover:scale-105 hover:bg-white sm:left-4"
+                      >
+                        <ChevronLeft className="h-5 w-5" strokeWidth={2.2} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={showNextImage}
+                        aria-label="Next product image"
+                        className="absolute right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow-card backdrop-blur transition hover:scale-105 hover:bg-white sm:right-4"
+                      >
+                        <ChevronRight className="h-5 w-5" strokeWidth={2.2} />
+                      </button>
+                    </>
+                  )}
                 </div>
 
                 {galleryImages.length > 1 && (
-                  <div className="mt-6 flex justify-center gap-2" aria-label="Product images">
-                    {galleryImages.map((image, index) => {
-                      const isActive = activeImage === image;
-                      return (
-                        <button
-                          type="button"
-                          key={image}
-                          onClick={() => setActiveImage(image)}
-                          aria-label={`View product image ${index + 1}`}
-                          aria-pressed={isActive}
-                          className={`h-2 w-2 rounded-full transition-all ${isActive ? 'w-5 bg-ink' : 'bg-ink-tertiary hover:bg-ink-secondary'
-                            }`}
-                        />
-                      );
-                    })}
+                  <div className="mt-5" aria-label="Product images">
+                    <div className="flex items-center justify-center gap-2 overflow-x-auto pb-1">
+                      {galleryImages.map((image, index) => {
+                        const isActive = activeImage === image;
+                        return (
+                          <button
+                            type="button"
+                            key={image}
+                            onClick={() => setActiveImage(image)}
+                            aria-label={`View product image ${index + 1}`}
+                            aria-pressed={isActive}
+                            className={`h-14 w-[72px] shrink-0 overflow-hidden rounded-xl bg-white p-1.5 transition ${isActive
+                              ? 'ring-2 ring-ink ring-offset-2 ring-offset-canvas'
+                              : 'ring-1 ring-black/10 hover:ring-black/30'
+                              }`}
+                          >
+                            <img src={image} alt="" className="h-full w-full object-contain" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="mt-2 text-center text-micro font-medium text-ink-secondary">
+                      {activeImageIndex + 1} of {galleryImages.length} · Swipe or use arrow keys
+                    </p>
                   </div>
                 )}
 

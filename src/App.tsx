@@ -87,7 +87,7 @@ const readLegalFromUrl = (): string | null => {
 };
 
 const INITIAL_FILTERS: FilterState = {
-  priceRange: [0, 2500],
+  priceRange: [0, 8000],
   minRating: 0,
   selectedStorage: [],
   inStockOnly: false,

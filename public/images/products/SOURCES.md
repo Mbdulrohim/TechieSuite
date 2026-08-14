@@ -24,5 +24,23 @@ Newsroom originals; the phone pixels are unchanged and only the connected black 
 | `iphone14pro-space-black.webp`, `iphone14pro-camera.webp`, `iphone14pro-purple.webp` | iPhone 14 Pro and iPhone 14 Pro Max detail views | https://www.apple.com/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/ |
 | `iphone13.webp`, `iphone13lineup.webp` | iPhone 13 and iPhone 13 mini | https://www.apple.com/newsroom/2021/09/apple-introduces-iphone-13-and-iphone-13-mini/ |
 | `iphone13pro.webp`, `iphone13prolineup.webp` | iPhone 13 Pro and iPhone 13 Pro Max | https://www.apple.com/newsroom/2021/09/apple-unveils-iphone-13-pro-and-iphone-13-pro-max-more-pro-than-ever-before/ |
+| `iphone12-main.webp`, `iphone12-pair.webp`, `iphone12-blue.webp` | iPhone 12 and iPhone 12 mini | https://www.apple.com/newsroom/2020/10/apple-announces-iphone-12-and-iphone-12-mini-a-new-era-for-iphone-with-5g/ |
+| `iphone12pro-gold-cutout.webp`, `iphone12pro-camera.webp` | iPhone 12 Pro and iPhone 12 Pro Max | https://www.apple.com/newsroom/2020/10/apple-introduces-iphone-12-pro-and-iphone-12-pro-max-with-5g/ |
+| `iphone11-main.webp`, `iphone11-screen.webp`, `iphone11-lineup.webp` | iPhone 11 | https://www.apple.com/ie/newsroom/2019/09/apple-introduces-dual-camera-iphone-11/ |
+| `iphone11pro-colors.webp` | iPhone 11 Pro and iPhone 11 Pro Max | https://www.apple.com/newsroom/2019/09/iphone-11-pro-and-iphone-11-pro-max-the-most-powerful-and-advanced-smartphones/ |
+| `apple/mac/macbook-air-m3-*.webp` | MacBook Air 13-inch and 15-inch with M3 | https://www.apple.com/newsroom/2024/03/apple-unveils-the-new-13-and-15-inch-macbook-air-with-the-powerful-m3-chip/ |
+| `apple/mac/macbook-pro-m3-*.webp` | MacBook Pro with M3 family | https://www.apple.com/newsroom/2023/10/apple-unveils-new-macbook-pro-featuring-m3-chips/ |
+| `apple/mac/macbook-air-m2-*.webp` | MacBook Air with M2 | https://www.apple.com/newsroom/2022/06/apple-unveils-all-new-macbook-air-supercharged-by-the-new-m2-chip/ |
+| `apple/mac/macbook-pro-m1-*.webp` | MacBook Pro 14-inch and 16-inch with M1 Pro and M1 Max | https://www.apple.com/newsroom/2021/10/apple-unveils-game-changing-macbook-pro/ |
+| `apple/ipad/ipad-pro-m4-*.webp` | iPad Pro with M4 | https://www.apple.com/li/newsroom/2024/05/apple-unveils-stunning-new-ipad-pro-with-m4-chip-and-apple-pencil-pro/ |
+| `apple/ipad/ipad-pro-m1-*.webp` | iPad Pro with M1 | https://www.apple.com/newsroom/2021/04/apple-unveils-new-ipad-pro-with-m1-chip-and-stunning-liquid-retina-xdr-display/ |
+| `apple/watch/watch-series-10-*.webp` | Apple Watch Series 10 | https://www.apple.com/newsroom/2024/09/introducing-apple-watch-series-10/ |
+| `apple/watch/watch-ultra-2-*.webp` | Apple Watch Ultra 2 | https://www.apple.com/newsroom/2024/09/apple-watch-ultra-2-now-available-in-black-titanium/ |
+| `apple/watch/watch-series-9-*.webp` | Apple Watch Series 9 | https://www.apple.com/newsroom/2023/09/apple-introduces-the-advanced-new-apple-watch-series-9/ |
+| `apple/audio/airpods-pro-2-*.webp` | AirPods Pro (2nd generation) with USB-C | https://www.apple.com/newsroom/2023/09/apple-upgrades-airpods-pro-2nd-generation-with-usb-c-charging/ |
+| `apple/audio/airpods-max-colors.webp` | AirPods Max with USB-C | https://www.apple.com/newsroom/2024/09/apple-introduces-airpods-4-and-a-hearing-health-experience-with-airpods-pro-2/ |
+| `apple/accessories/airtag-*.webp` | AirTag | https://www.apple.com/newsroom/2021/04/apple-introduces-airtag/ |
+| `apple/accessories/magsafe-charger*.webp` | MagSafe Charger (2m) | https://www.apple.com/shop/product/mgdm4ll/a/magsafe-charger-2-m |
+| `apple/accessories/iphone16pro-case*.webp` | iPhone 16 Pro Silicone Case with MagSafe | https://www.apple.com/shop/product/myyl3zm/a/iphone-16-pro-silicone-case-with-magsafe-stone-gray |
 
 Apple retains ownership of its photography. Confirm reseller or written usage permission before production launch.

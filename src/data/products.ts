@@ -47,12 +47,6 @@ const IPHONE_FINISHES: Record<IPhoneSeed['finish'], ProductColor[]> = {
   ],
 };
 
-const IPHONE_IMAGES = {
-  classic: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=85',
-  modern: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=900&q=85',
-  latest: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=900&q=85',
-};
-
 const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: string[] }>> = {
   'iphone-17e': {
     main: '/images/products/apple/iphone-17e-lineup.webp',
@@ -157,6 +151,43 @@ const IPHONE_PRODUCT_MEDIA: Partial<Record<string, { main: string; gallery: stri
   'iphone-13-pro-max': {
     main: '/images/products/apple/iphone13pro.webp',
     gallery: ['/images/products/apple/iphone13prolineup.webp'],
+  },
+  'iphone-12-mini': {
+    main: '/images/products/apple/iphone12-pair.webp',
+    gallery: [
+      '/images/products/apple/iphone12-main.webp',
+      '/images/products/apple/iphone12-blue.webp',
+    ],
+  },
+  'iphone-12': {
+    main: '/images/products/apple/iphone12-main.webp',
+    gallery: [
+      '/images/products/apple/iphone12-pair.webp',
+      '/images/products/apple/iphone12-blue.webp',
+    ],
+  },
+  'iphone-12-pro': {
+    main: '/images/products/apple/iphone12pro-gold-cutout.webp',
+    gallery: ['/images/products/apple/iphone12pro-camera.webp'],
+  },
+  'iphone-12-pro-max': {
+    main: '/images/products/apple/iphone12pro-gold-cutout.webp',
+    gallery: ['/images/products/apple/iphone12pro-camera.webp'],
+  },
+  'iphone-11': {
+    main: '/images/products/apple/iphone11-main.webp',
+    gallery: [
+      '/images/products/apple/iphone11-screen.webp',
+      '/images/products/apple/iphone11-lineup.webp',
+    ],
+  },
+  'iphone-11-pro': {
+    main: '/images/products/apple/iphone11pro-colors.webp',
+    gallery: [],
+  },
+  'iphone-11-pro-max': {
+    main: '/images/products/apple/iphone11pro-colors.webp',
+    gallery: [],
   },
 };
 
@@ -418,12 +449,7 @@ const IPHONE_SEEDS: IPhoneSeed[] = [
 
 const IPHONE_VARIANTS: Product[] = IPHONE_SEEDS.map((seed, index) => {
   const productMedia = IPHONE_PRODUCT_MEDIA[seed.id];
-  const fallbackImageUrl = seed.generation >= 16
-    ? IPHONE_IMAGES.latest
-    : seed.generation >= 13
-      ? IPHONE_IMAGES.modern
-      : IPHONE_IMAGES.classic;
-  const imageUrl = productMedia?.main ?? fallbackImageUrl;
+  const imageUrl = productMedia?.main ?? '/images/products/apple/iphone11-main.webp';
 
   return {
     id: seed.id,
@@ -442,8 +468,7 @@ const IPHONE_VARIANTS: Product[] = IPHONE_SEEDS.map((seed, index) => {
       priceDelta: [0, 100, 300, 500][storageIndex] || storageIndex * 200,
     })),
     imageUrl,
-    additionalImages: productMedia?.gallery ?? [IPHONE_IMAGES.latest, IPHONE_IMAGES.modern, IPHONE_IMAGES.classic]
-      .filter((image) => image !== imageUrl),
+    additionalImages: productMedia?.gallery ?? [],
     badge: seed.badge,
     stockUrgency: seed.generation >= 16
       ? 'Available for express delivery or pickup in Ikeja'
@@ -510,6 +535,7 @@ type CatalogSeed = {
   colors: ProductColor[];
   storage?: string[];
   image: string;
+  gallery?: string[];
   badge?: Product['badge'];
   stockUrgency?: string;
   inStock?: boolean;
@@ -534,6 +560,7 @@ const buildProduct = (seed: CatalogSeed): Product => ({
     priceDelta: [0, 100, 250, 450][index] ?? index * 200,
   })),
   imageUrl: seed.image,
+  additionalImages: seed.gallery,
   badge: seed.badge,
   stockUrgency: seed.stockUrgency,
   inStock: seed.inStock ?? true,
@@ -1230,7 +1257,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-15-pro-max', name: 'iPhone 15 Pro Max', category: 'iphone',
     tagline: 'Titanium Pro Max, inspected and battery-tested.',
     price: 780, originalPrice: 999, rating: 4.8, reviewCount: 0,
-    storage: ['256GB'], image: IPHONE_IMAGES.modern,
+    storage: ['256GB'], image: '/images/products/apple/iphone15pro-cutout.webp',
+    gallery: ['/images/products/apple/iphone15pro-natural.webp'],
     grade: 'Excellent', batteryHealth: 92, warrantyMonths: 6, unitsAvailable: 2,
     note: 'Faint micro-scratches on the frame, screen is flawless. Original box included.',
     colors: [{ name: 'Natural Titanium', hex: '#aaa196' }],
@@ -1247,7 +1275,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-14-pro', name: 'iPhone 14 Pro', category: 'iphone',
     tagline: 'Dynamic Island and a 48MP Pro camera, for much less.',
     price: 520, originalPrice: 799, rating: 4.7, reviewCount: 0,
-    storage: ['128GB', '256GB'], image: IPHONE_IMAGES.modern, badge: 'POPULAR',
+    storage: ['128GB', '256GB'], image: '/images/products/apple/iphone14pro-cutout.webp', badge: 'POPULAR',
+    gallery: ['/images/products/apple/iphone14pro-purple.webp'],
     grade: 'Very good', batteryHealth: 88, warrantyMonths: 6, unitsAvailable: 4,
     note: 'Light wear on the corners from case use. No screen marks.',
     colors: [{ name: 'Deep Purple', hex: '#584f61' }, { name: 'Space Black', hex: '#2f3032' }],
@@ -1264,7 +1293,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-13', name: 'iPhone 13', category: 'iphone',
     tagline: 'Still the best-value iPhone we stock.',
     price: 330, originalPrice: 499, rating: 4.6, reviewCount: 0,
-    storage: ['128GB'], image: IPHONE_IMAGES.modern, badge: 'BEST SELLER',
+    storage: ['128GB'], image: '/images/products/apple/iphone13.webp', badge: 'BEST SELLER',
+    gallery: ['/images/products/apple/iphone13lineup.webp'],
     grade: 'Very good', batteryHealth: 86, warrantyMonths: 6, unitsAvailable: 7,
     note: 'Visible but minor scuffs on the frame. Screen and camera glass clean.',
     colors: [{ name: 'Midnight', hex: '#272729' }, { name: 'Starlight', hex: '#f3f2ee' }],
@@ -1281,7 +1311,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-iphone-12', name: 'iPhone 12', category: 'iphone',
     tagline: 'OLED and 5G on a tight budget.',
     price: 240, originalPrice: 399, rating: 4.5, reviewCount: 0,
-    storage: ['64GB', '128GB'], image: IPHONE_IMAGES.classic,
+    storage: ['64GB', '128GB'], image: '/images/products/apple/iphone12-main.webp',
+    gallery: ['/images/products/apple/iphone12-blue.webp'],
     grade: 'Good', batteryHealth: 83, warrantyMonths: 3, unitsAvailable: 5,
     note: 'Honest daily wear on the frame and back. Fully functional, screen unmarked.',
     colors: [{ name: 'Black', hex: '#202124' }, { name: 'Blue', hex: '#31577d' }],
@@ -1298,7 +1329,11 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-macbook-air-m2', name: 'MacBook Air 13" (M2)', category: 'mac',
     tagline: 'Silent, light, and plenty fast for years yet.',
     price: 720, originalPrice: 1099, rating: 4.8, reviewCount: 0,
-    storage: ['256GB', '512GB'], image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=85',
+    storage: ['256GB', '512GB'], image: '/images/products/apple/mac/macbook-air-m2-hero.webp',
+    gallery: [
+      '/images/products/apple/mac/macbook-air-m2-colors.webp',
+      '/images/products/apple/mac/macbook-air-m2-ports.webp',
+    ],
     grade: 'Excellent', batteryHealth: 94, warrantyMonths: 6, unitsAvailable: 3,
     note: 'Under 80 charge cycles. No marks on the lid or palm rest.',
     colors: [{ name: 'Midnight', hex: '#2e3642' }, { name: 'Starlight', hex: '#efe6d8' }],
@@ -1315,7 +1350,11 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-macbook-pro-14-m1', name: 'MacBook Pro 14" (M1 Pro)', category: 'mac',
     tagline: 'Pro display, ports, and real sustained performance.',
     price: 950, originalPrice: 1599, rating: 4.8, reviewCount: 0,
-    storage: ['512GB', '1TB'], image: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=900&q=85',
+    storage: ['512GB', '1TB'], image: '/images/products/apple/mac/macbook-pro-m1-hero.webp',
+    gallery: [
+      '/images/products/apple/mac/macbook-pro-m1-body.webp',
+      '/images/products/apple/mac/macbook-pro-m1-ports.webp',
+    ],
     grade: 'Very good', batteryHealth: 89, warrantyMonths: 6, unitsAvailable: 2,
     note: 'Light scuffing on the base. Screen and keyboard in excellent order.',
     colors: [{ name: 'Space Grey', hex: '#575759' }],
@@ -1366,7 +1405,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-ipad-pro-11-m1', name: 'iPad Pro 11" (M1)', category: 'ipad',
     tagline: 'Desktop-class chip, tablet price.',
     price: 430, originalPrice: 899, rating: 4.7, reviewCount: 0,
-    storage: ['128GB', '256GB'], image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=900&q=85',
+    storage: ['128GB', '256GB'], image: '/images/products/apple/ipad/ipad-pro-m1-hero.webp',
+    gallery: ['/images/products/apple/ipad/ipad-pro-m1-keyboard.webp'],
     grade: 'Excellent', batteryHealth: 93, warrantyMonths: 6, unitsAvailable: 2,
     note: 'No visible wear. Screen protector fitted from new.',
     colors: [{ name: 'Space Grey', hex: '#575759' }, { name: 'Silver', hex: '#dcdde0' }],
@@ -1400,7 +1440,7 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-apple-watch-s9', name: 'Apple Watch Series 9', category: 'watch',
     tagline: 'Double tap and a brighter display, pre-owned.',
     price: 210, originalPrice: 399, rating: 4.6, reviewCount: 0,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=85',
+    image: '/images/products/apple/watch/watch-series-9-lineup.webp',
     grade: 'Excellent', batteryHealth: 91, warrantyMonths: 6, unitsAvailable: 3,
     note: 'Case and screen unmarked. Supplied with a new replacement band.',
     colors: [{ name: 'Midnight', hex: '#272729' }, { name: 'Starlight', hex: '#f3f2ee' }],
@@ -1417,7 +1457,8 @@ const PRE_OWNED_SEEDS: PreOwnedSeed[] = [
     id: 'pre-airpods-pro-2', name: 'AirPods Pro (2nd gen)', category: 'airpods',
     tagline: 'Sanitised, tested, with new ear tips.',
     price: 130, originalPrice: 249, rating: 4.5, reviewCount: 0,
-    image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=900&q=85',
+    image: '/images/products/apple/audio/airpods-pro-2-hero.webp',
+    gallery: ['/images/products/apple/audio/airpods-pro-2-usbc.webp'],
     grade: 'Very good', warrantyMonths: 3, unitsAvailable: 5,
     note: 'Case shows light scuffing. Ear tips replaced with new, buds sanitised.',
     colors: [{ name: 'White', hex: '#f4f4f2' }],
@@ -1565,10 +1606,10 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Includes a free ₦225,000 education store credit',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/mac/macbook-air-m3-hero.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/mac/macbook-air-m3-front.webp',
+      '/images/products/apple/mac/macbook-air-m3-keyboard.webp',
     ],
     colors: [
       { name: 'Midnight', hex: '#2C3641' },
@@ -1616,9 +1657,10 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'In stock for pickup today in Ikeja',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/mac/macbook-pro-m3-keyboard.webp',
     additionalImages: [
-      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80'
+      '/images/products/apple/mac/macbook-pro-m3-side.webp',
+      '/images/products/apple/mac/macbook-pro-m3-top.webp',
     ],
     colors: [
       { name: 'Space Black', hex: '#1F2022' },
@@ -1663,7 +1705,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Ships Free in 2 Days',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/ipad/ipad-pro-m4-silver.webp',
+    additionalImages: ['/images/products/apple/ipad/ipad-pro-m4-profile.webp'],
     colors: [
       { name: 'Space Black', hex: '#212224' },
       { name: 'Silver', hex: '#E2E3E5' }
@@ -1706,7 +1749,7 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Order in next 2 hours for Same-Day Store Pickup',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/watch/watch-ultra-2-trail-cutout.webp',
     colors: [
       { name: 'Satin Black Titanium', hex: '#1C1D1F' },
       { name: 'Natural Titanium', hex: '#A8A9AB' }
@@ -1746,7 +1789,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Save $50 Instant Discount — Free Engraving Available',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/audio/airpods-pro-2-hero.webp',
+    additionalImages: ['/images/products/apple/audio/airpods-pro-2-usbc.webp'],
     colors: [
       { name: 'White', hex: '#FFFFFF' }
     ],
@@ -1783,7 +1827,7 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'In Stock in Midnight and Starlight',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/audio/airpods-max-colors.webp',
     colors: [
       { name: 'Midnight', hex: '#212B35' },
       { name: 'Starlight', hex: '#E4DDD2' },
@@ -1813,7 +1857,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Top Seller — Over 5,000 bought this week',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1628191081676-8f40d4ce6c44?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/accessories/airtag-hero.webp',
+    additionalImages: ['/images/products/apple/accessories/airtag-accessories.webp'],
     colors: [
       { name: 'Silver / White', hex: '#EDEDED' }
     ],
@@ -1838,7 +1883,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Frequently Bought with iPhone 16 Pro',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/accessories/magsafe-charger.webp',
+    additionalImages: ['/images/products/apple/accessories/magsafe-charger-angle.webp'],
     colors: [
       { name: 'Woven Braided White', hex: '#F0ECE8' }
     ],
@@ -1861,7 +1907,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     reviewCount: 2840,
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/accessories/iphone16pro-case.webp',
+    additionalImages: ['/images/products/apple/accessories/iphone16pro-case-angle.webp'],
     colors: [
       { name: 'Star Fruit', hex: '#E9E47A' },
       { name: 'Ultramarine', hex: '#3C4983' },
@@ -1891,7 +1938,8 @@ const CURATED_NEW: Array<Omit<Product, 'condition'>> = [
     stockUrgency: 'Save $30 Instant Savings Today',
     inStock: true,
     pickupAvailable: true,
-    imageUrl: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/apple/watch/watch-series-10-hero.webp',
+    additionalImages: ['/images/products/apple/watch/watch-series-10-lineup.webp'],
     colors: [
       { name: 'Jet Black', hex: '#0D0E10' },
       { name: 'Rose Gold', hex: '#E0B5A6' },

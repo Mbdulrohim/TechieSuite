@@ -138,3 +138,8 @@ export const LEGAL_DOCUMENTS: LegalDocument[] = [WARRANTY];
 
 export const legalBySlug = (slug: string): LegalDocument | undefined =>
   LEGAL_DOCUMENTS.find((document) => document.slug === slug);
+
+/** Shared between LegalIndex and entry-server.tsx's prerendered meta
+ *  description for /legal, so the two never say something different. */
+export const legalIndexDescription = (): string =>
+  `The terms ${LEGAL_ENTITY} sells and services devices under. These are the same documents issued in store.`;

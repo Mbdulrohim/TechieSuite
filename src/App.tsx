@@ -30,7 +30,7 @@ import { LEGAL_DOCUMENTS, legalBySlug } from './data/legal';
 import { usePersistentState } from './hooks/usePersistentState';
 import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
 
-const CATEGORY_IDS = [
+export const CATEGORY_IDS = [
   'all',
   'iphone',
   'mac',
@@ -49,42 +49,83 @@ const CATEGORY_IDS = [
   'deals',
 ];
 
-const readCategoryFromUrl = () => {
-  if (typeof window === 'undefined') return 'all';
-  const category = new URLSearchParams(window.location.search).get('category');
-  return category && CATEGORY_IDS.includes(category) ? category : 'all';
+/** '/' for the storefront root, '/<category>' for everything else. */
+export const categoryPath = (category: string) => (category === 'all' ? '/' : `/${category}`);
+
+export interface RouteState {
+  category: string;
+  condition: Condition;
+  /** null = storefront, '' = journal index, otherwise an article slug. */
+  journalSlug: string | null;
+  /** null = storefront, '' = legal index, otherwise a policy slug. */
+  legalSlug: string | null;
+}
+
+const STOREFRONT_ROUTE: RouteState = { category: 'all', condition: 'new', journalSlug: null, legalSlug: null };
+
+/**
+ * The single place a URL becomes app state, and the reason it is a pure
+ * function rather than four separate `window.location` readers. Prerendering
+ * needs to compute this for a URL that is never the browser's real location —
+ * there is no `window` in Node — so nothing here may reach for `window`.
+ *
+ * Canonical scheme is path-based: `/mac`, `/journal/slug`, `/legal/slug`.
+ * Condition rides as a query modifier on a category path (`/iphone?condition=
+ * pre-owned`) rather than its own path segment, since it is a filter on a
+ * category, not a page in its own right.
+ *
+ * `?category=`, `?journal=` and `?legal=` are read as a fallback, but only at
+ * the root path — this is what makes every link built before this change
+ * (shared on WhatsApp, saved in a bio, already in a search index) keep
+ * resolving to the right content after it, without a redirect table.
+ */
+export const parseRoute = (pathname: string, search: string): RouteState => {
+  const segments = pathname.split('/').filter(Boolean);
+  const params = new URLSearchParams(search);
+
+  if (segments[0] === 'journal') {
+    const slug = segments[1] ?? '';
+    return { ...STOREFRONT_ROUTE, journalSlug: slug && articleBySlug(slug) ? slug : '' };
+  }
+  if (segments[0] === 'legal') {
+    const slug = segments[1] ?? '';
+    return { ...STOREFRONT_ROUTE, legalSlug: slug && legalBySlug(slug) ? slug : '' };
+  }
+
+  if (segments.length === 0) {
+    if (params.has('journal')) {
+      const slug = params.get('journal') ?? '';
+      return { ...STOREFRONT_ROUTE, journalSlug: slug && articleBySlug(slug) ? slug : '' };
+    }
+    if (params.has('legal')) {
+      const slug = params.get('legal') ?? '';
+      return { ...STOREFRONT_ROUTE, legalSlug: slug && legalBySlug(slug) ? slug : '' };
+    }
+    const legacyCategory = params.get('category');
+    const category = legacyCategory && CATEGORY_IDS.includes(legacyCategory) ? legacyCategory : 'all';
+    const condition: Condition =
+      category === 'pre-owned' || params.get('condition') === 'pre-owned' ? 'pre-owned' : 'new';
+    return { ...STOREFRONT_ROUTE, category, condition };
+  }
+
+  const candidate = segments[0];
+  const category = CATEGORY_IDS.includes(candidate) ? candidate : 'all';
+  const condition: Condition =
+    category === 'pre-owned' || params.get('condition') === 'pre-owned' ? 'pre-owned' : 'new';
+  return { ...STOREFRONT_ROUTE, category, condition };
 };
 
-/** Condition is a sticky mode rather than a category: the storefront opens on
- *  brand new, and stays in whichever world you picked as you browse. */
-const readConditionFromUrl = (): Condition => {
-  if (typeof window === 'undefined') return 'new';
-  return new URLSearchParams(window.location.search).get('condition') === 'pre-owned'
-    ? 'pre-owned'
-    : 'new';
+const readRouteFromLocation = (): RouteState => {
+  if (typeof window === 'undefined') return STOREFRONT_ROUTE;
+  return parseRoute(window.location.pathname, window.location.search);
 };
 
-/** Journal routing rides on one param:
- *  no `journal` param -> storefront, `?journal` -> index, `?journal=slug` -> article.
- *  Returns null for the storefront, '' for the index, or a valid slug. */
-const readJournalFromUrl = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  const params = new URLSearchParams(window.location.search);
-  if (!params.has('journal')) return null;
-  const slug = params.get('journal') ?? '';
-  return slug && articleBySlug(slug) ? slug : '';
-};
-
-/** Same one-param scheme as the journal: no `legal` param -> storefront,
- *  `?legal` -> index, `?legal=slug` -> a single policy. An unknown slug falls
- *  back to the index rather than 404ing, since a stale link to a renamed policy
- *  should still land somewhere useful. */
-const readLegalFromUrl = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  const params = new URLSearchParams(window.location.search);
-  if (!params.has('legal')) return null;
-  const slug = params.get('legal') ?? '';
-  return slug && legalBySlug(slug) ? slug : '';
+/** Reads just the category out of the browser's current path, without pulling
+ *  in the rest of the route — used by the condition toggle, which changes
+ *  condition but needs to know what category it is standing on. */
+const currentPathCategory = (): string => {
+  const segment = window.location.pathname.split('/').filter(Boolean)[0];
+  return segment && CATEGORY_IDS.includes(segment) ? segment : 'all';
 };
 
 const INITIAL_FILTERS: FilterState = {
@@ -146,14 +187,22 @@ const PreOwnedHandoff = ({ onContinue }: { onContinue: () => void }) => (
   </section>
 );
 
-export default function App() {
+export interface AppProps {
+  /** Set only by the SSR entry, for a route that is never the browser's real
+   *  location. Omitted in the browser, where the real URL is read instead. */
+  initialRoute?: RouteState;
+}
+
+export default function App({ initialRoute }: AppProps = {}) {
+  const initial = initialRoute ?? readRouteFromLocation();
+
   // Primary State
-  const [activeCategory, setActiveCategory] = useState<string>(readCategoryFromUrl);
-  const [activeCondition, setActiveCondition] = useState<Condition>(readConditionFromUrl);
+  const [activeCategory, setActiveCategory] = useState<string>(initial.category);
+  const [activeCondition, setActiveCondition] = useState<Condition>(initial.condition);
   /** null = storefront, '' = journal index, otherwise an article slug. */
-  const [journalSlug, setJournalSlug] = useState<string | null>(readJournalFromUrl);
+  const [journalSlug, setJournalSlug] = useState<string | null>(initial.journalSlug);
   /** null = storefront, '' = legal index, otherwise a policy slug. */
-  const [legalSlug, setLegalSlug] = useState<string | null>(readLegalFromUrl);
+  const [legalSlug, setLegalSlug] = useState<string | null>(initial.legalSlug);
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
   const [currentStore, setCurrentStore] = useState<StoreLocation>(STORE_LOCATIONS[0]);
@@ -220,13 +269,12 @@ export default function App() {
     setFilters(INITIAL_FILTERS);
 
     if (addToHistory) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete('journal');
-      url.searchParams.delete('legal');
-      if (nextCondition === 'pre-owned') url.searchParams.set('condition', 'pre-owned');
-      else url.searchParams.delete('condition');
-      if (nextCategory === 'all') url.searchParams.delete('category');
-      else url.searchParams.set('category', nextCategory);
+      const url = new URL(categoryPath(nextCategory), window.location.origin);
+      // 'pre-owned' is already the condition on its own path; only a category
+      // other than that one needs the modifier spelled out.
+      if (nextCondition === 'pre-owned' && nextCategory !== 'pre-owned') {
+        url.searchParams.set('condition', 'pre-owned');
+      }
       window.history.pushState({ category: nextCategory }, '', url);
     }
 
@@ -241,16 +289,13 @@ export default function App() {
     setLegalSlug(null);
     setFilters(INITIAL_FILTERS);
 
-    const nextCategory = category ?? readCategoryFromUrl();
+    const nextCategory = category ?? currentPathCategory();
     if (category !== undefined) setActiveCategory(nextCategory);
 
-    const url = new URL(window.location.href);
-    url.searchParams.delete('journal');
-    url.searchParams.delete('legal');
-    if (condition === 'new') url.searchParams.delete('condition');
-    else url.searchParams.set('condition', condition);
-    if (nextCategory === 'all') url.searchParams.delete('category');
-    else url.searchParams.set('category', nextCategory);
+    const url = new URL(categoryPath(nextCategory), window.location.origin);
+    if (condition === 'pre-owned' && nextCategory !== 'pre-owned') {
+      url.searchParams.set('condition', 'pre-owned');
+    }
     window.history.pushState({ condition, category: nextCategory }, '', url);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -261,10 +306,7 @@ export default function App() {
     setJournalSlug(slug);
     setLegalSlug(null);
 
-    const url = new URL(window.location.href);
-    url.searchParams.delete('category');
-    url.searchParams.delete('legal');
-    url.searchParams.set('journal', slug);
+    const url = new URL(slug ? `/journal/${slug}` : '/journal', window.location.origin);
     window.history.pushState({ journal: slug }, '', url);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -275,10 +317,7 @@ export default function App() {
     setLegalSlug(slug);
     setJournalSlug(null);
 
-    const url = new URL(window.location.href);
-    url.searchParams.delete('category');
-    url.searchParams.delete('journal');
-    url.searchParams.set('legal', slug);
+    const url = new URL(slug ? `/legal/${slug}` : '/legal', window.location.origin);
     window.history.pushState({ legal: slug }, '', url);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -286,12 +325,13 @@ export default function App() {
 
   useEffect(() => {
     const handlePopState = () => {
-      // Re-read every route from the URL so Back works across store, condition,
-      // journal and legal.
-      handleSelectCategory(readCategoryFromUrl(), false);
-      setActiveCondition(readConditionFromUrl());
-      setJournalSlug(readJournalFromUrl());
-      setLegalSlug(readLegalFromUrl());
+      // Re-read the whole route from the URL in one pass so Back works across
+      // store, condition, journal and legal without the four pieces disagreeing.
+      const route = readRouteFromLocation();
+      handleSelectCategory(route.category, false);
+      setActiveCondition(route.condition);
+      setJournalSlug(route.journalSlug);
+      setLegalSlug(route.legalSlug);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);

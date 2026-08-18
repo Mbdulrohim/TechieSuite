@@ -2,6 +2,11 @@ import React from 'react';
 import { ArrowLeft, ArrowUpRight, Clock } from 'lucide-react';
 import { Article } from '../types';
 
+/** Shared with entry-server.tsx so the prerendered <meta description> for
+ *  /journal says exactly what the page itself says. */
+export const JOURNAL_INDEX_DESCRIPTION =
+  'Buying guides, trade-in maths and practical fixes, written by the people who set the devices up at the counter.';
+
 type JournalIndexProps = {
   articles: Article[];
   onOpenArticle: (slug: string) => void;
@@ -21,8 +26,7 @@ export const JournalIndex: React.FC<JournalIndexProps> = ({ articles, onOpenArti
             Advice worth the read.
           </h1>
           <p className="mt-6 max-w-2xl text-body text-ink-secondary md:text-lead">
-            Buying guides, trade-in maths and practical fixes, written by the people who set the
-            devices up at the counter.
+            {JOURNAL_INDEX_DESCRIPTION}
           </p>
         </div>
       </section>

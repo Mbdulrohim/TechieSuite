@@ -53,7 +53,7 @@ const ConditionSwitch: React.FC<{
 /** Pre-owned gets its own wash so the two worlds read differently at a glance. */
 const PRE_OWNED_ACCENT = 'from-[#f0e9df] via-canvas to-[#e6ecec]';
 
-const CATEGORY_COPY: Record<string, { eyebrow: string; title: string; description: string; accent: string; }> = {
+export const CATEGORY_COPY: Record<string, { eyebrow: string; title: string; description: string; accent: string; }> = {
   iphone: {
     eyebrow: 'Shop iPhone',
     title: 'Designed to be loved.',

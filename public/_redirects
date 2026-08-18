@@ -1,0 +1,6 @@
+# SPA fallback. Every known route is a real prerendered file — Cloudflare
+# Pages matches those before ever consulting this rule. This only catches a
+# path we don't recognise (a typo, a stale link, a future route not yet
+# prerendered): rather than a hard 404, it serves the app shell, which reads
+# the real path client-side and falls back to the storefront itself.
+/*    /index.html   200

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Camera, Smartphone, Laptop, Tablet, Watch, Headphones, Cable, Flame, Grid, Gamepad2, Monitor, Speaker, BatteryCharging, RefreshCw, Zap } from 'lucide-react';
+import { CATEGORY_LABELS } from '../data/categoryLabels';
 
 interface CategoryPillsProps {
   activeCategory: string;
@@ -11,23 +12,23 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
   onSelectCategory,
 }) => {
   const items = [
-    { id: 'all', label: 'All', icon: Grid },
-    { id: 'iphone', label: 'iPhone', icon: Smartphone },
-    { id: 'mac', label: 'Mac', icon: Laptop },
-    { id: 'ipad', label: 'iPad', icon: Tablet },
-    { id: 'watch', label: 'Watch', icon: Watch },
-    { id: 'airpods', label: 'AirPods', icon: Headphones },
-    { id: 'samsung', label: 'Samsung', icon: Smartphone },
-    { id: 'gaming', label: 'Gaming', icon: Gamepad2 },
-    { id: 'laptops', label: 'Laptops', icon: Monitor },
-    { id: 'audio', label: 'Audio', icon: Speaker },
-    { id: 'power', label: 'Power', icon: BatteryCharging },
-    { id: 'accessories', label: 'Accessories', icon: Cable },
-    { id: 'gear', label: 'Creator Gear', icon: Camera },
-    { id: 'pre-owned', label: 'Pre-Owned', icon: RefreshCw },
-    { id: 'anker', label: 'Anker', icon: Zap },
-    { id: 'deals', label: 'Deals', icon: Flame },
-  ];
+    { id: 'all', icon: Grid },
+    { id: 'iphone', icon: Smartphone },
+    { id: 'mac', icon: Laptop },
+    { id: 'ipad', icon: Tablet },
+    { id: 'watch', icon: Watch },
+    { id: 'airpods', icon: Headphones },
+    { id: 'samsung', icon: Smartphone },
+    { id: 'gaming', icon: Gamepad2 },
+    { id: 'laptops', icon: Monitor },
+    { id: 'audio', icon: Speaker },
+    { id: 'power', icon: BatteryCharging },
+    { id: 'accessories', icon: Cable },
+    { id: 'gear', icon: Camera },
+    { id: 'pre-owned', icon: RefreshCw },
+    { id: 'anker', icon: Zap },
+    { id: 'deals', icon: Flame },
+  ] as const;
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 py-8">
@@ -49,7 +50,7 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
                 className="w-8 h-8 text-ink mb-1"
               />
               <span className={`text-caption ${isActive ? 'font-medium' : 'font-normal'} text-ink`}>
-                {cat.label}
+                {CATEGORY_LABELS[cat.id]}
               </span>
             </button>
           );

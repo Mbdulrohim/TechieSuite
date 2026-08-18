@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
-import { LEGAL_DOCUMENTS, LEGAL_ENTITY, LegalDocument } from '../data/legal';
+import { LEGAL_DOCUMENTS, LEGAL_ENTITY, LegalDocument, legalIndexDescription } from '../data/legal';
 
 /** Numbering is derived from position rather than stored in the data, so a
  *  clause can be inserted without renumbering every one after it by hand. */
@@ -23,10 +23,7 @@ export const LegalIndex: React.FC<LegalIndexProps> = ({ onOpenDocument }) => (
     <h1 className="mt-2 text-title-lg font-semibold text-ink md:text-headline">
       Policies &amp; terms
     </h1>
-    <p className="mt-4 text-body text-ink-secondary">
-      The terms {LEGAL_ENTITY} sells and services devices under. These are the same documents
-      issued in store.
-    </p>
+    <p className="mt-4 text-body text-ink-secondary">{legalIndexDescription()}</p>
 
     {/* A list, not cards — three entries do not need chrome, and legal indexes
         are scanned rather than browsed. */}

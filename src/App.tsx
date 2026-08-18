@@ -752,6 +752,7 @@ export default function App() {
         onClose={() => setIsCompareOpen(false)}
         comparedProducts={compareList}
         onRemoveFromCompare={(id) => setCompareList((prev) => prev.filter((p) => p.id !== id))}
+        onClearCompare={() => setCompareList([])}
         onAddToCart={(p) => handleAddToCart(p)}
       />
 

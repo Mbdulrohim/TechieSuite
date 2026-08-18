@@ -1,5 +1,5 @@
 import React from 'react';
-import { Smartphone, Laptop, Tablet, Watch, Headphones, Cable, Flame, Grid, Gamepad2, Monitor, Speaker, BatteryCharging, RefreshCw, Zap } from 'lucide-react';
+import { Camera, Smartphone, Laptop, Tablet, Watch, Headphones, Cable, Flame, Grid, Gamepad2, Monitor, Speaker, BatteryCharging, RefreshCw, Zap } from 'lucide-react';
 
 interface CategoryPillsProps {
   activeCategory: string;
@@ -23,6 +23,7 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
     { id: 'audio', label: 'Audio', icon: Speaker },
     { id: 'power', label: 'Power', icon: BatteryCharging },
     { id: 'accessories', label: 'Accessories', icon: Cable },
+    { id: 'gear', label: 'Creator Gear', icon: Camera },
     { id: 'pre-owned', label: 'Pre-Owned', icon: RefreshCw },
     { id: 'anker', label: 'Anker', icon: Zap },
     { id: 'deals', label: 'Deals', icon: Flame },

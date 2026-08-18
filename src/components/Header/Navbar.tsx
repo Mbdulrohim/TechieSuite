@@ -48,6 +48,7 @@ const STORE_PANEL: Array<{ heading: string; items: Array<[string, string]> }> = 
       ['samsung', 'Samsung'],
       ['gaming', 'Gaming'],
       ['laptops', 'Laptops'],
+      ['gear', 'Creator Gear'],
     ],
   },
   {
@@ -79,6 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const closeMenuTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const filteredProducts = searchQuery.trim()
     ? products
@@ -108,8 +110,30 @@ export const Navbar: React.FC<NavbarProps> = ({
       if (e.key === 'Escape') setOpenMenu(null);
     };
     document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      if (closeMenuTimer.current) clearTimeout(closeMenuTimer.current);
+    };
   }, []);
+
+  const cancelMenuClose = () => {
+    if (!closeMenuTimer.current) return;
+    clearTimeout(closeMenuTimer.current);
+    closeMenuTimer.current = null;
+  };
+
+  const openNavMenu = (menu: string) => {
+    cancelMenuClose();
+    setOpenMenu(menu);
+  };
+
+  const scheduleMenuClose = () => {
+    cancelMenuClose();
+    closeMenuTimer.current = setTimeout(() => {
+      setOpenMenu(null);
+      closeMenuTimer.current = null;
+    }, 140);
+  };
 
   /** Products shown inside a category panel, in the condition you are browsing. */
   const panelProducts = (category: string) =>
@@ -118,11 +142,13 @@ export const Navbar: React.FC<NavbarProps> = ({
       .slice(0, 8);
 
   const goToCategory = (category: string) => {
+    cancelMenuClose();
     setOpenMenu(null);
     onSelectCategory(category);
   };
 
   const goToProduct = (product: Product) => {
+    cancelMenuClose();
     setOpenMenu(null);
     onSelectProduct(product);
   };
@@ -154,15 +180,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             listing the products under it. */}
         <nav
           ref={menuRef}
-          onMouseLeave={() => setOpenMenu(null)}
+          onMouseEnter={cancelMenuClose}
+          onMouseLeave={scheduleMenuClose}
           className="hidden md:flex items-center gap-5 lg:gap-6 font-medium mx-4 min-w-0"
         >
           {PRIMARY_NAV.map(([id, label]) => (
-            <div key={id} onMouseEnter={() => setOpenMenu(id)}>
+            <div key={id} onMouseEnter={() => openNavMenu(id)}>
               <button
                 onClick={() => goToCategory(id)}
+                onFocus={() => openNavMenu(id)}
                 aria-current={activeCategory === id ? 'page' : undefined}
                 aria-expanded={openMenu === id}
+                aria-haspopup="true"
                 className={`shrink-0 transition-colors hover:text-white ${activeCategory === id ? 'text-white' : ''}`}
               >
                 {label}
@@ -202,7 +231,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Dropdown panel — full-bleed under the bar, Apple-style */}
           {openMenu && (
-            <div className="absolute inset-x-0 top-full bg-white text-ink shadow-panel animate-fade-in-up">
+            <div
+              onMouseEnter={cancelMenuClose}
+              onMouseLeave={scheduleMenuClose}
+              className="absolute inset-x-0 top-full z-50 bg-white text-ink shadow-panel animate-fade-in"
+            >
               <div className="mx-auto max-w-[1400px] px-8 py-10">
                 {openMenu === 'all' ? (
                   <div className="grid grid-cols-3 gap-10">

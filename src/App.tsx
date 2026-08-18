@@ -43,6 +43,7 @@ const CATEGORY_IDS = [
   'audio',
   'power',
   'accessories',
+  'gear',
   'pre-owned',
   'anker',
   'deals',
@@ -161,6 +162,10 @@ export default function App() {
   // Keys are versioned: if CartItem ever changes shape, bump the suffix and old
   // carts evaporate instead of needing a migration.
   const [cart, setCart] = usePersistentState<CartItem[]>('techiebase.cart.v1', [], Array.isArray);
+  const [recentlyRemovedCartItem, setRecentlyRemovedCartItem] = useState<{
+    item: CartItem;
+    index: number;
+  } | null>(null);
   const [wishlist, setWishlist] = usePersistentState<string[]>('techiebase.wishlist.v1', [], Array.isArray);
   /** Session-scoped on purpose — a comparison tray is a train of thought, not a
    *  saved list, and persisting it would double the stale-product surface. */
@@ -198,6 +203,12 @@ export default function App() {
       // fallback
     }
   }, []);
+
+  useEffect(() => {
+    if (!recentlyRemovedCartItem) return;
+    const timer = window.setTimeout(() => setRecentlyRemovedCartItem(null), 7000);
+    return () => window.clearTimeout(timer);
+  }, [recentlyRemovedCartItem]);
 
   const handleSelectCategory = useCallback((category: string, addToHistory = true) => {
     const nextCategory = CATEGORY_IDS.includes(category) ? category : 'all';
@@ -357,14 +368,18 @@ export default function App() {
         return product.condition === 'pre-owned';
       }
 
-      // Condition gate — the two worlds never mix in a listing.
-      if (product.condition !== activeCondition) return false;
+      // Condition gate — the two worlds never mix in a listing, with one
+      // deliberate exception. Deals is about price, not condition: a discounted
+      // new device and a traded-in handset are both offers, and letting the
+      // condition toggle hide half of them made the page look nearly empty.
+      if (activeCategory !== 'deals' && product.condition !== activeCondition) return false;
 
       // Category filter
       if (activeCategory !== 'all' && activeCategory !== 'deals') {
         if (product.category !== activeCategory) return false;
       } else if (activeCategory === 'deals') {
-        if (!product.originalPrice) return false;
+        // Either marked down, or pre-owned — trade-ins are the deal.
+        if (!product.originalPrice && product.condition !== 'pre-owned') return false;
       }
 
       // Max price
@@ -456,18 +471,33 @@ export default function App() {
     setIsCartOpen(true);
   };
 
-  const handleUpdateCartQuantity = (cartItemId: string, newQty: number) => {
-    if (newQty <= 0) {
-      setCart((prev) => prev.filter((item) => item.id !== cartItemId));
-    } else {
-      setCart((prev) =>
-        prev.map((item) => (item.id === cartItemId ? { ...item, quantity: newQty } : item))
-      );
-    }
+  const handleRemoveCartItem = (cartItemId: string) => {
+    const index = cart.findIndex((item) => item.id === cartItemId);
+    if (index === -1) return;
+    setRecentlyRemovedCartItem({ item: cart[index], index });
+    setCart((prev) => prev.filter((item) => item.id !== cartItemId));
   };
 
-  const handleRemoveCartItem = (cartItemId: string) => {
-    setCart((prev) => prev.filter((item) => item.id !== cartItemId));
+  const handleUndoRemoveCartItem = () => {
+    if (!recentlyRemovedCartItem) return;
+    const { item, index } = recentlyRemovedCartItem;
+    setCart((prev) => {
+      if (prev.some((cartItem) => cartItem.id === item.id)) return prev;
+      const restored = [...prev];
+      restored.splice(Math.min(index, restored.length), 0, item);
+      return restored;
+    });
+    setRecentlyRemovedCartItem(null);
+  };
+
+  const handleUpdateCartQuantity = (cartItemId: string, newQty: number) => {
+    if (newQty <= 0) {
+      handleRemoveCartItem(cartItemId);
+      return;
+    }
+    setCart((prev) =>
+      prev.map((item) => (item.id === cartItemId ? { ...item, quantity: newQty } : item))
+    );
   };
 
   const handleToggleProtection = (cartItemId: string) => {
@@ -602,6 +632,7 @@ export default function App() {
               <ProductRow title="Gaming" products={productsForSection('gaming')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('gaming')} />
               {gamingBundle && <BundleSection bundle={gamingBundle} onAddBundleToCart={handleAddBundleToCart} />}
               <ProductRow title="Laptops" products={productsForSection('laptops')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('laptops')} />
+              <ProductRow title="Creator Gear" products={productsForSection('gear')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('gear')} />
               <ProductRow title="Audio" products={productsForSection('audio')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('audio')} />
               <ProductRow title="Power" products={productsForSection('power')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('power')} />
               <ProductRow title="Anker Power & Gear" products={productsForSection('anker')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('anker')} />
@@ -644,6 +675,8 @@ export default function App() {
         cart={cart}
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
+        recentlyRemovedItem={recentlyRemovedCartItem?.item ?? null}
+        onUndoRemove={handleUndoRemoveCartItem}
         onToggleProtection={handleToggleProtection}
         tradeInQuote={tradeInQuote}
         onRemoveTradeIn={() => setTradeInQuote(null)}
@@ -742,7 +775,10 @@ export default function App() {
         cart={cart}
         tradeInQuote={tradeInQuote}
         currentStore={currentStore}
-        onClearCart={() => setCart([])}
+        onClearCart={() => {
+          setCart([]);
+          setRecentlyRemovedCartItem(null);
+        }}
       />
 
       {/* Store Selector Modal */}

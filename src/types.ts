@@ -55,6 +55,8 @@ export interface Product {
     | 'power'
     | 'anker'
     | 'accessories'
+    /** DJI and creator kit — drones, gimbals, action cameras, wireless mics. */
+    | 'gear'
     | 'deals';
   price: number;
   originalPrice?: number;

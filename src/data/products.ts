@@ -520,7 +520,22 @@ const CATALOG_IMAGES = {
   powerBank: 'https://images.unsplash.com/photo-1619489646924-b4fce76b1db5?auto=format&fit=crop&w=900&q=85',
   charger: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=900&q=85',
   adapters: 'https://images.unsplash.com/photo-1600490722773-35753aea6332?auto=format&fit=crop&w=900&q=85',
+  drone: 'https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?auto=format&fit=crop&w=900&q=85',
+  droneCompact: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=900&q=85',
+  droneField: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=900&q=85',
+  controllerPad: 'https://images.unsplash.com/photo-1592840496694-26d035b52b48?auto=format&fit=crop&w=900&q=85',
+  headphonesPremium: 'https://images.unsplash.com/photo-1585298723682-7115561c51b7?auto=format&fit=crop&w=900&q=85',
+  consoleGames: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=900&q=85',
+  gamingLaptopRig: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=85',
 };
+
+/**
+ * STAND-IN IMAGERY. These lines are live and sellable but still carry a generic
+ * photo rather than the actual product — there is no shot of an Apple Pencil or
+ * a DJI gimbal in `public/images`. Grep this constant when the real photography
+ * lands; every use of it is a line that needs replacing.
+ */
+const NEEDS_REAL_PHOTO = CATALOG_IMAGES.adapters;
 
 type CatalogSeed = {
   id: string;
@@ -749,6 +764,66 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     colors: [{ name: 'Midnight', hex: '#272729' }, { name: 'Starlight', hex: '#e5dfd5' }],
     specs: { Chip: 'Apple S10', Display: 'Always-On Retina display', Health: 'Sleep score, temperature sensing and sleep apnea notifications', Battery: '18 hours with fast charging', Connectivity: 'Optional 5G cellular' },
     description: 'Apple Watch SE 3 brings the Always-On display, fast charging, S10 gestures and key health and safety features to the value line.',
+  },
+
+  /* --- Apple Pencil ------------------------------------------------------
+     Sold under accessories rather than iPad: people buy a Pencil to go with a
+     tablet they already own far more often than alongside a new one. */
+  {
+    id: 'apple-pencil-pro', name: 'Apple Pencil Pro', category: 'accessories',
+    tagline: 'Squeeze, roll and hover. The most capable Pencil yet.',
+    price: 129, rating: 4.8, reviewCount: 3120,
+    image: NEEDS_REAL_PHOTO, badge: 'NEW',
+    colors: [{ name: 'White', hex: '#f2f2f0' }],
+    specs: {
+      Compatibility: 'iPad Pro (M4), iPad Air (M2 and later)',
+      Gestures: 'Squeeze, barrel roll, hover and double-tap',
+      Feedback: 'Custom haptic engine',
+      Pairing: 'Magnetic attach, pair and charge',
+      'Find My': 'Supported',
+    },
+    description: 'Squeeze to bring up the tool palette, roll the barrel to angle a brush, and hover to see exactly where a stroke will land. Attaches magnetically to the side of the iPad to pair and charge.',
+  },
+  {
+    id: 'apple-pencil-usbc', name: 'Apple Pencil (USB-C)', category: 'accessories',
+    tagline: 'Pixel-perfect precision, at the sensible price.',
+    price: 79, rating: 4.6, reviewCount: 2450,
+    image: NEEDS_REAL_PHOTO,
+    colors: [{ name: 'White', hex: '#f2f2f0' }],
+    specs: {
+      Compatibility: 'Every iPad with a USB-C port',
+      Charging: 'USB-C cable',
+      Feature: 'Hover on iPad Pro (M2 and later)',
+      Storage: 'Magnetically attaches to the side of the iPad',
+      Pressure: 'Tilt sensitivity, no pressure sensitivity',
+    },
+    description: 'The Pencil to buy if you are writing, marking up and sketching rather than painting. No pressure sensitivity, but the same low latency and tilt support, and it charges over ordinary USB-C.',
+  },
+
+  /* --- AirPods Max 2 ----------------------------------------------------- */
+  {
+    id: 'airpods-max-2', name: 'AirPods Max 2', category: 'airpods',
+    tagline: 'Reference-grade sound, lighter on the head.',
+    price: 579, rating: 4.8, reviewCount: 860,
+    image: '/images/products/apple/audio/airpods-max-colors.webp',
+    badge: 'NEW',
+    stockUrgency: 'New release — limited first shipment',
+    colors: [
+      { name: 'Midnight', hex: '#2b2d31' },
+      { name: 'Starlight', hex: '#efe9dd' },
+      { name: 'Blue', hex: '#8fa3bb' },
+      { name: 'Purple', hex: '#9b8fb3' },
+      { name: 'Orange', hex: '#d2743a' },
+    ],
+    specs: {
+      Chip: 'H3 for adaptive audio and lower latency',
+      Audio: 'Personalised Spatial Audio with dynamic head tracking',
+      Noise: 'Active Noise Cancellation with Transparency mode',
+      Battery: 'Up to 25 hours with ANC on',
+      Charging: 'USB-C, fast charge to 3 hours in 5 minutes',
+      Lossless: 'Wired lossless over USB-C',
+    },
+    description: 'The over-ear Apple headphone, revised: a lighter frame, longer battery and genuine lossless playback over USB-C. The point of these is the soundstage — closer to a studio monitor than a commuter headphone.',
   },
 
   /* --- Samsung --------------------------------------------------------- */
@@ -1094,6 +1169,166 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     description: 'A pre-built tower assembled and stress-tested in-store, sized for 1080p and 1440p gaming. We install Windows and your launchers before handover.',
   },
 
+  /* --- Controllers ------------------------------------------------------- */
+  {
+    id: 'xbox-wireless-controller', name: 'Xbox Wireless Controller', category: 'gaming',
+    tagline: 'The pad that works with everything.',
+    price: 60, rating: 4.8, reviewCount: 15400,
+    image: CATALOG_IMAGES.xboxPad, badge: 'BEST SELLER',
+    colors: [
+      { name: 'Carbon Black', hex: '#1f2023' },
+      { name: 'Robot White', hex: '#f1f1ef' },
+      { name: 'Shock Blue', hex: '#3f6fb5' },
+    ],
+    specs: {
+      Works_with: 'Xbox Series X|S, Xbox One, Windows, Android, iOS',
+      Connection: 'Bluetooth and Xbox Wireless',
+      Battery: 'AA cells or a rechargeable pack',
+      Grip: 'Textured triggers and bumpers',
+      Latency: 'Dynamic latency input on Series consoles',
+    },
+    description: 'The most broadly compatible controller sold — it pairs with an Xbox, a Windows PC and a phone without any adapter. Runs on AA batteries, which is either the best or the worst thing about it depending on who you ask.',
+  },
+  {
+    id: 'switch-pro-controller', name: 'Nintendo Switch Pro Controller', category: 'gaming',
+    tagline: 'For anyone done with Joy-Cons.',
+    price: 70, rating: 4.9, reviewCount: 11200,
+    image: CATALOG_IMAGES.controllerPad,
+    colors: [{ name: 'Black', hex: '#22232a' }],
+    specs: {
+      Battery: 'Around 40 hours per charge',
+      Features: 'HD rumble, motion controls, NFC for amiibo',
+      Connection: 'Bluetooth, USB-C for charging and wired play',
+      'Also works with': 'Windows PC and Steam',
+      Build: 'Full-size grips and a proper D-pad',
+    },
+    description: 'A full-size pad with a real D-pad and forty hours of battery, which is roughly five times what a pair of Joy-Cons manage. If you play docked, this is the first thing to buy.',
+  },
+
+  /* --- Games -------------------------------------------------------------
+     Priced as standalone titles. The console packs in FEATURED_BUNDLES pair
+     these with hardware at a lower combined price. */
+  {
+    id: 'game-ea-fc-26', name: 'EA SPORTS FC 26 (PS5)', category: 'gaming',
+    tagline: 'The one everyone actually plays.',
+    price: 70, rating: 4.3, reviewCount: 8900,
+    image: CATALOG_IMAGES.consoleGames, badge: 'BEST SELLER',
+    stockUrgency: 'Our fastest-moving title',
+    colors: [{ name: 'Standard Edition', hex: '#1f6f4a' }],
+    specs: {
+      Platform: 'PlayStation 5',
+      Players: '1-4 local, online multiplayer',
+      Modes: 'Ultimate Team, Career, Clubs, Volta',
+      Disc: 'Physical disc edition',
+      Language: 'English commentary',
+    },
+    description: 'The football game the whole shop argues about. Physical disc, so it can be lent, resold or traded back in — which the digital edition cannot.',
+  },
+  {
+    id: 'game-cod-bo7', name: 'Call of Duty: Black Ops 7 (PS5)', category: 'gaming',
+    tagline: 'Campaign, multiplayer and Zombies.',
+    price: 70, rating: 4.2, reviewCount: 6400,
+    image: CATALOG_IMAGES.consoleGames,
+    colors: [{ name: 'Standard Edition', hex: '#2a2d33' }],
+    specs: {
+      Platform: 'PlayStation 5',
+      Players: 'Single player and online multiplayer',
+      Modes: 'Campaign, Multiplayer, Zombies',
+      Disc: 'Physical disc edition',
+      Online: 'PS Plus required for multiplayer',
+    },
+    description: 'Three games in one box: a scripted campaign, the competitive multiplayer that keeps people up until 3am, and Zombies. Note that online play needs a PS Plus subscription, which is sold separately.',
+  },
+  {
+    id: 'game-gta-6', name: 'Grand Theft Auto VI (PS5)', category: 'gaming',
+    tagline: 'The one people bought the console for.',
+    price: 70, rating: 4.9, reviewCount: 4100,
+    image: CATALOG_IMAGES.consoleGames, badge: 'HOT DEAL',
+    stockUrgency: 'Allocation is tight — reserve in store',
+    colors: [{ name: 'Standard Edition', hex: '#c0533f' }],
+    specs: {
+      Platform: 'PlayStation 5',
+      Players: 'Single player, online multiplayer to follow',
+      Rating: '18+',
+      Disc: 'Physical disc edition',
+      Install: 'Large install — keep storage free',
+    },
+    description: 'Open-world Rockstar, on disc. Worth checking your free storage before launch day; the install is substantial and a full SSD is the most common reason a copy sits unplayed for an evening.',
+  },
+  {
+    id: 'game-mario-kart-world', name: 'Mario Kart World (Switch)', category: 'gaming',
+    tagline: 'Four players, one sofa, no arguments. Mostly.',
+    price: 70, rating: 4.9, reviewCount: 7300,
+    image: CATALOG_IMAGES.consoleGames, badge: 'POPULAR',
+    colors: [{ name: 'Standard Edition', hex: '#d64b4b' }],
+    specs: {
+      Platform: 'Nintendo Switch',
+      Players: 'Up to 4 local, 12 online',
+      Modes: 'Grand Prix, Battle, Time Trials',
+      Cartridge: 'Physical game card',
+      Ages: 'Suitable for all ages',
+    },
+    description: 'The reason to own a Switch if you have people in the house. Four players on one screen with no extra hardware beyond controllers.',
+  },
+
+  /* --- Gaming laptops ----------------------------------------------------
+     Filed under laptops rather than gaming: they are Windows machines first,
+     and buyers cross-shop them against the XPS and the ThinkPad. */
+  {
+    id: 'asus-rog-zephyrus-g14', name: 'ASUS ROG Zephyrus G14', category: 'laptops',
+    tagline: 'A real gaming laptop you can carry all day.',
+    price: 1600, rating: 4.7, reviewCount: 2140,
+    image: CATALOG_IMAGES.gamingLaptopRig, badge: 'POPULAR',
+    storage: ['512GB SSD', '1TB SSD', '2TB SSD'],
+    colors: [
+      { name: 'Platinum White', hex: '#e8e6e1' },
+      { name: 'Eclipse Grey', hex: '#3a3b40' },
+    ],
+    specs: {
+      Display: '14-inch 3K OLED, 120Hz',
+      Graphics: 'NVIDIA GeForce RTX 4070',
+      Processor: 'AMD Ryzen 9',
+      Memory: '32GB LPDDR5X',
+      Weight: '1.5kg',
+      Battery: 'Around 8 hours on light work',
+    },
+    description: 'The gaming laptop that does not punish you for carrying it. A 14-inch OLED and an RTX 4070 in a 1.5kg body — it will not match a 16-inch desktop replacement under sustained load, but it fits in a normal bag.',
+  },
+  {
+    id: 'lenovo-legion-5-pro', name: 'Lenovo Legion 5 Pro', category: 'laptops',
+    tagline: 'The most frames for the money.',
+    price: 1450, rating: 4.6, reviewCount: 3080,
+    image: CATALOG_IMAGES.gamingRig,
+    storage: ['1TB SSD', '2TB SSD'],
+    colors: [{ name: 'Storm Grey', hex: '#4a4d52' }],
+    specs: {
+      Display: '16-inch WQXGA, 165Hz',
+      Graphics: 'NVIDIA GeForce RTX 4060',
+      Processor: 'Intel Core i7',
+      Memory: '16GB DDR5, upgradeable',
+      Cooling: 'Dual fan with rear exhaust',
+      Weight: '2.5kg',
+    },
+    description: 'Heavy, plain looking, and the best value on the shelf. The memory is upgradeable, which matters more over three years than any spec on the box.',
+  },
+  {
+    id: 'hp-omen-16', name: 'HP OMEN 16', category: 'laptops',
+    tagline: 'Big screen, serious cooling.',
+    price: 1350, rating: 4.5, reviewCount: 1760,
+    image: CATALOG_IMAGES.gamingRig,
+    storage: ['512GB SSD', '1TB SSD'],
+    colors: [{ name: 'Shadow Black', hex: '#25262b' }],
+    specs: {
+      Display: '16-inch QHD, 165Hz',
+      Graphics: 'NVIDIA GeForce RTX 4060',
+      Processor: 'Intel Core i7',
+      Memory: '16GB DDR5',
+      Cooling: 'Five-way airflow with vapour chamber',
+      Weight: '2.3kg',
+    },
+    description: 'Runs cooler than most under a long session, which is the difference between stable frames and a laptop that throttles in the second hour. Worth it in a room without air conditioning.',
+  },
+
   /* --- Windows laptops -------------------------------------------------- */
   {
     id: 'dell-xps-15', name: 'Dell XPS 15', category: 'laptops',
@@ -1269,7 +1504,73 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     description: 'Small enough for a bag, with the multi-directional sound Marshall calls True Stereophonic. The one to pick if you care how a speaker looks on a shelf.',
   },
 
-  /* --- Power & charging ------------------------------------------------- */
+  /* --- Bang & Olufsen ---------------------------------------------------- */
+  {
+    id: 'bo-beoplay-h100', name: 'Bang & Olufsen Beoplay H100', category: 'audio',
+    tagline: 'Lambskin, aluminium, and forty years of loudspeaker engineering.',
+    price: 1549, rating: 4.7, reviewCount: 410,
+    image: CATALOG_IMAGES.headphonesPremium, badge: 'NEW',
+    colors: [
+      { name: 'Infinite Black', hex: '#232427' },
+      { name: 'Sunset Apricot', hex: '#d9a184' },
+      { name: 'Hourglass Sand', hex: '#d8cbb8' },
+    ],
+    specs: {
+      Drivers: '40mm titanium drivers',
+      Noise: 'Adaptive Active Noise Cancellation',
+      Battery: 'Up to 34 hours with ANC on',
+      Materials: 'Lambskin leather, anodised aluminium, glass touch ring',
+      Serviceability: 'Replaceable ear cushions and battery',
+      Codecs: 'Bluetooth 5.4 with aptX Adaptive',
+    },
+    description: 'The most expensive headphone we sell, and the one built to outlast the rest. Cushions and battery are replaceable rather than glued, so a five-year-old pair can be brought back to new instead of thrown away.',
+  },
+  {
+    id: 'bo-beoplay-ex', name: 'Bang & Olufsen Beoplay EX', category: 'audio',
+    tagline: 'Small enough to forget, heavy enough to feel real.',
+    price: 399, rating: 4.6, reviewCount: 980,
+    image: CATALOG_IMAGES.headphonesAlt,
+    colors: [
+      { name: 'Anthracite Oxygen', hex: '#3d3f43' },
+      { name: 'Gold Tone', hex: '#c8ab7c' },
+      { name: 'Black Anthracite', hex: '#212226' },
+    ],
+    specs: {
+      Drivers: '9.2mm neodymium drivers',
+      Noise: 'Adaptive ANC with Transparency',
+      Battery: '8 hours in the buds, 20 with the case',
+      Build: 'Aluminium case and stems',
+      Water: 'IP57 buds, IP54 case',
+      Fit: 'Four silicone tip sizes in the box',
+    },
+    description: 'B&O in earbud form. The aluminium case is noticeably heavier than a plastic one, which sounds like a complaint and is not — it is the bit you handle every day.',
+  },
+  {
+    id: 'bo-beosound-a1-3', name: 'Bang & Olufsen Beosound A1 (3rd gen)', category: 'audio',
+    tagline: 'A pocket speaker that outperforms its size.',
+    price: 349, rating: 4.7, reviewCount: 1240,
+    image: CATALOG_IMAGES.speaker,
+    colors: [
+      { name: 'Natural Aluminium', hex: '#cfd0cd' },
+      { name: 'Black Anthracite', hex: '#26272b' },
+      { name: 'Eucalyptus Green', hex: '#93a48f' },
+    ],
+    specs: {
+      Output: '2 x 30W amplifiers',
+      Battery: 'Up to 18 hours',
+      Water: 'IP67 dust and water resistant',
+      Build: 'Aluminium dome with a leather strap',
+      Pairing: 'Stereo pair two A1 units',
+      Extras: 'Built-in microphone for calls',
+    },
+    description: 'An aluminium dome that fits in one hand and fills a room. IP67 means the poolside and the harmattan are both fine. Pair two for proper stereo.',
+  },
+
+  /* --- Power & charging -------------------------------------------------
+     Power banks are Anker only, by instruction. A Baseus 20,000mAh unit used
+     to sit here and was removed rather than repriced — the rule is about which
+     brand the shop is willing to stand behind on a battery, not about margin.
+     The Anker power banks live in the `anker` category above. */
   {
     id: 'anker-737-powerbank', name: 'Anker 737 Power Bank (24K)', category: 'anker',
     tagline: '24,000mAh and 140W — it charges laptops.',
@@ -1354,24 +1655,6 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     description: 'Strong noise cancellation, dependable calls and enough battery for a full week of commuting at a much more approachable price.',
   },
   {
-    id: 'baseus-20k-powerbank', name: 'Baseus 20,000mAh Power Bank', category: 'power',
-    tagline: 'The everyday backup battery.',
-    price: 45, originalPrice: 55, rating: 4.4, reviewCount: 7340,
-    image: CATALOG_IMAGES.powerBank,
-    colors: [
-      { name: 'Black', hex: '#1f2023' },
-      { name: 'White', hex: '#efefed' },
-    ],
-    specs: {
-      Capacity: '20,000mAh',
-      Output: '22.5W fast charge, four ports',
-      Display: 'Digital battery percentage',
-      Cables: 'Built-in USB-C cable',
-      'Recharge time': 'About 5 hours',
-    },
-    description: 'The sensible everyday power bank: enough for four phone charges, fast enough to be useful, and small enough to actually carry.',
-  },
-  {
     id: 'surge-extension-usb', name: 'Surge-Protected Extension Block', category: 'power',
     tagline: 'Protects your gear from unstable mains.',
     price: 35, rating: 4.5, reviewCount: 2860,
@@ -1402,6 +1685,125 @@ const CATALOG_SEEDS: CatalogSeed[] = [
     },
     description: 'A silent alternative to a small generator for desk work. Keeps a router, laptop and a couple of lights running through a typical outage, and recharges from solar.',
   },
+  /* --- DJI / creator gear -------------------------------------------------
+     Its own category rather than a shelf inside accessories: nobody browsing
+     for a charging cable is also shopping for a gimbal, and creators arrive
+     looking for this specifically. */
+  {
+    id: 'dji-mini-4-pro', name: 'DJI Mini 4 Pro', category: 'gear',
+    tagline: 'Under 249g, so most rules do not apply.',
+    price: 759, rating: 4.8, reviewCount: 2410,
+    image: CATALOG_IMAGES.drone, badge: 'BEST SELLER',
+    stockUrgency: 'Our most requested drone',
+    colors: [{ name: 'Grey', hex: '#c9cacc' }],
+    specs: {
+      Weight: 'Under 249g',
+      Camera: '48MP 1/1.3-inch sensor, 4K/60fps HDR',
+      Obstacle_sensing: 'Omnidirectional',
+      Flight_time: 'Up to 34 minutes',
+      Transmission: 'Up to 20km O4',
+      Vertical_video: 'True vertical shooting for Reels and TikTok',
+    },
+    description: 'The drone most creators should buy. Under 249g puts it in the lightest regulatory class in most countries, and it shoots true vertical video rather than cropping a landscape frame.',
+  },
+  {
+    id: 'dji-neo', name: 'DJI Neo', category: 'gear',
+    tagline: 'Takes off from your palm. No controller needed.',
+    price: 199, rating: 4.5, reviewCount: 1680,
+    image: CATALOG_IMAGES.droneCompact, badge: 'POPULAR',
+    colors: [{ name: 'Grey', hex: '#d0d1d3' }],
+    specs: {
+      Weight: '135g',
+      Camera: '4K/30fps stabilised',
+      Launch: 'Palm take-off, no controller required',
+      Modes: 'Follow, Dronie, Circle, Rocket, Spotlight',
+      Flight_time: 'Up to 18 minutes',
+      Props: 'Fully guarded propellers',
+    },
+    description: 'The cheapest way into aerial video, and the easiest — press a button, it lifts off your hand, films a preset move and comes back. Guarded props mean it can fly indoors.',
+  },
+  {
+    id: 'dji-air-3s', name: 'DJI Air 3S', category: 'gear',
+    tagline: 'Two cameras, and it sees in the dark.',
+    price: 1099, rating: 4.8, reviewCount: 890,
+    image: CATALOG_IMAGES.droneField,
+    colors: [{ name: 'Grey', hex: '#c9cacc' }],
+    specs: {
+      Camera: 'Dual: 1-inch wide plus 70mm medium tele',
+      Video: '4K/120fps slow motion',
+      Obstacle_sensing: 'Omnidirectional with forward-facing LiDAR',
+      Flight_time: 'Up to 45 minutes',
+      Storage: '42GB internal',
+      Transmission: 'Up to 20km O4+',
+    },
+    description: 'Two focal lengths in one aircraft, so a scene can be shot wide and tight without landing. The LiDAR makes it the one to fly at dusk, when optical sensors stop being reliable.',
+  },
+  {
+    id: 'dji-osmo-pocket-3', name: 'DJI Osmo Pocket 3', category: 'gear',
+    tagline: 'A stabilised 1-inch camera that fits in a shirt pocket.',
+    price: 519, rating: 4.9, reviewCount: 3200,
+    image: NEEDS_REAL_PHOTO, badge: 'BEST SELLER',
+    stockUrgency: 'The vlogging camera we sell most of',
+    colors: [{ name: 'Black', hex: '#26272b' }],
+    specs: {
+      Sensor: '1-inch CMOS',
+      Video: '4K/120fps',
+      Screen: '2-inch rotating touchscreen',
+      Stabilisation: '3-axis mechanical gimbal',
+      Audio: 'Three-mic array, pairs with DJI Mic 2',
+      Battery: 'Up to 166 minutes',
+    },
+    description: 'Mechanical stabilisation in a pocket camera, which is why footage from it looks nothing like phone video. Rotate the screen to vertical and it switches orientation automatically.',
+  },
+  {
+    id: 'dji-osmo-action-5-pro', name: 'DJI Osmo Action 5 Pro', category: 'gear',
+    tagline: 'Waterproof to 20m without a case.',
+    price: 349, rating: 4.7, reviewCount: 1540,
+    image: NEEDS_REAL_PHOTO,
+    colors: [{ name: 'Black', hex: '#212226' }],
+    specs: {
+      Sensor: '1/1.3-inch',
+      Video: '4K/120fps HDR',
+      Waterproof: '20m without a housing',
+      Screens: 'Dual OLED touchscreens',
+      Battery: 'Up to 4 hours',
+      Storage: '47GB internal',
+    },
+    description: 'Front and rear OLED screens, so framing yourself does not require guesswork. Waterproof to 20 metres as it comes — no housing to buy, lose or flood.',
+  },
+  {
+    id: 'dji-rs-4-mini', name: 'DJI RS 4 Mini', category: 'gear',
+    tagline: 'A camera gimbal light enough to actually bring.',
+    price: 369, rating: 4.6, reviewCount: 720,
+    image: NEEDS_REAL_PHOTO,
+    colors: [{ name: 'Black', hex: '#26272b' }],
+    specs: {
+      Payload: 'Up to 2kg',
+      Weight: '890g',
+      Battery: 'Up to 13 hours',
+      Tracking: 'Intelligent subject tracking module included',
+      Supports: 'Mirrorless bodies and phones',
+      Folding: 'Folds for a standard camera bag',
+    },
+    description: 'Takes a mirrorless body up to 2kg but weighs under a kilo itself. The tracking module keeps a moving subject centred without a second operator.',
+  },
+  {
+    id: 'dji-mic-2', name: 'DJI Mic 2 (2-Person Kit)', category: 'gear',
+    tagline: 'Two transmitters, one receiver, no more phone audio.',
+    price: 349, rating: 4.8, reviewCount: 1980,
+    image: NEEDS_REAL_PHOTO, badge: 'POPULAR',
+    colors: [{ name: 'Shadow Black', hex: '#222327' }],
+    specs: {
+      Range: 'Up to 250m line of sight',
+      Recording: '14 hours internal backup per transmitter',
+      Noise: 'Intelligent noise cancelling',
+      Battery: '18 hours with the charging case',
+      Connects_to: 'Camera, phone, laptop',
+      Mounting: 'Magnetic clip and clip-on',
+    },
+    description: 'The single biggest upgrade to a video is the sound, and this is the cheapest way to fix it. Each transmitter records its own backup internally, so a dropout in the wireless link does not cost you the take.',
+  },
+
 ];
 
 const EXPANDED_CATALOG: Product[] = CATALOG_SEEDS.map(buildProduct);
@@ -2192,6 +2594,64 @@ export const FEATURED_BUNDLES: ProductBundle[] = [
     regularTotal: 725,
     bundlePrice: 679,
     savings: 46
+  },
+
+  /* --- Console packs -----------------------------------------------------
+     Hardware plus the games people were going to buy anyway. Totals are
+     derived from the catalogue prices below rather than typed by hand — the
+     three bundles above were reconciled once already after a price change
+     silently broke their arithmetic. */
+  {
+    id: 'bundle-ps5-football-pack',
+    title: 'PS5 Football Pack',
+    tagline: 'PS5, a second pad, and FC 26 — the setup half of Lagos wants',
+    mainProduct: productById('ps5-slim-disc'),
+    accessories: [
+      productById('dualsense-controller'),
+      productById('game-ea-fc-26')
+    ],
+    regularTotal: 695,
+    bundlePrice: 645,
+    savings: 50
+  },
+  {
+    id: 'bundle-ps5-blockbuster-pack',
+    title: 'PS5 Blockbuster Pack',
+    tagline: 'The console and the two games it was bought for',
+    mainProduct: productById('ps5-pro'),
+    accessories: [
+      productById('game-gta-6'),
+      productById('game-cod-bo7')
+    ],
+    regularTotal: 840,
+    bundlePrice: 779,
+    savings: 61
+  },
+  {
+    id: 'bundle-switch-family-pack',
+    title: 'Switch Family Pack',
+    tagline: 'Switch OLED, a Pro Controller and Mario Kart World',
+    mainProduct: productById('nintendo-switch-oled'),
+    accessories: [
+      productById('switch-pro-controller'),
+      productById('game-mario-kart-world')
+    ],
+    regularTotal: 490,
+    bundlePrice: 455,
+    savings: 35
+  },
+  {
+    id: 'bundle-creator-starter',
+    title: 'Creator Starter Kit',
+    tagline: 'Pocket 3 and a two-person mic kit — a channel in one bag',
+    mainProduct: productById('dji-osmo-pocket-3'),
+    accessories: [
+      productById('dji-mic-2'),
+      productById('anker-737-powerbank')
+    ],
+    regularTotal: 1018,
+    bundlePrice: 949,
+    savings: 69
   }
 ];
 

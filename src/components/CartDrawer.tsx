@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck, ArrowRight, Tag, CreditCard } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck, ArrowRight, Tag, CreditCard, Undo2 } from 'lucide-react';
 import { CartItem, TradeInQuote } from '../types';
 import { formatNaira } from '../utils';
 import { monthlyInstalment } from '../data/financing';
@@ -11,6 +11,8 @@ interface CartDrawerProps {
   cart: CartItem[];
   onUpdateQuantity: (cartItemId: string, newQty: number) => void;
   onRemoveItem: (cartItemId: string) => void;
+  recentlyRemovedItem: CartItem | null;
+  onUndoRemove: () => void;
   onToggleProtection: (cartItemId: string) => void;
   tradeInQuote: TradeInQuote | null;
   onRemoveTradeIn: () => void;
@@ -23,6 +25,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   cart,
   onUpdateQuantity,
   onRemoveItem,
+  recentlyRemovedItem,
+  onUndoRemove,
   onToggleProtection,
   tradeInQuote,
   onRemoveTradeIn,
@@ -84,6 +88,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             />
           </div>
         </div>
+
+        {recentlyRemovedItem && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex items-center justify-between gap-4 border-b border-hairline-soft bg-canvas px-6 py-3"
+          >
+            <p className="min-w-0 truncate text-footnote text-ink-secondary">
+              <span className="font-semibold text-ink">{recentlyRemovedItem.product.name}</span> removed
+            </p>
+            <button
+              type="button"
+              onClick={onUndoRemove}
+              className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-3 text-footnote font-semibold text-link transition-colors hover:bg-accent-surface"
+            >
+              <Undo2 className="h-4 w-4" />
+              Undo
+            </button>
+          </div>
+        )}
 
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">

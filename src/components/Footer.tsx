@@ -2,6 +2,9 @@ import React from 'react';
 import { formatNaira } from '../utils';
 import { LEGAL_ENTITY } from '../data/legal';
 
+/** Shared with the navbar and the sell-your-device hand-off. */
+const SUPPORT_WHATSAPP = '2348143270982';
+
 /** Directory columns. Plain text links only — no icons, no chips. The footer is
  *  a reference index, so it is set at caption size and stays monochrome; the
  *  page above it does the selling. */
@@ -14,14 +17,20 @@ const DIRECTORY: {
     links: [
       { label: 'Manage TechieBase ID', href: '#' },
       { label: 'TechieBase Account', href: '#' },
-      { label: 'Order Status', href: '#' },
-      { label: 'Saved Items', href: '#' },
+      // Order tracking has no page yet, so this asks a human instead of
+      // pretending to be a lookup. Swap the href when the page exists.
+      {
+        label: 'Order Status',
+        href: `https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(
+          'Hello TechieBase! I would like to check the status of my order.'
+        )}`,
+        external: true,
+      },
     ],
   },
   {
     heading: 'TechieBase Store',
     links: [
-      { label: 'Find a Store', href: '#' },
       // Renamed from "Genius Bar" — that is Apple's trademarked in-store
       // service. TechieBase runs its own repair counter and says so.
       { label: 'Repairs & Support', href: '#' },
@@ -48,6 +57,7 @@ const DIRECTORY: {
     heading: 'Follow TechieBase',
     links: [
       { label: 'Instagram', href: 'https://instagram.com', external: true },
+      { label: 'TikTok', href: 'https://tiktok.com', external: true },
       { label: 'Twitter', href: 'https://twitter.com', external: true },
       { label: 'Facebook', href: 'https://facebook.com', external: true },
       { label: 'YouTube', href: 'https://youtube.com', external: true },

@@ -126,6 +126,12 @@ const CATEGORY_COPY: Record<string, { eyebrow: string; title: string; descriptio
     description: 'Fast chargers, serious power banks and everyday audio selected for Nigerian workdays and travel.',
     accent: 'from-[#dfe8f5] via-canvas to-[#e8eef2]',
   },
+  gear: {
+    eyebrow: 'Creator Gear',
+    title: 'Shoot it properly.',
+    description: 'DJI drones, gimbals, action cameras and wireless mics — the kit that makes the difference between phone footage and something people watch to the end.',
+    accent: 'from-[#e6ecf2] via-canvas to-[#f1ece6]',
+  },
   'pre-owned': {
     eyebrow: 'TechieBase Certified',
     title: 'Certified. Tested. Guaranteed.',

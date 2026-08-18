@@ -13,12 +13,20 @@
  * be held to anyway.
  */
 
-/** The registered business name, as it appears on the warranty document.
- *  Note this is NOT "TechieBase Inc." — an Enterprise is a Nigerian business
- *  name registration, not an incorporated company, and the trading name
- *  "TechieBase" is not the legal entity. Legal pages and the copyright line use
- *  this; the storefront keeps using the brand. */
-export const LEGAL_ENTITY = 'Techie Base Enterprise';
+/**
+ * The registered business name. Legal pages and the copyright line use this;
+ * the storefront keeps using the trading name "TechieBase".
+ *
+ * MISMATCH WITH THE PAPER DOCUMENT — worth resolving off-screen. The scanned
+ * warranty sheet is issued by "TECHIE BASE ENTERPRISE", but the business is a
+ * limited company, so the site says Ltd on instruction. An Enterprise is a
+ * Nigerian business-name registration and a Ltd is a separate incorporated
+ * entity; they are not the same legal person, and a warranty is a promise by
+ * whichever one is named on it. Whatever the history, the printed sheet and the
+ * published policy should not name different entities — reprint the sheet, or
+ * change this back.
+ */
+export const LEGAL_ENTITY = 'Techie Base Ltd';
 
 export type LegalBlock =
   | { type: 'paragraph'; text: string }

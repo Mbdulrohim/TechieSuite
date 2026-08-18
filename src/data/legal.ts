@@ -17,14 +17,11 @@
  * The registered business name. Legal pages and the copyright line use this;
  * the storefront keeps using the trading name "TechieBase".
  *
- * MISMATCH WITH THE PAPER DOCUMENT — worth resolving off-screen. The scanned
- * warranty sheet is issued by "TECHIE BASE ENTERPRISE", but the business is a
- * limited company, so the site says Ltd on instruction. An Enterprise is a
- * Nigerian business-name registration and a Ltd is a separate incorporated
- * entity; they are not the same legal person, and a warranty is a promise by
- * whichever one is named on it. Whatever the history, the printed sheet and the
- * published policy should not name different entities — reprint the sheet, or
- * change this back.
+ * The business was previously registered as an Enterprise — a Nigerian
+ * business-name registration — and has since been incorporated as a limited
+ * company. The printed warranty sheet still reads "TECHIE BASE ENTERPRISE"
+ * because it predates that; the site is the current one, and the sheet is due a
+ * reprint. Do not "fix" this back to match the scan.
  */
 export const LEGAL_ENTITY = 'Techie Base Ltd';
 

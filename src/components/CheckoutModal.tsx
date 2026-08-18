@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, ShieldCheck, Truck, MapPin, CreditCard, ArrowRight, Package, Sparkles, Landmark } from 'lucide-react';
 import { CartItem, StoreLocation, TradeInQuote } from '../types';
-import { formatNaira } from '../utils';
+import { configuredUnitPrice, formatNaira } from '../utils';
 import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
@@ -37,7 +37,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   });
 
   const rawSubtotal = cart.reduce((sum, item) => {
-    const base = item.product.price + (item.selectedStorage?.priceDelta || 0);
+    const base = configuredUnitPrice(item);
     const protection = protectionPrice(item.product, item.protection);
     return sum + (base + protection) * item.quantity;
   }, 0);

@@ -11,8 +11,8 @@ import {
   Truck,
   X,
 } from 'lucide-react';
-import { Product, ProductColor, StorageOption } from '../types';
-import { formatNaira } from '../utils';
+import { Product, ProductColor, ProductOptionChoice, StorageOption } from '../types';
+import { formatNaira, optionsDelta } from '../utils';
 import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
@@ -23,7 +23,8 @@ interface QuickViewModalProps {
     product: Product,
     selectedColor: ProductColor,
     selectedStorage?: StorageOption,
-    protection?: boolean
+    protection?: boolean,
+    selectedOptions?: Record<string, ProductOptionChoice>
   ) => void;
   onToggleWishlist: (productId: string) => void;
   isWishlisted: boolean;
@@ -48,6 +49,26 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
   const [selectedStorage, setSelectedStorage] = useState<StorageOption | undefined>(
     product.storageOptions?.[0]
   );
+  /** One choice per group, seeded with each group's first choice. Groups are
+   *  authored cheapest-first, so this is also the "From" price configuration. */
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, ProductOptionChoice>>(
+    () =>
+      Object.fromEntries(
+        (product.optionGroups ?? []).map((group) => [group.id, group.choices[0]])
+      )
+  );
+
+  /** A choice is unavailable when it clashes with what is already picked in
+   *  another group — the base M5 against the 16-inch body, for instance. The
+   *  clashing control is disabled rather than silently re-pointed, so the
+   *  shopper is never moved off a choice they made on purpose. */
+  const isChoiceBlocked = (groupId: string, choice: ProductOptionChoice) =>
+    Object.entries(selectedOptions).some(([otherGroupId, otherChoice]) => {
+      if (otherGroupId === groupId) return false;
+      const blockedByThis = choice.incompatibleWith?.[otherGroupId]?.includes(otherChoice.label);
+      const blockedByOther = otherChoice.incompatibleWith?.[groupId]?.includes(choice.label);
+      return Boolean(blockedByThis || blockedByOther);
+    });
   const [protection, setProtection] = useState(false);
   const [activeImage, setActiveImage] = useState(selectedColor.image || product.imageUrl);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -67,7 +88,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
   const showPreviousImage = () => showImage(activeImageIndex - 1);
   const showNextImage = () => showImage(activeImageIndex + 1);
 
-  const storageDelta = selectedStorage?.priceDelta || 0;
+  const storageDelta = (selectedStorage?.priceDelta || 0) + optionsDelta(selectedOptions);
   const basePrice = product.price + storageDelta;
   const totalPrice = basePrice + protectionPrice(product, protection);
   const originalPrice = product.originalPrice
@@ -97,7 +118,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
   }, [activeImageIndex, galleryImages.length, onClose]);
 
   const handleAddToBag = () => {
-    onAddToCart(product, selectedColor, selectedStorage, protection);
+    onAddToCart(product, selectedColor, selectedStorage, protection, selectedOptions);
     onClose();
   };
 
@@ -277,6 +298,56 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
                     </span>
                   )}
                 </div>
+
+                {/* Size and chip come before finish and storage: they change the
+                    machine, whereas colour changes the look of it. */}
+                {product.optionGroups?.map((group) => (
+                  <div key={group.id} className="mt-12">
+                    <h2 className="text-title-sm font-semibold text-ink">{group.label}</h2>
+                    <div className="mt-5 space-y-3">
+                      {group.choices.map((choice) => {
+                        const isSelected = selectedOptions[group.id]?.label === choice.label;
+                        const isBlocked = isChoiceBlocked(group.id, choice);
+                        return (
+                          <button
+                            type="button"
+                            key={choice.label}
+                            disabled={isBlocked}
+                            onClick={() =>
+                              setSelectedOptions((previous) => ({ ...previous, [group.id]: choice }))
+                            }
+                            aria-pressed={isSelected}
+                            className={`flex min-h-[82px] w-full items-center justify-between rounded-control border px-5 text-left transition-colors ${
+                              isBlocked
+                                ? 'cursor-not-allowed border-hairline-soft opacity-40'
+                                : isSelected
+                                  ? 'border-2 border-accent bg-white px-[19px]'
+                                  : 'border-hairline hover:border-ink-tertiary'
+                            }`}
+                          >
+                            <span className="pr-4">
+                              <span className="block text-body font-semibold text-ink">
+                                {choice.label}
+                              </span>
+                              {choice.note && (
+                                <span className="mt-0.5 block text-footnote text-ink-secondary">
+                                  {choice.note}
+                                </span>
+                              )}
+                            </span>
+                            <span className="shrink-0 text-right text-footnote text-ink-secondary">
+                              {isBlocked
+                                ? 'Not available'
+                                : choice.priceDelta === 0
+                                  ? 'Included'
+                                  : `+${formatNaira(choice.priceDelta)}`}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
 
                 <div className="mt-12">
                   <h2 className="text-title-sm font-semibold text-ink">

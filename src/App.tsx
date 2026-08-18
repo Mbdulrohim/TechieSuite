@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PRODUCTS, FEATURED_BUNDLES, STORE_LOCATIONS } from './data/products';
-import { Product, CartItem, TradeInQuote, FilterState, ProductColor, StorageOption, StoreLocation, ProductBundle, Condition } from './types';
+import { Product, CartItem, TradeInQuote, FilterState, ProductColor, ProductOptionChoice, StorageOption, StoreLocation, ProductBundle, Condition } from './types';
 import { formatNaira } from './utils';
 
 // Components
@@ -161,7 +161,7 @@ export default function App() {
   // E-Commerce Cart & Persistence State
   // Keys are versioned: if CartItem ever changes shape, bump the suffix and old
   // carts evaporate instead of needing a migration.
-  const [cart, setCart] = usePersistentState<CartItem[]>('techiebase.cart.v1', [], Array.isArray);
+  const [cart, setCart] = usePersistentState<CartItem[]>('techiebase.cart.v2', [], Array.isArray);
   const [recentlyRemovedCartItem, setRecentlyRemovedCartItem] = useState<{
     item: CartItem;
     index: number;
@@ -339,6 +339,27 @@ export default function App() {
         return [];
       }
 
+      // Same rule for size and chip. A stored 15-inch Air whose size group has
+      // since been renamed must not quietly become a 13-inch at the 13-inch
+      // price, so the line goes rather than degrades.
+      let optionsIntact = true;
+      const options = item.selectedOptions
+        ? Object.fromEntries(
+            Object.entries(item.selectedOptions).map(([groupId, choice]) => {
+              const liveChoice = live.optionGroups
+                ?.find((group) => group.id === groupId)
+                ?.choices.find((candidate) => candidate.label === choice.label);
+              if (!liveChoice) optionsIntact = false;
+              return [groupId, liveChoice ?? choice];
+            })
+          )
+        : undefined;
+
+      if (!optionsIntact) {
+        dropped += 1;
+        return [];
+      }
+
       if (live.price !== item.product.price) repriced += 1;
 
       return [{
@@ -346,6 +367,7 @@ export default function App() {
         product: live,
         selectedColor: live.colors.find((colour) => colour.name === item.selectedColor.name) ?? live.colors[0],
         selectedStorage: storage,
+        selectedOptions: options,
       }];
     });
 
@@ -423,12 +445,26 @@ export default function App() {
     product: Product,
     selectedColor?: ProductColor,
     selectedStorage?: StorageOption,
-    protection: boolean = false
+    protection: boolean = false,
+    selectedOptions?: Record<string, ProductOptionChoice>
   ) => {
     const colorToUse = selectedColor || product.colors[0];
     const storageToUse = selectedStorage || (product.storageOptions ? product.storageOptions[0] : undefined);
+    // Adding straight from a card skips the configurator, so fall back to the
+    // cheapest configuration — the same one the card quoted a price for.
+    const optionsToUse =
+      selectedOptions ??
+      (product.optionGroups
+        ? Object.fromEntries(product.optionGroups.map((group) => [group.id, group.choices[0]]))
+        : undefined);
 
-    const cartItemId = `${product.id}-${colorToUse.name}-${storageToUse?.capacity || 'std'}-${protection ? 'care' : 'nocare'}`;
+    /** The configuration is part of the line's identity. Without it a 13-inch
+     *  and a 15-inch Air merge into one line and the second one is silently
+     *  sold at the first one's price. */
+    const optionKey =
+      product.optionGroups?.map((group) => optionsToUse?.[group.id]?.label ?? '-').join('/') ?? 'std';
+
+    const cartItemId = `${product.id}-${colorToUse.name}-${storageToUse?.capacity || 'std'}-${optionKey}-${protection ? 'care' : 'nocare'}`;
 
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === cartItemId);
@@ -444,6 +480,7 @@ export default function App() {
           product,
           selectedColor: colorToUse,
           selectedStorage: storageToUse,
+          selectedOptions: optionsToUse,
           protection,
           quantity: 1,
         },

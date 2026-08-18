@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck, ArrowRight, Tag, CreditCard, Undo2 } from 'lucide-react';
 import { CartItem, TradeInQuote } from '../types';
-import { formatNaira } from '../utils';
+import { configuredUnitPrice, formatNaira } from '../utils';
 import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
@@ -35,7 +35,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   if (!isOpen) return null;
 
   const rawSubtotal = cart.reduce((sum, item) => {
-    const basePrice = item.product.price + (item.selectedStorage?.priceDelta || 0);
+    const basePrice = configuredUnitPrice(item);
     const protectionAmount = protectionPrice(item.product, item.protection);
     return sum + (basePrice + protectionAmount) * item.quantity;
   }, 0);
@@ -130,7 +130,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           ) : (
             <>
               {cart.map((item) => {
-                const baseUnitPrice = item.product.price + (item.selectedStorage?.priceDelta || 0);
+                const baseUnitPrice = configuredUnitPrice(item);
                 const lineTotal = (baseUnitPrice + protectionPrice(item.product, item.protection)) * item.quantity;
 
                 return (
@@ -153,6 +153,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             </h4>
                             <div className="text-footnote text-ink-secondary mt-0.5">
                               {item.selectedColor.name}
+                              {item.selectedOptions &&
+                                Object.values(item.selectedOptions).map((choice) => ` · ${choice.label}`)}
                               {item.selectedStorage && ` · ${item.selectedStorage.capacity}`}
                             </div>
                           </div>

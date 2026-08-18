@@ -1,4 +1,4 @@
-import { PreOwnedDetail, Product, ProductBundle, ProductColor, StoreLocation, TradeInQuote } from '../types';
+import { PreOwnedDetail, Product, ProductBundle, ProductColor, ProductOptionGroup, StoreLocation, TradeInQuote } from '../types';
 
 export const STORE_LOCATIONS: StoreLocation[] = [
   { id: 'ikeja', name: 'TechieBase Ikeja', address: '2A Olaide Tomori Street, Ikeja, Lagos', status: 'In Stock for Today\'s Pickup', distance: 'Ikeja' },
@@ -549,6 +549,7 @@ type CatalogSeed = {
   reviewCount: number;
   colors: ProductColor[];
   storage?: string[];
+  optionGroups?: ProductOptionGroup[];
   image: string;
   gallery?: string[];
   badge?: Product['badge'];
@@ -574,6 +575,7 @@ const buildProduct = (seed: CatalogSeed): Product => ({
     capacity,
     priceDelta: [0, 100, 250, 450][index] ?? index * 200,
   })),
+  optionGroups: seed.optionGroups,
   imageUrl: seed.image,
   additionalImages: seed.gallery,
   badge: seed.badge,
@@ -587,55 +589,65 @@ const buildProduct = (seed: CatalogSeed): Product => ({
 
 const CATALOG_SEEDS: CatalogSeed[] = [
   /* --- Current Apple silicon Macs ------------------------------------- */
+  /* --- MacBook Air and Pro -----------------------------------------------
+     Size and chip are configured rather than sold as separate products. Apple
+     lists one MacBook Air, not two, and splitting them meant the Mac row
+     showed the same laptop twice and the 15-inch never inherited the 13-inch's
+     reviews. Base price is the smallest, cheapest configuration; every other
+     combination is a delta on top. */
   {
-    id: 'macbook-air-13-m5', name: 'MacBook Air 13" (M5)', category: 'mac',
-    tagline: 'M5 power in the world’s most portable Mac.', price: 1099,
-    rating: 4.9, reviewCount: 1840, storage: ['512GB / 16GB', '1TB / 24GB', '2TB / 32GB'],
+    id: 'macbook-air-m5', name: 'MacBook Air (M5)', category: 'mac',
+    tagline: 'M5 power in the world\u2019s most portable Mac.', price: 1099,
+    rating: 4.9, reviewCount: 3160, storage: ['512GB / 16GB', '1TB / 24GB', '2TB / 32GB'],
+    optionGroups: [
+      {
+        id: 'size',
+        label: 'Which size?',
+        choices: [
+          { label: '13-inch', priceDelta: 0, note: '13.6-inch Liquid Retina, 1.24kg' },
+          { label: '15-inch', priceDelta: 200, note: '15.3-inch Liquid Retina, six speakers, 1.51kg' },
+        ],
+      },
+    ],
     image: '/images/products/apple/mac/current/macbook-air-m5-hero.webp',
     gallery: ['/images/products/apple/mac/current/macbook-air-m5-lifestyle.webp', '/images/products/apple/mac/macbook-air-m3-front.webp'], badge: 'NEW',
     colors: [{ name: 'Sky Blue', hex: '#b8c9d6' }, { name: 'Midnight', hex: '#2c3641' }, { name: 'Starlight', hex: '#e2d8c3' }, { name: 'Silver', hex: '#e3e4e5' }],
-    specs: { Chip: 'Apple M5 with 10-core CPU and up to 10-core GPU', Display: '13.6-inch Liquid Retina', Memory: '16GB unified memory standard', Wireless: 'Wi-Fi 7 and Bluetooth 6', Battery: 'Up to 18 hours' },
-    description: 'The 13-inch MacBook Air combines M5 performance, 512GB starting storage, Wi-Fi 7 and all-day battery life in a silent, fanless design.',
+    specs: { Chip: 'Apple M5 with 10-core CPU and up to 10-core GPU', Display: '13.6-inch or 15.3-inch Liquid Retina', Memory: '16GB unified memory standard', Wireless: 'Wi-Fi 7 and Bluetooth 6', Battery: 'Up to 18 hours', Cooling: 'Fanless \u2014 completely silent' },
+    description: 'The MacBook Air combines M5 performance, 512GB starting storage, Wi-Fi 7 and all-day battery in a silent, fanless design. Choose 13-inch for the lightest bag, or 15-inch for a bigger canvas and six-speaker audio.',
   },
   {
-    id: 'macbook-air-15-m5', name: 'MacBook Air 15" (M5)', category: 'mac',
-    tagline: 'More room to work. Still impossibly light.', price: 1299,
-    rating: 4.9, reviewCount: 1320, storage: ['512GB / 16GB', '1TB / 24GB', '2TB / 32GB'],
-    image: '/images/products/apple/mac/current/macbook-air-m5-hero.webp',
-    gallery: ['/images/products/apple/mac/current/macbook-air-m5-lifestyle.webp', '/images/products/apple/mac/macbook-air-m3-keyboard.webp'], badge: 'NEW',
-    colors: [{ name: 'Sky Blue', hex: '#b8c9d6' }, { name: 'Midnight', hex: '#2c3641' }, { name: 'Starlight', hex: '#e2d8c3' }, { name: 'Silver', hex: '#e3e4e5' }],
-    specs: { Chip: 'Apple M5 with 10-core CPU and up to 10-core GPU', Display: '15.3-inch Liquid Retina', Memory: '16GB unified memory standard', Camera: '12MP Center Stage camera', Battery: 'Up to 18 hours' },
-    description: 'The 15-inch MacBook Air delivers the same fanless M5 performance with a larger canvas, six-speaker audio and roomier keyboard deck.',
-  },
-  {
-    id: 'macbook-pro-14-m5', name: 'MacBook Pro 14" (M5)', category: 'mac',
-    tagline: 'Pro display. M5 speed. All-day endurance.', price: 1699,
-    rating: 4.9, reviewCount: 1760, storage: ['1TB / 16GB', '2TB / 24GB', '4TB / 32GB'],
+    id: 'macbook-pro-m5', name: 'MacBook Pro (M5)', category: 'mac',
+    tagline: 'Pro display. Pro silicon. All-day endurance.', price: 1699,
+    rating: 4.9, reviewCount: 3480, storage: ['1TB SSD', '2TB SSD', '4TB SSD'],
+    optionGroups: [
+      {
+        id: 'size',
+        label: 'Which size?',
+        choices: [
+          { label: '14-inch', priceDelta: 0, note: '14.2-inch Liquid Retina XDR, 1.55kg' },
+          { label: '16-inch', priceDelta: 400, note: '16.2-inch Liquid Retina XDR, 2.14kg' },
+        ],
+      },
+      {
+        id: 'chip',
+        label: 'Which chip?',
+        choices: [
+          {
+            label: 'M5', priceDelta: 0, note: '10-core CPU, 10-core GPU \u2014 14-inch only',
+            // Apple does not build a base-M5 16-inch. Without this the shop
+            // would take an order for a machine that cannot be supplied.
+            incompatibleWith: { size: ['16-inch'] },
+          },
+          { label: 'M5 Pro', priceDelta: 500, note: 'Up to 18-core CPU, Thunderbolt 5' },
+          { label: 'M5 Max', priceDelta: 900, note: 'Up to 128GB unified memory, for 3D and AI work' },
+        ],
+      },
+    ],
     image: '/images/products/apple/mac/current/macbook-pro-m5-cutout.webp',
-    gallery: ['/images/products/apple/mac/macbook-pro-m3-side.webp', '/images/products/apple/mac/macbook-pro-m3-top.webp'], badge: 'NEW',
+    gallery: ['/images/products/apple/mac/macbook-pro-m3-side.webp', '/images/products/apple/mac/macbook-pro-m3-keyboard.webp', '/images/products/apple/mac/macbook-pro-m3-top.webp'], badge: 'NEW',
     colors: [{ name: 'Space Black', hex: '#1f2022' }, { name: 'Silver', hex: '#e3e4e5' }],
-    specs: { Chip: 'Apple M5 with next-generation GPU', Display: '14.2-inch Liquid Retina XDR', Storage: '1TB SSD standard', Camera: '12MP Center Stage camera', Battery: 'Up to 24 hours' },
-    description: 'The 14-inch MacBook Pro with M5 brings faster storage, next-generation AI performance and the Liquid Retina XDR display to everyday pro workflows.',
-  },
-  {
-    id: 'macbook-pro-14-m5-pro', name: 'MacBook Pro 14" (M5 Pro)', category: 'mac',
-    tagline: 'Breakthrough pro performance, wherever work takes you.', price: 2199,
-    rating: 4.9, reviewCount: 980, storage: ['1TB / 24GB', '2TB / 48GB', '4TB / 64GB'],
-    image: '/images/products/apple/mac/current/macbook-pro-m5-cutout.webp',
-    gallery: ['/images/products/apple/mac/macbook-pro-m3-keyboard.webp', '/images/products/apple/mac/macbook-pro-m3-side.webp'], badge: 'NEW',
-    colors: [{ name: 'Space Black', hex: '#1f2022' }, { name: 'Silver', hex: '#e3e4e5' }],
-    specs: { Chip: 'Apple M5 Pro with up to 18-core CPU', Graphics: 'Next-generation GPU with Neural Accelerators', Display: '14.2-inch Liquid Retina XDR', Ports: 'Thunderbolt 5, HDMI, SDXC and MagSafe 3', Battery: 'Up to 24 hours' },
-    description: 'M5 Pro gives developers, photographers and engineers more CPU, graphics and memory bandwidth in a compact 14-inch pro notebook.',
-  },
-  {
-    id: 'macbook-pro-16-m5-pro-max', name: 'MacBook Pro 16" (M5 Pro / Max)', category: 'mac',
-    tagline: 'The ultimate Mac laptop for the biggest workflows.', price: 2699,
-    rating: 4.9, reviewCount: 740, storage: ['1TB / M5 Pro', '2TB / M5 Max', '4TB / M5 Max', '8TB / M5 Max'],
-    image: '/images/products/apple/mac/current/macbook-pro-m5-cutout.webp',
-    gallery: ['/images/products/apple/mac/macbook-pro-m3-keyboard.webp', '/images/products/apple/mac/macbook-pro-m3-top.webp'], badge: 'NEW',
-    colors: [{ name: 'Space Black', hex: '#1f2022' }, { name: 'Silver', hex: '#e3e4e5' }],
-    specs: { Chip: 'Apple M5 Pro or M5 Max', Display: '16.2-inch Liquid Retina XDR', Memory: 'Up to 128GB unified memory', Storage: 'Up to 8TB SSD', Connectivity: 'Thunderbolt 5, HDMI, SDXC and MagSafe 3' },
-    description: 'The 16-inch MacBook Pro is the maximum-performance Apple notebook, configurable with M5 Pro or M5 Max for massive media, 3D and AI workloads.',
+    specs: { Chip: 'Apple M5, M5 Pro or M5 Max', Display: '14.2-inch or 16.2-inch Liquid Retina XDR', Memory: 'Up to 128GB unified memory', Storage: 'Up to 4TB SSD', Ports: 'Thunderbolt 5, HDMI, SDXC and MagSafe 3', Battery: 'Up to 24 hours' },
+    description: 'The Liquid Retina XDR display, Thunderbolt 5 and a full day of battery. Pick 14-inch to carry it or 16-inch for the larger screen, then choose the chip: M5 for everyday pro work, M5 Pro for development and photography, M5 Max for 3D, video and AI.',
   },
   {
     id: 'imac-24-m4', name: 'iMac 24" (M4)', category: 'mac',

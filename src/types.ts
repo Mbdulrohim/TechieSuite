@@ -9,6 +9,38 @@ export interface StorageOption {
   priceDelta: number;
 }
 
+/**
+ * One choice on a configurable axis — a screen size, a chip tier, a finish.
+ *
+ * Deliberately generic rather than a `sizeOptions` / `chipOptions` pair: the
+ * Mac lineup alone needs two axes today and Apple adds more most years, and a
+ * named field per axis means touching the cart, checkout and reconciliation
+ * every time one appears.
+ */
+export interface ProductOptionChoice {
+  /** Shown on the control and in the cart line, e.g. '13-inch' or 'M5 Pro'. */
+  label: string;
+  /** Added to the product's base price. The first choice is normally 0. */
+  priceDelta: number;
+  /** Supporting line under the label, e.g. '10-core GPU, 16-core Neural Engine'. */
+  note?: string;
+  /**
+   * Choices in other groups this one cannot be sold with, keyed by group id —
+   * e.g. the base M5 is not offered in the 16-inch body. Without this the
+   * storefront will happily take an order for a machine Apple does not build.
+   */
+  incompatibleWith?: Record<string, string[]>;
+}
+
+/** A configurable axis, rendered above colour in array order. */
+export interface ProductOptionGroup {
+  /** Stable key. It goes into the cart line id, so never change it in place. */
+  id: string;
+  /** Question shown above the control, e.g. 'Which size?'. */
+  label: string;
+  choices: ProductOptionChoice[];
+}
+
 export interface Review {
   id: string;
   author: string;
@@ -65,6 +97,8 @@ export interface Product {
   reviewCount: number;
   colors: ProductColor[];
   storageOptions?: StorageOption[];
+  /** Size, chip and similar axes. Chosen before colour and storage. */
+  optionGroups?: ProductOptionGroup[];
   imageUrl: string;
   additionalImages?: string[];
   badge?: 'BEST SELLER' | 'NEW' | 'SAVE ₦150K' | 'HOT DEAL' | 'POPULAR';
@@ -81,6 +115,8 @@ export interface CartItem {
   product: Product;
   selectedColor: ProductColor;
   selectedStorage?: StorageOption;
+  /** Chosen option per group, keyed by `ProductOptionGroup.id`. */
+  selectedOptions?: Record<string, ProductOptionChoice>;
   protection: boolean;
   quantity: number;
 }

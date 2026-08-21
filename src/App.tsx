@@ -28,6 +28,7 @@ import { WaitlistModal } from './components/WaitlistModal';
 import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
 import { LEGAL_DOCUMENTS, legalBySlug } from './data/legal';
 import { usePersistentState } from './hooks/usePersistentState';
+import { fetchSuiteStorefront } from './lib/suiteStorefront';
 import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
 
 export const CATEGORY_IDS = [
@@ -85,7 +86,7 @@ export const parseRoute = (pathname: string, search: string): RouteState => {
 
   if (segments[0] === 'journal') {
     const slug = segments[1] ?? '';
-    return { ...STOREFRONT_ROUTE, journalSlug: slug && articleBySlug(slug) ? slug : '' };
+    return { ...STOREFRONT_ROUTE, journalSlug: slug };
   }
   if (segments[0] === 'legal') {
     const slug = segments[1] ?? '';
@@ -219,6 +220,8 @@ export default function App({ initialRoute }: AppProps = {}) {
   /** Session-scoped on purpose — a comparison tray is a train of thought, not a
    *  saved list, and persisting it would double the stale-product surface. */
   const [compareList, setCompareList] = useState<Product[]>([]);
+  const [liveProducts, setLiveProducts] = useState<Product[]>(PRODUCTS);
+  const [liveArticles, setLiveArticles] = useState(ARTICLES);
   const [tradeInQuote, setTradeInQuote] = useState<TradeInQuote | null>(null);
 
   /** Transient status line. Keyed by id rather than by text so raising the same
@@ -230,6 +233,15 @@ export default function App({ initialRoute }: AppProps = {}) {
 
   // Filters
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchSuiteStorefront(controller.signal).then((result) => {
+      if (result.products.length > 0) setLiveProducts(result.products);
+      if (result.articles.length > 0) setLiveArticles(result.articles);
+    }).catch(() => { /* Static catalogue is the deliberate offline/deployment fallback. */ });
+    return () => controller.abort();
+  }, []);
 
   // Modal Visibility Controls
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -362,7 +374,7 @@ export default function App({ initialRoute }: AppProps = {}) {
     let repriced = 0;
 
     const reconciled = cart.flatMap((item) => {
-      const live = PRODUCTS.find((product) => product.id === item.product.id);
+      const live = liveProducts.find((product) => product.id === item.product.id);
       if (!live) {
         dropped += 1;
         return [];
@@ -425,7 +437,7 @@ export default function App({ initialRoute }: AppProps = {}) {
 
   // Filtered & Sorted Product Catalog
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
+    return liveProducts.filter((product) => {
       if (activeCategory === 'pre-owned') {
         return product.condition === 'pre-owned';
       }
@@ -475,7 +487,7 @@ export default function App({ initialRoute }: AppProps = {}) {
       }
       return 0;
     });
-  }, [activeCategory, activeCondition, filters]);
+  }, [activeCategory, activeCondition, filters, liveProducts]);
 
   const productsForSection = (category: Product['category']) =>
     filteredProducts.filter((product) => product.category === category);
@@ -607,7 +619,7 @@ export default function App({ initialRoute }: AppProps = {}) {
     });
   };
 
-  const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
+  const wishlistedProducts = liveProducts.filter((p) => wishlist.includes(p.id));
 
   const iphoneBundle = bundleById('bundle-iphone-creator');
   const gamingBundle = bundleById('bundle-ps5-starter');
@@ -622,7 +634,7 @@ export default function App({ initialRoute }: AppProps = {}) {
 
         {/* 2. Primary Navigation */}
         <Navbar
-          products={PRODUCTS}
+          products={liveProducts}
           activeCategory={activeCategory}
           activeCondition={activeCondition}
           onSelectCategory={handleSelectCategory}
@@ -650,11 +662,11 @@ export default function App({ initialRoute }: AppProps = {}) {
           )
         ) : journalSlug !== null ? (
           journalSlug === '' ? (
-            <JournalIndex articles={ARTICLES} onOpenArticle={handleOpenJournal} />
+            <JournalIndex articles={liveArticles} onOpenArticle={handleOpenJournal} />
           ) : (
             <ArticleView
-              article={articleBySlug(journalSlug) ?? FEATURED_ARTICLE}
-              related={ARTICLES.filter((a) => a.slug !== journalSlug).slice(0, 3)}
+              article={liveArticles.find((article) => article.slug === journalSlug) ?? FEATURED_ARTICLE}
+              related={liveArticles.filter((a) => a.slug !== journalSlug).slice(0, 3)}
               onBack={() => handleOpenJournal()}
               onOpenArticle={handleOpenJournal}
             />
@@ -662,7 +674,7 @@ export default function App({ initialRoute }: AppProps = {}) {
         ) : activeCategory === 'all' && activeCondition === 'new' ? (
           <>
             <HeroCarousel
-              products={PRODUCTS}
+              products={liveProducts}
               onSelectProduct={setQuickViewProduct}
               onAddToCart={handleAddToCart}
             />
@@ -714,7 +726,7 @@ export default function App({ initialRoute }: AppProps = {}) {
               <ProductRow title="Power" products={productsForSection('power')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('power')} />
               <ProductRow title="Anker Power & Gear" products={productsForSection('anker')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('anker')} />
               <ProductRow title="Accessories" products={productsForSection('accessories')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('accessories')} />
-              <ProductRow title="Pre-Owned Certified" products={PRODUCTS.filter((product) => product.condition === 'pre-owned').slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('pre-owned')} />
+              <ProductRow title="Pre-Owned Certified" products={liveProducts.filter((product) => product.condition === 'pre-owned').slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('pre-owned')} />
 
               {/* Sits well away from TradeInBanner so the two offers stay
                   distinct — one is cash, the other is credit — and leads

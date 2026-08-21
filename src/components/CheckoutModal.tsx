@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, ShieldCheck, Truck, MapPin, CreditCard, ArrowRight, Package, Sparkles, Landmark } from 'lucide-react';
+import { X, CheckCircle2, ShieldCheck, Truck, MapPin, CreditCard, ArrowRight, Package, MessageCircle, Landmark } from 'lucide-react';
 import { CartItem, StoreLocation, TradeInQuote } from '../types';
 import { configuredUnitPrice, formatNaira } from '../utils';
 import { monthlyInstalment } from '../data/financing';
@@ -20,12 +20,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cart,
   tradeInQuote,
   currentStore,
-  onClearCart,
 }) => {
   const [step, setStep] = useState<'details' | 'payment' | 'confirmation'>('details');
   const [fulfillment, setFulfillment] = useState<'delivery' | 'pickup'>('delivery');
   const [paymentMethod, setPaymentMethod] = useState<'bank_transfer' | 'installment' | 'credit_card'>('credit_card');
-  const [orderId, setOrderId] = useState('');
 
   const [address, setAddress] = useState({
     name: '',
@@ -49,10 +47,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const total = netSubtotal + tax + shipping;
 
   const handlePlaceOrder = () => {
-    const generatedId = 'TB' + Math.floor(10000000 + Math.random() * 90000000);
-    setOrderId(generatedId);
+    const lines = cart.map((item) => `${item.quantity}× ${item.product.name}`).join('\n');
+    const message = [
+      'Hello TechieBase, I would like to complete this order:', lines,
+      `Fulfilment: ${fulfillment}`, `Preferred payment: ${paymentMethod}`,
+      `Customer: ${address.name || 'Not supplied'}`, `Email: ${address.email || 'Not supplied'}`,
+      `Displayed total: ${formatNaira(total)}`,
+    ].join('\n');
+    window.open(`https://wa.me/2348143270982?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
     setStep('confirmation');
-    onClearCart();
   };
 
   const handleClose = () => {
@@ -83,7 +86,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div>
               <div className="inline-flex items-center gap-2 text-footnote font-semibold text-link mb-2">
                 <ShieldCheck className="w-4 h-4" />
-                Secure Express Checkout
+                Order request
               </div>
               <h2 className="text-title-sm font-semibold text-ink">
                 {step === 'details' ? 'Fulfillment & Address' : 'Payment & Review'}
@@ -213,7 +216,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         <Landmark className="w-5 h-5" />
                         Bank Transfer
                       </div>
-                      <span className="text-footnote opacity-80">Instant confirmation</span>
+                      <span className="text-footnote opacity-80">Confirm with our team</span>
                     </button>
 
                     <button
@@ -283,7 +286,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     className="w-2/3 bg-black hover:bg-ink active:scale-[0.98] active:opacity-80 text-white font-semibold text-body h-11 min-h-[44px] rounded-full transition-all shadow-xl flex items-center justify-center gap-2"
                   >
                     <CreditCard className="w-5 h-5" />
-                    Place Order — {formatNaira(total)}
+                    Continue on WhatsApp — {formatNaira(total)}
                   </button>
                 </div>
               </div>
@@ -299,14 +302,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             <div>
               <p className="eyebrow text-success">
-                Order Confirmed
+                Request opened in WhatsApp
               </p>
               <h2 className="text-title font-semibold text-ink mt-2">
-                Thank You!
+                Complete it with our team
               </h2>
-              <p className="text-body text-ink-secondary mt-2">
-                Order <span className="font-mono font-semibold text-ink">{orderId}</span>
-              </p>
+              <p className="text-body text-ink-secondary mt-2">No payment has been taken yet.</p>
             </div>
 
             <div className="bg-canvas p-5 rounded-card max-w-md mx-auto text-left space-y-3 border border-hairline-soft">
@@ -315,12 +316,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 Processing at TechieBase
               </div>
               <p className="text-footnote text-ink-secondary">
-                Confirmation email sent to{' '}
-                <span className="font-semibold text-ink">{address.email}</span>
+                Review availability, delivery and payment with our team before paying.
               </p>
               <div className="pt-2 border-t border-hairline-soft text-footnote text-success font-semibold flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4" />
-                We’ll send delivery updates by email and phone
+                <MessageCircle className="w-4 h-4" />
+                Your bag stays here until the order is agreed
               </div>
             </div>
 
@@ -328,7 +328,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               onClick={handleClose}
               className="bg-accent hover:bg-accent-hover text-white font-semibold text-footnote px-10 py-3.5 rounded-full shadow-lg transition-colors"
             >
-              Continue Shopping
+              Back to shop
             </button>
           </div>
         )}

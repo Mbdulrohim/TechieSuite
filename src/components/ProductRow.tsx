@@ -19,6 +19,7 @@ export const ProductRow: React.FC<ProductRowProps> = ({
   onViewAll,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  if (products.length === 0) return null;
 
   const scrollLeft = () => {
     if (scrollRef.current) {

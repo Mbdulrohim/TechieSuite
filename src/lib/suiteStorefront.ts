@@ -60,7 +60,9 @@ export async function fetchSuiteStorefront(signal?: AbortSignal): Promise<{ stor
       ...(supplied.storageOptions ? { storageOptions: supplied.storageOptions } : {}),
       ...(supplied.optionGroups ? { optionGroups: supplied.optionGroups } : {}),
       imageUrl: image, ...(supplied.additionalImages ? { additionalImages: supplied.additionalImages } : {}),
-      inStock: supplied.inStock ?? true, pickupAvailable: supplied.pickupAvailable ?? true,
+      // A published listing is an offer the merchant can fulfil or source. It
+      // is deliberately independent of today's counted inventory units.
+      inStock: true, pickupAvailable: supplied.pickupAvailable ?? true,
       specs: supplied.specs ?? {}, description: supplied.description ?? listing.description ?? '',
       reviews: supplied.reviews ?? [], ...(supplied.preOwned ? { preOwned: supplied.preOwned } : {}),
     };

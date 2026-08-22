@@ -2,34 +2,33 @@ import React from 'react';
 import { formatNaira } from '../utils';
 import { LEGAL_ENTITY } from '../data/legal';
 
-/** Shared with the navbar and the sell-your-device hand-off. */
-const SUPPORT_WHATSAPP = '2348143270982';
-
 /** Directory columns. Plain text links only — no icons, no chips. The footer is
  *  a reference index, so it is set at caption size and stays monochrome; the
  *  page above it does the selling. */
-const DIRECTORY: {
+const directory = (brandName: string, supportWhatsApp: string): {
   heading: string;
   links: { label: string; href: string; external?: boolean }[];
-}[] = [
+}[] => [
   {
     heading: 'Account & Bag',
     links: [
-      { label: 'Manage TechieBase ID', href: '#' },
-      { label: 'TechieBase Account', href: '#' },
+      { label: `Manage ${brandName} ID`, href: '#' },
+      { label: `${brandName} Account`, href: '#' },
       // Order tracking has no page yet, so this asks a human instead of
       // pretending to be a lookup. Swap the href when the page exists.
       {
         label: 'Order Status',
-        href: `https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(
-          'Hello TechieBase! I would like to check the status of my order.'
-        )}`,
+        href: supportWhatsApp
+          ? `https://wa.me/${supportWhatsApp}?text=${encodeURIComponent(
+            `Hello ${brandName}! I would like to check the status of my order.`
+          )}`
+          : '#',
         external: true,
       },
     ],
   },
   {
-    heading: 'TechieBase Store',
+    heading: `${brandName} Store`,
     links: [
       // Renamed from "Genius Bar" — that is Apple's trademarked in-store
       // service. TechieBase runs its own repair counter and says so.
@@ -54,7 +53,7 @@ const DIRECTORY: {
     ],
   },
   {
-    heading: 'Follow TechieBase',
+    heading: `Follow ${brandName}`,
     links: [
       { label: 'Instagram', href: 'https://instagram.com', external: true },
       { label: 'TikTok', href: 'https://tiktok.com', external: true },
@@ -63,7 +62,7 @@ const DIRECTORY: {
       { label: 'YouTube', href: 'https://youtube.com', external: true },
     ],
   },
-];
+].filter((column) => brandName === 'TechieBase' || (column.heading !== 'Visit Us' && !column.heading.startsWith('Follow ')));
 
 /**
  * Only policies that actually exist are listed.
@@ -82,6 +81,10 @@ const LEGAL_LINKS: { label: string; slug: string }[] = [
 const linkClass = 'hover:text-ink hover:underline transition-colors';
 
 export interface FooterProps {
+  brandName: string;
+  description?: string;
+  supportWhatsApp?: string;
+  templateMode?: boolean;
   /** Opens a policy by slug, or the legal index when called with nothing. */
   onOpenLegal?: (slug?: string) => void;
   onOpenJournal?: () => void;
@@ -90,11 +93,32 @@ export interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({
+  brandName,
+  description,
+  supportWhatsApp = '',
+  templateMode = true,
   onOpenLegal,
   onOpenJournal,
   onOpenWaitlist,
   onOpenCookieModal,
 }) => {
+  const columns = directory(brandName, supportWhatsApp);
+  const legalEntity = brandName === 'TechieBase' ? LEGAL_ENTITY : brandName;
+  if (!templateMode) {
+    return <footer className="mt-20 border-t border-hairline-soft bg-canvas text-ink">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-10 text-caption text-ink-tertiary sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-xl">
+          <p className="text-body font-semibold text-ink">{brandName}</p>
+          {description && <p className="mt-2 leading-relaxed">{description}</p>}
+          <p className="mt-2">Independent retailer. Product names and trademarks belong to their respective owners.</p>
+        </div>
+        <div className="flex flex-col gap-2 sm:items-end">
+          {supportWhatsApp && <a className={linkClass} href={`https://wa.me/${supportWhatsApp}`} target="_blank" rel="noopener noreferrer">Contact us on WhatsApp</a>}
+          <p>Copyright © {new Date().getFullYear()} {legalEntity}. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>;
+  }
   return (
     <footer className="mt-20 border-t border-hairline-soft bg-canvas text-ink">
       <div className="mx-auto max-w-7xl px-6">
@@ -103,24 +127,25 @@ export const Footer: React.FC<FooterProps> = ({
             and the headline type — service terms belong in footnotes. */}
         <div className="space-y-2 border-b border-hairline-soft py-8 text-caption text-ink-tertiary">
           <p>
-            TechieBase is an independent retailer. We are not an authorised service provider for,
+            {brandName} is an independent retailer. We are not an authorised service provider for,
             and are not affiliated with or endorsed by, Apple Inc., Samsung or any other
             manufacturer whose products appear on this site. All product names, logos and brands
             are the property of their respective owners.
           </p>
           <p>
             Free express shipping on all orders over {formatNaira(50)}, or free pickup from a
-            TechieBase store.
+            {` ${brandName} store`}.
           </p>
           <p>Free and easy returns: 14 days, hassle-free, with a prepaid return kit.</p>
           <p>Flexible financing: pay securely by card, bank transfer or in instalments.</p>
+          {description && <p>{description}</p>}
           {/* Corrected against the signed warranty document. This previously
               read "full repair coverage and 24/7 specialist support, provided
               by TechieBase", which the policy contradicts outright: TechieBase
               services pre-owned stock, while new devices go to the
               manufacturer's own centres. */}
           <p>
-            Warranty: pre-owned devices are covered by {LEGAL_ENTITY} for a stated period. New
+            Warranty: pre-owned devices are covered by {legalEntity} for a stated period. New
             devices carry the standard manufacturer's warranty, redeemable at authorised
             manufacturer service centres in Nigeria.{' '}
             {onOpenLegal && (
@@ -137,10 +162,10 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Directory */}
         <nav
-          aria-label="TechieBase directory"
+          aria-label={`${brandName} directory`}
           className="grid grid-cols-1 gap-8 border-b border-hairline-soft py-8 sm:grid-cols-2 md:grid-cols-4"
         >
-          {DIRECTORY.map((column) => (
+          {columns.map((column) => (
             <div key={column.heading}>
               <h3 className="text-caption font-semibold text-ink">{column.heading}</h3>
               <ul className="mt-3 space-y-2.5 text-caption text-ink-secondary">
@@ -206,16 +231,14 @@ export const Footer: React.FC<FooterProps> = ({
               </defs>
             </svg>
 
-            <span className="font-quicksand text-footnote text-brand-deep">
-              Techie<span className="text-brand">Base</span>
-            </span>
+            <span className="font-quicksand text-footnote text-brand-deep">{brandName}</span>
             <span className="text-ink-tertiary">Technology &amp; You</span>
             <span aria-hidden="true" className="text-hairline">|</span>
             {/* Was "TechieBase Inc.", which claims an incorporated company that
                 does not exist. The registered name on the warranty document is
                 an Enterprise — a Nigerian business-name registration. */}
             <span>
-              Copyright © {new Date().getFullYear()} {LEGAL_ENTITY}. All rights reserved.
+              Copyright © {new Date().getFullYear()} {legalEntity}. All rights reserved.
             </span>
           </div>
 

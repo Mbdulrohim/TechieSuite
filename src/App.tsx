@@ -29,6 +29,7 @@ import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
 import { LEGAL_DOCUMENTS, legalBySlug } from './data/legal';
 import { usePersistentState } from './hooks/usePersistentState';
 import { fetchSuiteStorefront } from './lib/suiteStorefront';
+import { STOREFRONT_CONFIG, storageKey } from './config/storefront';
 import { ArrowRight, Filter, Heart, MapPin, Scale, X } from 'lucide-react';
 
 export const CATEGORY_IDS = [
@@ -84,11 +85,11 @@ export const parseRoute = (pathname: string, search: string): RouteState => {
   const segments = pathname.split('/').filter(Boolean);
   const params = new URLSearchParams(search);
 
-  if (segments[0] === 'journal') {
+  if (STOREFRONT_CONFIG.staticFallback && segments[0] === 'journal') {
     const slug = segments[1] ?? '';
     return { ...STOREFRONT_ROUTE, journalSlug: slug };
   }
-  if (segments[0] === 'legal') {
+  if (STOREFRONT_CONFIG.staticFallback && segments[0] === 'legal') {
     const slug = segments[1] ?? '';
     return { ...STOREFRONT_ROUTE, legalSlug: slug && legalBySlug(slug) ? slug : '' };
   }
@@ -211,17 +212,20 @@ export default function App({ initialRoute }: AppProps = {}) {
   // E-Commerce Cart & Persistence State
   // Keys are versioned: if CartItem ever changes shape, bump the suffix and old
   // carts evaporate instead of needing a migration.
-  const [cart, setCart] = usePersistentState<CartItem[]>('techiebase.cart.v2', [], Array.isArray);
+  const [cart, setCart] = usePersistentState<CartItem[]>(storageKey('cart.v2'), [], Array.isArray);
   const [recentlyRemovedCartItem, setRecentlyRemovedCartItem] = useState<{
     item: CartItem;
     index: number;
   } | null>(null);
-  const [wishlist, setWishlist] = usePersistentState<string[]>('techiebase.wishlist.v1', [], Array.isArray);
+  const [wishlist, setWishlist] = usePersistentState<string[]>(storageKey('wishlist.v1'), [], Array.isArray);
   /** Session-scoped on purpose — a comparison tray is a train of thought, not a
    *  saved list, and persisting it would double the stale-product surface. */
   const [compareList, setCompareList] = useState<Product[]>([]);
-  const [liveProducts, setLiveProducts] = useState<Product[]>(PRODUCTS);
-  const [liveArticles, setLiveArticles] = useState(ARTICLES);
+  const [liveProducts, setLiveProducts] = useState<Product[]>(STOREFRONT_CONFIG.staticFallback ? PRODUCTS : []);
+  const [liveArticles, setLiveArticles] = useState(STOREFRONT_CONFIG.staticFallback ? ARTICLES : []);
+  const [storeName, setStoreName] = useState(STOREFRONT_CONFIG.name);
+  const [storeDescription, setStoreDescription] = useState('');
+  const [supportWhatsApp, setSupportWhatsApp] = useState(STOREFRONT_CONFIG.supportWhatsApp);
   const [tradeInQuote, setTradeInQuote] = useState<TradeInQuote | null>(null);
 
   /** Transient status line. Keyed by id rather than by text so raising the same
@@ -237,8 +241,14 @@ export default function App({ initialRoute }: AppProps = {}) {
   useEffect(() => {
     const controller = new AbortController();
     void fetchSuiteStorefront(controller.signal).then((result) => {
-      if (result.products.length > 0) setLiveProducts(result.products);
-      if (result.articles.length > 0) setLiveArticles(result.articles);
+      setStoreName(result.storefront.name);
+      setStoreDescription(result.storefront.description ?? '');
+      const contact = result.storefront.deliveryConfig.contact;
+      if (contact && typeof contact === 'object' && 'whatsApp' in contact && typeof contact.whatsApp === 'string') {
+        setSupportWhatsApp(contact.whatsApp.replace(/\D/g, ''));
+      }
+      if (result.products.length > 0 || !STOREFRONT_CONFIG.staticFallback) setLiveProducts(result.products);
+      if (result.articles.length > 0 || !STOREFRONT_CONFIG.staticFallback) setLiveArticles(result.articles);
     }).catch(() => { /* Static catalogue is the deliberate offline/deployment fallback. */ });
     return () => controller.abort();
   }, []);
@@ -255,7 +265,7 @@ export default function App({ initialRoute }: AppProps = {}) {
   // Cookie consent auto-show
   useEffect(() => {
     try {
-      const consent = localStorage.getItem('techiesuite_cookie_consent');
+      const consent = localStorage.getItem(storageKey('cookie-consent'));
       if (!consent) {
         const timer = setTimeout(() => setIsCookieModalOpen(true), 1200);
         return () => clearTimeout(timer);
@@ -630,10 +640,18 @@ export default function App({ initialRoute }: AppProps = {}) {
       {/* Sticky Header Section for Mobile & Desktop */}
       <div className="sticky top-0 z-50 w-full">
         {/* 1. Utility Top Bar */}
-        <TopUtilityBar onLearnMore={() => handleOpenJournal(FEATURED_ARTICLE.slug)} />
+        <TopUtilityBar
+          message={STOREFRONT_CONFIG.staticFallback ? undefined : (storeDescription || `Shop with ${storeName}.`)}
+          showLearnMore={STOREFRONT_CONFIG.staticFallback}
+          onLearnMore={() => handleOpenJournal(FEATURED_ARTICLE.slug)}
+        />
 
         {/* 2. Primary Navigation */}
         <Navbar
+          brandName={storeName}
+          supportWhatsApp={supportWhatsApp}
+          showJournal={STOREFRONT_CONFIG.staticFallback || liveArticles.length > 0}
+          templateMode={STOREFRONT_CONFIG.staticFallback}
           products={liveProducts}
           activeCategory={activeCategory}
           activeCondition={activeCondition}
@@ -671,9 +689,20 @@ export default function App({ initialRoute }: AppProps = {}) {
               onOpenArticle={handleOpenJournal}
             />
           )
+        ) : activeCategory === 'all' && activeCondition === 'new' && liveProducts.length === 0 ? (
+          <section className="mx-auto flex min-h-[64vh] max-w-3xl flex-col items-center justify-center px-6 py-24 text-center">
+            <p className="eyebrow text-ink-tertiary">{storeName}</p>
+            <h1 className="mt-4 text-headline font-semibold text-ink">Our online catalogue is being prepared.</h1>
+            <p className="mt-4 max-w-xl text-body text-ink-secondary">
+              {storeDescription || 'Products published from Suite will appear here automatically.'}
+            </p>
+          </section>
         ) : activeCategory === 'all' && activeCondition === 'new' ? (
           <>
             <HeroCarousel
+              brandName={storeName}
+              description={storeDescription}
+              templateMode={STOREFRONT_CONFIG.staticFallback}
               products={liveProducts}
               onSelectProduct={setQuickViewProduct}
               onAddToCart={handleAddToCart}
@@ -682,14 +711,14 @@ export default function App({ initialRoute }: AppProps = {}) {
             <CategoryPills activeCategory={activeCategory} onSelectCategory={handleSelectCategory} />
 
             <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-6 pb-2">
-              <button
+              {STOREFRONT_CONFIG.staticFallback && <button
                 type="button"
                 onClick={() => setIsStoreModalOpen(true)}
                 className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-footnote font-medium text-ink shadow-sm ring-1 ring-black/5 hover:ring-black/15"
               >
                 <MapPin className="h-4 w-4 text-accent" />
                 Pickup: {currentStore.name.replace('TechieBase ', '')}
-              </button>
+              </button>}
 
               <div className="flex items-center gap-2">
                 <button type="button" onClick={() => setIsWishlistOpen(true)} aria-label={`Open ${wishlist.length} saved items`} className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5 hover:ring-black/15">
@@ -710,16 +739,16 @@ export default function App({ initialRoute }: AppProps = {}) {
               <ProductRow title="iPhone" products={productsForSection('iphone').slice(0, 8)} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('iphone')} />
               {/* Sits under the iPhone row so the next model reads as part of the
                   line-up rather than as an ad interrupting the page. */}
-              <WaitlistTeaser />
+              {STOREFRONT_CONFIG.staticFallback && <WaitlistTeaser />}
               <ProductRow title="Mac" products={productsForSection('mac')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('mac')} />
-              <TradeInBanner onApplyTradeIn={setTradeInQuote} appliedTradeIn={tradeInQuote} />
+              {STOREFRONT_CONFIG.staticFallback && <TradeInBanner onApplyTradeIn={setTradeInQuote} appliedTradeIn={tradeInQuote} />}
               <ProductRow title="iPad" products={productsForSection('ipad')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('ipad')} />
               <ProductRow title="Apple Watch" products={productsForSection('watch')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('watch')} />
-              {iphoneBundle && <BundleSection bundle={iphoneBundle} onAddBundleToCart={handleAddBundleToCart} />}
+              {STOREFRONT_CONFIG.staticFallback && iphoneBundle && <BundleSection bundle={iphoneBundle} onAddBundleToCart={handleAddBundleToCart} />}
               <ProductRow title="AirPods" products={productsForSection('airpods')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('airpods')} />
               <ProductRow title="Samsung" products={productsForSection('samsung')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('samsung')} />
               <ProductRow title="Gaming" products={productsForSection('gaming')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('gaming')} />
-              {gamingBundle && <BundleSection bundle={gamingBundle} onAddBundleToCart={handleAddBundleToCart} />}
+              {STOREFRONT_CONFIG.staticFallback && gamingBundle && <BundleSection bundle={gamingBundle} onAddBundleToCart={handleAddBundleToCart} />}
               <ProductRow title="Laptops" products={productsForSection('laptops')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('laptops')} />
               <ProductRow title="Creator Gear" products={productsForSection('gear')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('gear')} />
               <ProductRow title="Audio" products={productsForSection('audio')} onAddToCart={handleAddToCart} onQuickView={setQuickViewProduct} onViewAll={() => handleSelectCategory('audio')} />
@@ -732,9 +761,9 @@ export default function App({ initialRoute }: AppProps = {}) {
                   distinct — one is cash, the other is credit — and leads
                   straight into the pre-owned handoff, which is the same loop
                   from the other end. */}
-              <SellDeviceSection id="sell" />
+              {STOREFRONT_CONFIG.staticFallback && <SellDeviceSection id="sell" />}
 
-              <PreOwnedHandoff onContinue={() => handleSelectCondition('pre-owned', 'all')} />
+              {STOREFRONT_CONFIG.staticFallback && <PreOwnedHandoff onContinue={() => handleSelectCondition('pre-owned', 'all')} />}
             </div>
           </>
         ) : (
@@ -860,6 +889,9 @@ export default function App({ initialRoute }: AppProps = {}) {
 
       {/* Checkout Modal */}
       <CheckoutModal
+        storeName={storeName}
+        supportWhatsApp={supportWhatsApp}
+        allowPickup={STOREFRONT_CONFIG.staticFallback}
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
@@ -907,6 +939,10 @@ export default function App({ initialRoute }: AppProps = {}) {
 
       {/* Footer */}
       <Footer
+        brandName={storeName}
+        description={storeDescription}
+        supportWhatsApp={supportWhatsApp}
+        templateMode={STOREFRONT_CONFIG.staticFallback}
         onOpenLegal={handleOpenLegal}
         onOpenJournal={() => handleOpenJournal()}
         onOpenWaitlist={() => setIsWaitlistOpen(true)}

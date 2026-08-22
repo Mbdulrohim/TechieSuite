@@ -19,7 +19,7 @@ import { build } from 'vite';
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const DIST = join(ROOT, 'dist');
 const SSR_OUT = join(ROOT, 'dist-ssr');
-const SITE_ORIGIN = 'https://techiebaseng.com';
+const SITE_ORIGIN = (process.env.VITE_SITE_ORIGIN || 'https://techiebaseng.com').replace(/\/+$/, '');
 
 const escapeHtml = (value) =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -122,6 +122,12 @@ async function main() {
     '',
   ].join('\n');
   await writeFile(join(DIST, 'sitemap.xml'), sitemap, 'utf-8');
+  await writeFile(join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`, 'utf-8');
+  if (process.env.VITE_STATIC_FALLBACK === 'false') {
+    const siteName = process.env.VITE_SITE_NAME || 'Storefront';
+    const siteDescription = process.env.VITE_SITE_DESCRIPTION || `Shop devices from ${siteName}.`;
+    await writeFile(join(DIST, 'llms.txt'), `# ${siteName}\n\n> ${siteDescription}\n\n- [Storefront](${SITE_ORIGIN}/): products and content published by ${siteName}.\n`, 'utf-8');
+  }
 
   await rm(SSR_OUT, { recursive: true, force: true });
 

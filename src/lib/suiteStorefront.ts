@@ -1,7 +1,7 @@
 import type { Article, Product } from '../types';
+import { STOREFRONT_CONFIG } from '../config/storefront';
 
 const API_URL = (import.meta.env.VITE_SUITE_API_URL ?? 'https://api.suite.ng').replace(/\/+$/, '');
-const STOREFRONT = import.meta.env.VITE_SUITE_STOREFRONT ?? 'techiebase';
 const NAIRA_PER_CATALOGUE_UNIT = 1_500;
 
 interface PublicListing {
@@ -24,15 +24,26 @@ interface PublicContent {
   featured: boolean;
   publishedAt: string;
 }
-interface PublicStorefront { listings: PublicListing[]; content: PublicContent[] }
+export interface PublicStorefront {
+  slug: string;
+  customDomain: string | null;
+  name: string;
+  description: string | null;
+  currency: string;
+  theme: Record<string, unknown>;
+  deliveryConfig: Record<string, unknown>;
+  seo: Record<string, unknown>;
+  listings: PublicListing[];
+  content: PublicContent[];
+}
 
 const category = (value: string): Product['category'] => {
   const allowed: Product['category'][] = ['iphone','mac','ipad','watch','airpods','samsung','gaming','laptops','audio','power','anker','accessories','gear','deals'];
   return allowed.includes(value as Product['category']) ? value as Product['category'] : 'accessories';
 };
 
-export async function fetchSuiteStorefront(signal?: AbortSignal): Promise<{ products: Product[]; articles: Article[] }> {
-  const response = await fetch(`${API_URL}/public/storefronts/${encodeURIComponent(STOREFRONT)}`, { signal });
+export async function fetchSuiteStorefront(signal?: AbortSignal): Promise<{ storefront: PublicStorefront; products: Product[]; articles: Article[] }> {
+  const response = await fetch(`${API_URL}/public/storefronts/${encodeURIComponent(STOREFRONT_CONFIG.slug)}`, { signal });
   if (!response.ok) throw new Error('Storefront is unavailable');
   const data = await response.json() as PublicStorefront;
   const products = data.listings.map((listing): Product => {
@@ -59,5 +70,5 @@ export async function fetchSuiteStorefront(signal?: AbortSignal): Promise<{ prod
     date: entry.publishedAt, readMinutes: Math.max(1, Math.ceil(JSON.stringify(entry.body).length / 1200)),
     image: entry.heroMedia?.url ?? '', featured: entry.featured, body: entry.body,
   }));
-  return { products, articles };
+  return { storefront: data, products, articles };
 }

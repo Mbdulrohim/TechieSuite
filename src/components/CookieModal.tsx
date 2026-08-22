@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Cookie, X } from 'lucide-react';
+import { storageKey } from '../config/storefront';
 
 interface CookieModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const CONSENT_KEY = 'techiesuite_cookie_consent';
+const CONSENT_KEY = storageKey('cookie-consent');
 
 export const CookieModal: React.FC<CookieModalProps> = ({ isOpen, onClose }) => {
   const [showPreferences, setShowPreferences] = useState(false);

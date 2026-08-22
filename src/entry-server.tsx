@@ -5,6 +5,7 @@ import { CATEGORY_LABELS } from './data/categoryLabels';
 import { ARTICLES, articleBySlug } from './data/articles';
 import { LEGAL_DOCUMENTS, legalBySlug, legalIndexDescription } from './data/legal';
 import { JOURNAL_INDEX_DESCRIPTION } from './components/JournalView';
+import { STOREFRONT_CONFIG } from './config/storefront';
 
 /**
  * The Node-side half of prerendering: turn one URL into real markup and the
@@ -16,9 +17,9 @@ import { JOURNAL_INDEX_DESCRIPTION } from './components/JournalView';
  * a URL that may never be the browser's real location.
  */
 
-const SITE_TITLE = 'TechieBase — Apple devices, made easy in Nigeria';
-const SITE_DESCRIPTION =
-  'Shop genuine Apple devices in Nigeria with expert support, nationwide delivery, trade-in, and flexible payment options.';
+const SITE_TITLE = import.meta.env.VITE_SITE_TITLE ?? `${STOREFRONT_CONFIG.name} — Devices, made easy`;
+const SITE_DESCRIPTION = import.meta.env.VITE_SITE_DESCRIPTION
+  ?? `Shop devices from ${STOREFRONT_CONFIG.name}.`;
 
 export interface RenderedPage {
   /** Full HTML for the app root — what was inside <div id="root"> at request time. */
@@ -39,29 +40,29 @@ export const render = (url: string): RenderedPage => {
 
   if (route.journalSlug !== null) {
     if (route.journalSlug === '') {
-      title = `The TechieBase Journal — TechieBase`;
+      title = `The ${STOREFRONT_CONFIG.name} Journal — ${STOREFRONT_CONFIG.name}`;
       description = JOURNAL_INDEX_DESCRIPTION;
     } else {
       const article = articleBySlug(route.journalSlug);
       if (article) {
-        title = `${article.title} — TechieBase`;
+        title = `${article.title} — ${STOREFRONT_CONFIG.name}`;
         description = article.dek;
       }
     }
   } else if (route.legalSlug !== null) {
     if (route.legalSlug === '') {
-      title = `Legal — TechieBase`;
+      title = `Legal — ${STOREFRONT_CONFIG.name}`;
       description = legalIndexDescription();
     } else {
       const document = legalBySlug(route.legalSlug);
       if (document) {
-        title = `${document.title} — TechieBase`;
+        title = `${document.title} — ${STOREFRONT_CONFIG.name}`;
         description = document.summary;
       }
     }
   } else if (route.category !== 'all') {
     const copy = CATEGORY_COPY[route.category];
-    title = `${CATEGORY_LABELS[route.category] ?? route.category} — TechieBase`;
+    title = `${CATEGORY_LABELS[route.category] ?? route.category} — ${STOREFRONT_CONFIG.name}`;
     description = copy?.description ?? SITE_DESCRIPTION;
   }
 
@@ -79,7 +80,7 @@ export const render = (url: string): RenderedPage => {
  * route count for a query-string variant would not add anything a crawler
  * needs that the base page and `/pre-owned` don't already cover between them.
  */
-export const ROUTES: string[] = [
+const STATIC_ROUTES: string[] = [
   '/',
   ...CATEGORY_IDS.filter((id) => id !== 'all').map(categoryPath),
   '/journal',
@@ -87,3 +88,4 @@ export const ROUTES: string[] = [
   '/legal',
   ...LEGAL_DOCUMENTS.map((document) => `/legal/${document.slug}`),
 ];
+export const ROUTES: string[] = STOREFRONT_CONFIG.staticFallback ? STATIC_ROUTES : ['/'];

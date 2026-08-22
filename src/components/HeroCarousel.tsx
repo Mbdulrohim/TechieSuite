@@ -3,6 +3,9 @@ import { gsap } from 'gsap';
 import { Product } from '../types';
 
 interface HeroCarouselProps {
+  brandName: string;
+  description?: string;
+  templateMode?: boolean;
   products: Product[];
   onSelectProduct: (product: Product) => void;
   onAddToCart: (product: Product) => void;
@@ -37,6 +40,9 @@ const DYNAMIC_ACTIONS = [
 ];
 
 export const HeroCarousel: React.FC<HeroCarouselProps> = ({
+  brandName,
+  description,
+  templateMode = true,
   products,
   onSelectProduct,
   onAddToCart,
@@ -48,7 +54,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   const wordRef = useRef<HTMLSpanElement>(null);
   const isAnimatingRef = useRef(false);
 
-  const slides = [
+  const templateSlides = [
     {
       id: 'iphone-16-pro',
       headline: 'Hello, Apple Intelligence.',
@@ -60,6 +66,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       productId: 'macbook-air-m3',
     },
   ];
+  const slides = templateMode ? templateSlides : products.slice(0, 2).map((product) => ({
+    id: product.id,
+    headline: product.tagline || description || `Available from ${brandName}`,
+    productId: product.id,
+  }));
 
   // GSAP Blur & Cycle Effect for the 5 dynamic actions
   useEffect(() => {
@@ -122,7 +133,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  const slide = slides[currentSlide];
+  const slide = slides[currentSlide] ?? { id: 'storefront', headline: description || brandName, productId: products[0]?.id ?? '' };
   const targetProduct = products.find((product) => product.id === slide.productId) || products[0];
   const currentAction = DYNAMIC_ACTIONS[actionIndex];
 

@@ -2,21 +2,23 @@ import React from 'react';
 import { ChevronRight } from 'lucide-react';
 
 interface TopUtilityBarProps {
+  message?: string;
+  showLearnMore?: boolean;
   /** Opens the buying guide behind the banner's "genuine devices" promise. */
   onLearnMore: () => void;
 }
 
-export const TopUtilityBar: React.FC<TopUtilityBarProps> = ({ onLearnMore }) => {
+export const TopUtilityBar: React.FC<TopUtilityBarProps> = ({ onLearnMore, message, showLearnMore = true }) => {
   const content = (
     <span className="inline-flex items-center gap-1.5 px-4">
-      <span>Shop genuine devices with nationwide delivery, expert help, and secure payment.</span>
-      <button
+      <span>{message || 'Shop genuine devices with nationwide delivery, expert help, and secure payment.'}</span>
+      {showLearnMore && <button
         type="button"
         onClick={onLearnMore}
         className="text-link hover:underline inline-flex items-center font-medium"
       >
         Learn more <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
-      </button>
+      </button>}
     </span>
   );
 

@@ -6,6 +6,9 @@ import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
 interface CheckoutModalProps {
+  storeName: string;
+  supportWhatsApp: string;
+  allowPickup?: boolean;
   isOpen: boolean;
   onClose: () => void;
   cart: CartItem[];
@@ -15,6 +18,9 @@ interface CheckoutModalProps {
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
+  storeName,
+  supportWhatsApp,
+  allowPickup = true,
   isOpen,
   onClose,
   cart,
@@ -49,12 +55,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handlePlaceOrder = () => {
     const lines = cart.map((item) => `${item.quantity}× ${item.product.name}`).join('\n');
     const message = [
-      'Hello TechieBase, I would like to complete this order:', lines,
+      `Hello ${storeName}, I would like to complete this order:`, lines,
       `Fulfilment: ${fulfillment}`, `Preferred payment: ${paymentMethod}`,
       `Customer: ${address.name || 'Not supplied'}`, `Email: ${address.email || 'Not supplied'}`,
       `Displayed total: ${formatNaira(total)}`,
     ].join('\n');
-    window.open(`https://wa.me/2348143270982?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+    if (supportWhatsApp) {
+      window.open(`https://wa.me/${supportWhatsApp}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+    }
     setStep('confirmation');
   };
 
@@ -110,8 +118,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <label className="block text-footnote font-semibold text-ink mb-3">
                     How would you like your order?
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
+                  <div className={`grid gap-3 ${allowPickup ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                    {allowPickup && <button
                       onClick={() => setFulfillment('delivery')}
                       className={`p-4 rounded-card border text-left transition-all ${fulfillment === 'delivery'
                           ? 'border-accent bg-accent-surface/50 ring-1 ring-accent'
@@ -126,7 +134,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         {fulfillment === 'delivery' && <CheckCircle2 className="w-4 h-4 text-link" />}
                       </div>
                       <div className="text-footnote text-ink-secondary">2 business days</div>
-                    </button>
+                    </button>}
 
                     <button
                       onClick={() => setFulfillment('pickup')}

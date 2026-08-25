@@ -3,6 +3,7 @@ import { STOREFRONT_CONFIG } from '../config/storefront';
 
 const API_URL = (import.meta.env.VITE_SUITE_API_URL ?? 'https://api.suite.ng').replace(/\/+$/, '');
 const NAIRA_PER_CATALOGUE_UNIT = 1_500;
+export const CATALOGUE_UNIT_IN_KOBO = NAIRA_PER_CATALOGUE_UNIT * 100;
 
 interface PublicListing {
   id: string;
@@ -73,4 +74,51 @@ export async function fetchSuiteStorefront(signal?: AbortSignal): Promise<{ stor
     image: entry.heroMedia?.url ?? '', featured: entry.featured, body: entry.body,
   }));
   return { storefront: data, products, articles };
+}
+
+export interface SuiteCheckoutResponse {
+  reference: string;
+  statusToken: string;
+  status: 'pending';
+  amountMinor: number;
+  currency: string;
+  checkoutUrl: string;
+}
+
+export async function createSuiteCheckout(input: {
+  expectedAmountMinor: number;
+  items: Array<{ listingId: string; quantity: number; selection: Record<string, string> }>;
+  customer: { name: string; email: string; phone: string };
+  fulfillment: { method: 'delivery' | 'pickup'; street?: string; city?: string; state?: string; postalCode?: string };
+  company?: string;
+}): Promise<SuiteCheckoutResponse> {
+  const response = await fetch(`${API_URL}/public/storefronts/${encodeURIComponent(STOREFRONT_CONFIG.slug)}/checkout`, {
+    method: 'POST',
+    // text/plain makes this a simple cross-origin request. Suite still grants
+    // response access only to the custom domain recorded for this storefront.
+    headers: { 'content-type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify(input),
+  });
+  const body = await response.json().catch(() => ({})) as Partial<SuiteCheckoutResponse> & { error?: string };
+  if (!response.ok || typeof body.checkoutUrl !== 'string') {
+    throw new Error(body.error ?? 'Secure checkout is temporarily unavailable.');
+  }
+  return body as SuiteCheckoutResponse;
+}
+
+export async function fetchSuiteOrderStatus(reference: string, token: string): Promise<{
+  reference: string;
+  status: 'pending' | 'paid' | 'failed' | 'cancelled' | 'expired' | 'refunded';
+  amountMinor: number;
+  currency: string;
+  storefrontName: string;
+  createdAt: string;
+  paidAt: string | null;
+}> {
+  const response = await fetch(
+    `${API_URL}/public/storefronts/${encodeURIComponent(STOREFRONT_CONFIG.slug)}/orders/${encodeURIComponent(reference)}?token=${encodeURIComponent(token)}`,
+    { cache: 'no-store' },
+  );
+  if (!response.ok) throw new Error('We could not verify this order.');
+  return response.json();
 }

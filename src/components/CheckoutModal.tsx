@@ -4,6 +4,7 @@ import { CartItem, StoreLocation, TradeInQuote } from '../types';
 import { configuredUnitPrice, formatNaira } from '../utils';
 import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
+import { CATALOGUE_UNIT_IN_KOBO, createSuiteCheckout } from '../lib/suiteStorefront';
 
 interface CheckoutModalProps {
   storeName: string;
@@ -30,10 +31,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [step, setStep] = useState<'details' | 'payment' | 'confirmation'>('details');
   const [fulfillment, setFulfillment] = useState<'delivery' | 'pickup'>('delivery');
   const [paymentMethod, setPaymentMethod] = useState<'bank_transfer' | 'installment' | 'credit_card'>('credit_card');
+  const [submitting, setSubmitting] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
 
   const [address, setAddress] = useState({
     name: '',
     email: '',
+    phone: '',
     street: '',
     city: '',
     state: '',
@@ -46,13 +50,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     return sum + (base + protection) * item.quantity;
   }, 0);
 
-  const tradeInCredit = tradeInQuote ? tradeInQuote.value : 0;
-  const netSubtotal = Math.max(0, rawSubtotal - tradeInCredit);
-  const shipping = netSubtotal >= 50 ? 0 : 10;
-  const tax = Math.round(netSubtotal * 0.075);
-  const total = netSubtotal + tax + shipping;
+  const total = rawSubtotal;
+  const needsManualQuote = tradeInQuote !== null || cart.some((item) => item.protection);
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    setCheckoutError('');
     const lines = cart.map((item) => `${item.quantity}× ${item.product.name}`).join('\n');
     const message = [
       `Hello ${storeName}, I would like to complete this order:`, lines,
@@ -60,16 +62,41 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       `Customer: ${address.name || 'Not supplied'}`, `Email: ${address.email || 'Not supplied'}`,
       `Displayed total: ${formatNaira(total)}`,
     ].join('\n');
-    if (supportWhatsApp) {
+    if (paymentMethod !== 'credit_card' || needsManualQuote) {
+      if (!supportWhatsApp) { setCheckoutError('Contact details are unavailable.'); return; }
       window.open(`https://wa.me/${supportWhatsApp}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+      setStep('confirmation');
+      return;
     }
-    setStep('confirmation');
+    setSubmitting(true);
+    try {
+      const checkout = await createSuiteCheckout({
+        expectedAmountMinor: Math.round(total * CATALOGUE_UNIT_IN_KOBO),
+        items: cart.map((item) => ({
+          listingId: item.product.id, quantity: item.quantity,
+          selection: {
+            color: item.selectedColor.name,
+            ...(item.selectedStorage ? { storage: item.selectedStorage.capacity } : {}),
+            ...Object.fromEntries(Object.entries(item.selectedOptions ?? {}).map(([key, value]) => [key, value.label])),
+          },
+        })),
+        customer: { name: address.name, email: address.email, phone: address.phone },
+        fulfillment: { method: fulfillment, ...(fulfillment === 'delivery' ? {
+          street: address.street, city: address.city, state: address.state, postalCode: address.zip,
+        } : {}) },
+      });
+      window.location.assign(checkout.checkoutUrl);
+    } catch (cause) {
+      setCheckoutError(cause instanceof Error ? cause.message : 'Secure checkout is temporarily unavailable.');
+      setSubmitting(false);
+    }
   };
 
   const handleClose = () => {
     setStep('details');
     setFulfillment('delivery');
     setPaymentMethod('credit_card');
+    setCheckoutError('');
     onClose();
   };
 
@@ -167,6 +194,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <input type="email" placeholder="Email" value={address.email}
                         onChange={(e) => setAddress({ ...address, email: e.target.value })}
                         className={inputClasses} />
+                      <input type="tel" placeholder="Phone number" value={address.phone}
+                        onChange={(e) => setAddress({ ...address, phone: e.target.value })}
+                        className={inputClasses} />
                     </div>
                     <input type="text" placeholder="Street Address" value={address.street}
                       onChange={(e) => setAddress({ ...address, street: e.target.value })}
@@ -197,6 +227,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 )}
 
                 <button
+                  disabled={!address.name.trim() || !address.email.includes('@') || address.phone.trim().length < 7 || (fulfillment === 'delivery' && (!address.street.trim() || !address.city.trim() || !address.state.trim()))}
                   onClick={() => setStep('payment')}
                   className="w-full bg-accent hover:bg-accent-hover active:scale-[0.98] active:opacity-80 text-white font-semibold text-body h-11 min-h-[44px] rounded-full transition-all flex items-center justify-center gap-2"
                 >
@@ -265,22 +296,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div className="flex justify-between text-footnote text-ink-secondary">
                     <span>Items</span><span>{formatNaira(rawSubtotal)}</span>
                   </div>
-                  {tradeInCredit > 0 && (
+                  {tradeInQuote && (
                     <div className="flex justify-between text-footnote text-success font-medium">
-                      <span>Trade-In Credit</span><span>-{formatNaira(tradeInCredit)}</span>
+                      <span>Trade-in quote</span><span>{formatNaira(tradeInQuote.value)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-footnote text-ink-secondary">
-                    <span>Shipping</span>
-                    <span className="text-success font-semibold">{shipping === 0 ? 'FREE' : formatNaira(shipping)}</span>
-                  </div>
-                  <div className="flex justify-between text-footnote text-ink-secondary">
-                    <span>VAT (7.5%)</span><span>{formatNaira(tax)}</span>
-                  </div>
                   <div className="flex justify-between font-semibold text-body text-ink pt-3 border-t border-hairline">
                     <span>Total</span><span>{formatNaira(total)}</span>
                   </div>
                 </div>
+
+                {needsManualQuote && <p className="rounded-card border border-hairline-soft bg-canvas p-3 text-footnote text-ink-secondary">Trade-ins and device protection need final confirmation from our team, so this order will continue on WhatsApp before payment.</p>}
+                {checkoutError && <p role="alert" className="rounded-card bg-red-50 p-3 text-footnote font-medium text-red-700">{checkoutError}</p>}
 
                 <div className="flex gap-3">
                   <button
@@ -290,11 +317,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     Back
                   </button>
                   <button
-                    onClick={handlePlaceOrder}
+                    disabled={submitting}
+                    onClick={() => void handlePlaceOrder()}
                     className="w-2/3 bg-black hover:bg-ink active:scale-[0.98] active:opacity-80 text-white font-semibold text-body h-11 min-h-[44px] rounded-full transition-all shadow-xl flex items-center justify-center gap-2"
                   >
                     <CreditCard className="w-5 h-5" />
-                    Continue on WhatsApp — {formatNaira(total)}
+                    {submitting ? 'Opening secure checkout…' : paymentMethod === 'credit_card' && !needsManualQuote ? `Pay securely — ${formatNaira(total)}` : `Continue on WhatsApp — ${formatNaira(total)}`}
                   </button>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck, ArrowRight, Tag, CreditCard, Undo2 } from 'lucide-react';
 import { CartItem, TradeInQuote } from '../types';
-import { configuredUnitPrice, formatNaira } from '../utils';
+import { configuredUnitPrice, formatNaira, variantImage } from '../utils';
 import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
@@ -140,7 +140,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   >
                     <div className="flex gap-4">
                       <img
-                        src={item.selectedColor.image || item.product.imageUrl}
+                        src={variantImage(item.product, { selectedColor: item.selectedColor, selectedOptions: item.selectedOptions }) || item.product.imageUrl}
                         alt={item.product.name}
                         className="w-20 h-20 object-contain rounded-control bg-canvas p-2 shrink-0"
                       />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Check, ChevronDown, ChevronUp, Plus, ShoppingBag, Sparkles } from 'lucide-react';
 import { ProductBundle, ProductColor } from '../types';
-import { formatNaira } from '../utils';
+import { formatNaira, variantImage } from '../utils';
 
 interface BundleSectionProps {
   bundle: ProductBundle;
@@ -128,7 +128,7 @@ export const BundleSection: React.FC<BundleSectionProps> = ({ bundle, onAddBundl
               />
             ))}
             <img
-              src={selectedMainColor.image || bundle.mainProduct.imageUrl}
+              src={variantImage(bundle.mainProduct, { selectedColor: selectedMainColor }) || bundle.mainProduct.imageUrl}
               alt={bundle.mainProduct.name}
               className="relative z-10 h-64 w-64 object-contain drop-shadow-2xl sm:h-72 sm:w-72"
             />
@@ -141,7 +141,7 @@ export const BundleSection: React.FC<BundleSectionProps> = ({ bundle, onAddBundl
               <ProductChoice
                 label="Main product"
                 name={bundle.mainProduct.name}
-                image={selectedMainColor.image || bundle.mainProduct.imageUrl}
+                image={variantImage(bundle.mainProduct, { selectedColor: selectedMainColor }) || bundle.mainProduct.imageUrl}
                 price={bundle.mainProduct.price}
                 className={theme.panel}
               >

@@ -60,6 +60,7 @@ export async function fetchSuiteStorefront(signal?: AbortSignal): Promise<{ stor
       colors: supplied.colors?.length ? supplied.colors : [{ name: 'Standard', hex: '#d4d4d4', image }],
       ...(supplied.storageOptions ? { storageOptions: supplied.storageOptions } : {}),
       ...(supplied.optionGroups ? { optionGroups: supplied.optionGroups } : {}),
+      ...(supplied.imageDrivenBy ? { imageDrivenBy: supplied.imageDrivenBy } : {}),
       imageUrl: image, ...(supplied.additionalImages ? { additionalImages: supplied.additionalImages } : {}),
       // A published listing is an offer the merchant can fulfil or source. It
       // is deliberately independent of today's counted inventory units.

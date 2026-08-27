@@ -25,6 +25,14 @@ export interface ProductOptionChoice {
   /** Supporting line under the label, e.g. '10-core GPU, 16-core Neural Engine'. */
   note?: string;
   /**
+   * Photo to show when this choice is picked, if `Product.imageDrivenBy`
+   * names this choice's group. Mirrors `ProductColor.image` — the same
+   * "picking a value can swap the photo" behaviour, just not limited to
+   * colour. Optional per choice: a content editor can photograph three of
+   * five finishes and leave the rest to fall back to the base image.
+   */
+  image?: string;
+  /**
    * Choices in other groups this one cannot be sold with, keyed by group id —
    * e.g. the base M5 is not offered in the 16-inch body. Without this the
    * storefront will happily take an order for a machine Apple does not build.
@@ -99,6 +107,22 @@ export interface Product {
   storageOptions?: StorageOption[];
   /** Size, chip and similar axes. Chosen before colour and storage. */
   optionGroups?: ProductOptionGroup[];
+  /**
+   * Which variant axis swaps the product photo when picked: `'color'` (the
+   * default, applied when this is absent — every product authored before
+   * this field existed keeps working unchanged), or the `id` of an entry in
+   * `optionGroups` — e.g. `'size'` if a MacBook's two sizes were ever
+   * photographed separately.
+   *
+   * One axis, not several at once: a photo keyed by colour AND size
+   * combined would need a slot filled for every combination, and for
+   * physical retail almost nothing is shot that way — colour alone is what
+   * changes photography in practice, on this storefront and on Apple's own.
+   * A content editor sets this per product in Suite; it is not fixed by
+   * category, so nothing about supporting one product with a size-driven
+   * photo forecloses another with a colour-driven one.
+   */
+  imageDrivenBy?: string;
   imageUrl: string;
   additionalImages?: string[];
   badge?: 'BEST SELLER' | 'NEW' | 'SAVE ₦150K' | 'HOT DEAL' | 'POPULAR';

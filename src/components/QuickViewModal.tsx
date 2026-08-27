@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { Product, ProductColor, ProductOptionChoice, StorageOption } from '../types';
-import { formatNaira, optionsDelta } from '../utils';
+import { formatNaira, optionsDelta, variantImage } from '../utils';
 import { monthlyInstalment } from '../data/financing';
 import { PROTECTION, protectionPrice } from '../data/protection';
 
@@ -70,7 +70,12 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
       return Boolean(blockedByThis || blockedByOther);
     });
   const [protection, setProtection] = useState(false);
-  const [activeImage, setActiveImage] = useState(selectedColor.image || product.imageUrl);
+  /** Which axis's selection swaps the photo — 'color' unless a content
+   *  editor pointed it at an option group in Suite. */
+  const imageDrivenBy = product.imageDrivenBy ?? 'color';
+  const [activeImage, setActiveImage] = useState(
+    () => variantImage(product, { selectedColor, selectedOptions }) ?? product.imageUrl
+  );
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const touchStartXRef = useRef<number | null>(null);
 
@@ -313,9 +318,10 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
                             type="button"
                             key={choice.label}
                             disabled={isBlocked}
-                            onClick={() =>
-                              setSelectedOptions((previous) => ({ ...previous, [group.id]: choice }))
-                            }
+                            onClick={() => {
+                              setSelectedOptions((previous) => ({ ...previous, [group.id]: choice }));
+                              if (imageDrivenBy === group.id) setActiveImage(choice.image || product.imageUrl);
+                            }}
                             aria-pressed={isSelected}
                             className={`flex min-h-[82px] w-full items-center justify-between rounded-control border px-5 text-left transition-colors ${
                               isBlocked
@@ -364,7 +370,7 @@ const QuickViewContent: React.FC<QuickViewContentProps> = ({
                           key={color.name}
                           onClick={() => {
                             setSelectedColor(color);
-                            setActiveImage(color.image || product.imageUrl);
+                            if (imageDrivenBy === 'color') setActiveImage(color.image || product.imageUrl);
                           }}
                           aria-label={color.name}
                           aria-pressed={isSelected}

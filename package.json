@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
-    "lint": "pnpm run typecheck"
+    "lint": "pnpm run typecheck",
+    "export:suite-storefront": "node --import tsx scripts/export-suite-storefront.ts"
   },
   "dependencies": {
     "gsap": "^3.15.0",

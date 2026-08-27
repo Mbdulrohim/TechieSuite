@@ -55,11 +55,18 @@ export async function fetchSuiteStorefront(signal?: AbortSignal): Promise<{ stor
     return {
       id: listing.id, name: listing.title, tagline: supplied.tagline ?? listing.description ?? '',
       condition: supplied.condition ?? 'new', category: category(listing.category), price,
-      ...(original === undefined ? {} : { originalPrice: original }), monthlyPrice: supplied.monthlyPrice ?? price / 24,
+      ...(original === undefined ? {} : { originalPrice: original }),
+      monthlyPrice: supplied.monthlyPrice === undefined ? price / 24 : supplied.monthlyPrice / NAIRA_PER_CATALOGUE_UNIT,
       rating: supplied.rating ?? 0, reviewCount: supplied.reviewCount ?? 0,
       colors: supplied.colors?.length ? supplied.colors : [{ name: 'Standard', hex: '#d4d4d4', image }],
-      ...(supplied.storageOptions ? { storageOptions: supplied.storageOptions } : {}),
-      ...(supplied.optionGroups ? { optionGroups: supplied.optionGroups } : {}),
+      ...(supplied.storageOptions ? { storageOptions: supplied.storageOptions.map((option) => ({
+        ...option, priceDelta: option.priceDelta / NAIRA_PER_CATALOGUE_UNIT,
+      })) } : {}),
+      ...(supplied.optionGroups ? { optionGroups: supplied.optionGroups.map((group) => ({
+        ...group, choices: group.choices.map((choice) => ({
+          ...choice, priceDelta: choice.priceDelta / NAIRA_PER_CATALOGUE_UNIT,
+        })),
+      })) } : {}),
       ...(supplied.imageDrivenBy ? { imageDrivenBy: supplied.imageDrivenBy } : {}),
       imageUrl: image, ...(supplied.additionalImages ? { additionalImages: supplied.additionalImages } : {}),
       // A published listing is an offer the merchant can fulfil or source. It

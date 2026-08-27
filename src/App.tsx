@@ -221,7 +221,7 @@ export default function App({ initialRoute }: AppProps = {}) {
   /** Session-scoped on purpose — a comparison tray is a train of thought, not a
    *  saved list, and persisting it would double the stale-product surface. */
   const [compareList, setCompareList] = useState<Product[]>([]);
-  const [liveProducts, setLiveProducts] = useState<Product[]>(STOREFRONT_CONFIG.staticFallback ? PRODUCTS : []);
+  const [liveProducts, setLiveProducts] = useState<Product[]>(STOREFRONT_CONFIG.catalogueFallback ? PRODUCTS : []);
   const [liveArticles, setLiveArticles] = useState(STOREFRONT_CONFIG.staticFallback ? ARTICLES : []);
   const [storeName, setStoreName] = useState(STOREFRONT_CONFIG.name);
   const [storeDescription, setStoreDescription] = useState('');
@@ -247,9 +247,9 @@ export default function App({ initialRoute }: AppProps = {}) {
       if (contact && typeof contact === 'object' && 'whatsApp' in contact && typeof contact.whatsApp === 'string') {
         setSupportWhatsApp(contact.whatsApp.replace(/\D/g, ''));
       }
-      if (result.products.length > 0 || !STOREFRONT_CONFIG.staticFallback) setLiveProducts(result.products);
+      setLiveProducts(result.products);
       if (result.articles.length > 0 || !STOREFRONT_CONFIG.staticFallback) setLiveArticles(result.articles);
-    }).catch(() => { /* Static catalogue is the deliberate offline/deployment fallback. */ });
+    }).catch(() => { /* Keep the explicitly configured catalogue fallback, if this deployment has one. */ });
     return () => controller.abort();
   }, []);
 

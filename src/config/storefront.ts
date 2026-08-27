@@ -12,6 +12,7 @@ export const STOREFRONT_CONFIG = {
   origin: (env.VITE_SITE_ORIGIN ?? 'https://techiebaseng.com').replace(/\/+$/, ''),
   supportWhatsApp: (env.VITE_SUPPORT_WHATSAPP ?? '2348143270982').replace(/\D/g, ''),
   staticFallback: env.VITE_STATIC_FALLBACK !== 'false',
+  catalogueFallback: env.VITE_CATALOGUE_FALLBACK === 'true',
 } as const;
 
 export const storageKey = (key: string) => `storefront.${STOREFRONT_CONFIG.slug}.${key}`;

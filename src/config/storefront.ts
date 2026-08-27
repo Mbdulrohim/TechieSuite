@@ -13,6 +13,7 @@ export const STOREFRONT_CONFIG = {
   supportWhatsApp: (env.VITE_SUPPORT_WHATSAPP ?? '2348143270982').replace(/\D/g, ''),
   staticFallback: env.VITE_STATIC_FALLBACK !== 'false',
   catalogueFallback: env.VITE_CATALOGUE_FALLBACK === 'true',
+  contentFallback: env.VITE_CONTENT_FALLBACK === 'true',
 } as const;
 
 export const storageKey = (key: string) => `storefront.${STOREFRONT_CONFIG.slug}.${key}`;

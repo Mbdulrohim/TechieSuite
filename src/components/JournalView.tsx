@@ -17,6 +17,14 @@ const meta = (article: Article) => `${article.category} · ${article.readMinutes
 export const JournalIndex: React.FC<JournalIndexProps> = ({ articles, onOpenArticle }) => {
   const [lead, ...rest] = articles;
 
+  if (!lead) {
+    return <section className="mx-auto flex min-h-[56vh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+      <p className="eyebrow text-ink-tertiary">Journal</p>
+      <h1 className="mt-4 text-title font-semibold text-ink">New stories are on the way.</h1>
+      <p className="mt-3 text-body text-ink-secondary">Published guides from Suite will appear here.</p>
+    </section>;
+  }
+
   return (
     <div className="pb-24">
       <section className="bg-gradient-to-br from-[#eceff4] via-canvas to-[#f2ece4]">

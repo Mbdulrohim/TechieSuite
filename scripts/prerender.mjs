@@ -32,6 +32,10 @@ const replaceOne = (html, pattern, replacement, label) => {
 async function main() {
   console.log('[prerender] building SSR bundle from src/entry-server.tsx...');
   await build({
+    // GSAP ships a CommonJS package entry that Node cannot import as a named
+    // ESM export. Bundle it into the SSR artifact so the server render uses
+    // Vite's interop instead of asking Node to load it directly.
+    ssr: { noExternal: ['gsap'] },
     build: {
       ssr: 'src/entry-server.tsx',
       outDir: 'dist-ssr',

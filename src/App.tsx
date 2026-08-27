@@ -25,7 +25,7 @@ import { LegalIndex, LegalDocumentView } from './components/LegalView';
 import { Footer } from './components/Footer';
 import { CookieModal } from './components/CookieModal';
 import { WaitlistModal } from './components/WaitlistModal';
-import { ARTICLES, FEATURED_ARTICLE, articleBySlug } from './data/articles';
+import { ARTICLES, FEATURED_ARTICLE } from './data/articles';
 import { LEGAL_DOCUMENTS, legalBySlug } from './data/legal';
 import { usePersistentState } from './hooks/usePersistentState';
 import { fetchSuiteStorefront } from './lib/suiteStorefront';
@@ -85,7 +85,7 @@ export const parseRoute = (pathname: string, search: string): RouteState => {
   const segments = pathname.split('/').filter(Boolean);
   const params = new URLSearchParams(search);
 
-  if (STOREFRONT_CONFIG.staticFallback && segments[0] === 'journal') {
+  if (segments[0] === 'journal') {
     const slug = segments[1] ?? '';
     return { ...STOREFRONT_ROUTE, journalSlug: slug };
   }
@@ -97,7 +97,7 @@ export const parseRoute = (pathname: string, search: string): RouteState => {
   if (segments.length === 0) {
     if (params.has('journal')) {
       const slug = params.get('journal') ?? '';
-      return { ...STOREFRONT_ROUTE, journalSlug: slug && articleBySlug(slug) ? slug : '' };
+      return { ...STOREFRONT_ROUTE, journalSlug: slug };
     }
     if (params.has('legal')) {
       const slug = params.get('legal') ?? '';
@@ -222,7 +222,7 @@ export default function App({ initialRoute }: AppProps = {}) {
    *  saved list, and persisting it would double the stale-product surface. */
   const [compareList, setCompareList] = useState<Product[]>([]);
   const [liveProducts, setLiveProducts] = useState<Product[]>(STOREFRONT_CONFIG.catalogueFallback ? PRODUCTS : []);
-  const [liveArticles, setLiveArticles] = useState(STOREFRONT_CONFIG.staticFallback ? ARTICLES : []);
+  const [liveArticles, setLiveArticles] = useState(STOREFRONT_CONFIG.contentFallback ? ARTICLES : []);
   const [storeName, setStoreName] = useState(STOREFRONT_CONFIG.name);
   const [storeDescription, setStoreDescription] = useState('');
   const [supportWhatsApp, setSupportWhatsApp] = useState(STOREFRONT_CONFIG.supportWhatsApp);
@@ -248,7 +248,7 @@ export default function App({ initialRoute }: AppProps = {}) {
         setSupportWhatsApp(contact.whatsApp.replace(/\D/g, ''));
       }
       setLiveProducts(result.products);
-      if (result.articles.length > 0 || !STOREFRONT_CONFIG.staticFallback) setLiveArticles(result.articles);
+      setLiveArticles(result.articles);
     }).catch(() => { /* Keep the explicitly configured catalogue fallback, if this deployment has one. */ });
     return () => controller.abort();
   }, []);
@@ -633,6 +633,7 @@ export default function App({ initialRoute }: AppProps = {}) {
 
   const iphoneBundle = bundleById('bundle-iphone-creator');
   const gamingBundle = bundleById('bundle-ps5-starter');
+  const selectedJournalArticle = journalSlug ? liveArticles.find((article) => article.slug === journalSlug) : undefined;
 
   return (
     <div className="min-h-screen w-full max-w-full bg-canvas text-ink antialiased flex flex-col justify-between">
@@ -681,13 +682,19 @@ export default function App({ initialRoute }: AppProps = {}) {
         ) : journalSlug !== null ? (
           journalSlug === '' ? (
             <JournalIndex articles={liveArticles} onOpenArticle={handleOpenJournal} />
-          ) : (
+          ) : selectedJournalArticle ? (
             <ArticleView
-              article={liveArticles.find((article) => article.slug === journalSlug) ?? FEATURED_ARTICLE}
+              article={selectedJournalArticle}
               related={liveArticles.filter((a) => a.slug !== journalSlug).slice(0, 3)}
               onBack={() => handleOpenJournal()}
               onOpenArticle={handleOpenJournal}
             />
+          ) : (
+            <section className="mx-auto flex min-h-[48vh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+              <p className="eyebrow text-ink-tertiary">Journal</p>
+              <h1 className="mt-4 text-title font-semibold text-ink">This article is no longer available.</h1>
+              <button type="button" className="mt-7 rounded-full bg-ink px-6 py-3 text-footnote font-semibold text-white" onClick={() => handleOpenJournal()}>Back to the journal</button>
+            </section>
           )
         ) : activeCategory === 'all' && activeCondition === 'new' && liveProducts.length === 0 ? (
           <section className="mx-auto flex min-h-[64vh] max-w-3xl flex-col items-center justify-center px-6 py-24 text-center">

@@ -80,12 +80,13 @@ export const render = (url: string): RenderedPage => {
  * route count for a query-string variant would not add anything a crawler
  * needs that the base page and `/pre-owned` don't already cover between them.
  */
-const STATIC_ROUTES: string[] = [
+const TEMPLATE_ROUTES: string[] = [
   '/',
   ...CATEGORY_IDS.filter((id) => id !== 'all').map(categoryPath),
-  '/journal',
-  ...ARTICLES.map((article) => `/journal/${article.slug}`),
   '/legal',
   ...LEGAL_DOCUMENTS.map((document) => `/legal/${document.slug}`),
 ];
-export const ROUTES: string[] = STOREFRONT_CONFIG.staticFallback ? STATIC_ROUTES : ['/'];
+export const ROUTES: string[] = STOREFRONT_CONFIG.staticFallback
+  ? [...TEMPLATE_ROUTES, ...(STOREFRONT_CONFIG.contentFallback
+    ? ['/journal', ...ARTICLES.map((article) => `/journal/${article.slug}`)] : ['/journal'])]
+  : ['/'];

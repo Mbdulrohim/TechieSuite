@@ -289,6 +289,22 @@ body {
   animation: pulse-soft 2s ease-in-out infinite;
 }
 
+/* Loading placeholder. The `shimmer` keyframes above existed but nothing used
+   them — this is the utility they were written for. A sweep rather than a
+   fade, because a moving highlight reads as "working" where a pulsing block
+   reads as "broken". The global prefers-reduced-motion rule below stops the
+   sweep and leaves a flat block, which is the right thing to leave behind. */
+.skeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-surface-sunken) 25%,
+    var(--color-hairline-soft) 37%,
+    var(--color-surface-sunken) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
 .animate-marquee-slow {
   display: flex;
   width: max-content;

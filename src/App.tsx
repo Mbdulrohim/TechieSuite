@@ -23,6 +23,7 @@ import { StoreSelectorModal } from './components/StoreSelectorModal';
 import { JournalIndex, ArticleView } from './components/JournalView';
 import { LegalIndex, LegalDocumentView } from './components/LegalView';
 import { Footer } from './components/Footer';
+import { CatalogueSkeleton } from './components/CatalogueSkeleton';
 import { CookieModal } from './components/CookieModal';
 import { WaitlistModal } from './components/WaitlistModal';
 import { ARTICLES, FEATURED_ARTICLE } from './data/articles';
@@ -226,6 +227,25 @@ export default function App({ initialRoute }: AppProps = {}) {
   const [storeName, setStoreName] = useState(STOREFRONT_CONFIG.name);
   const [storeDescription, setStoreDescription] = useState('');
   const [supportWhatsApp, setSupportWhatsApp] = useState(STOREFRONT_CONFIG.supportWhatsApp);
+  /**
+   * True until the storefront request settles. Client-only, on purpose.
+   *
+   * A deployment carrying a static catalogue already has products to draw on
+   * the first frame, so it is never "loading" as far as a shopper is concerned
+   * — starting this true there would replace a full page with placeholders for
+   * no reason.
+   *
+   * The `window` check is what keeps prerendering honest. There is no fetch
+   * during SSR and never will be, so "loading" cannot resolve there: starting
+   * this true on the server would bake shimmer placeholders into every static
+   * page and hand crawlers a homepage with no products on it. On the server it
+   * settles immediately, so the prerendered HTML is whatever the data actually
+   * supports — the catalogue when there is one, the honest empty state when
+   * there is not.
+   */
+  const [isCatalogueLoading, setIsCatalogueLoading] = useState(
+    typeof window !== 'undefined' && !STOREFRONT_CONFIG.catalogueFallback
+  );
   const [tradeInQuote, setTradeInQuote] = useState<TradeInQuote | null>(null);
 
   /** Transient status line. Keyed by id rather than by text so raising the same
@@ -249,7 +269,12 @@ export default function App({ initialRoute }: AppProps = {}) {
       }
       setLiveProducts(result.products);
       setLiveArticles(result.articles);
-    }).catch(() => { /* Keep the explicitly configured catalogue fallback, if this deployment has one. */ });
+    }).catch(() => { /* Keep the explicitly configured catalogue fallback, if this deployment has one. */ })
+      .finally(() => {
+        // Cleared on failure as well as success, or a shop whose API is down
+        // would shimmer forever instead of showing the honest empty state.
+        if (!controller.signal.aborted) setIsCatalogueLoading(false);
+      });
     return () => controller.abort();
   }, []);
 
@@ -696,6 +721,8 @@ export default function App({ initialRoute }: AppProps = {}) {
               <button type="button" className="mt-7 rounded-full bg-ink px-6 py-3 text-footnote font-semibold text-white" onClick={() => handleOpenJournal()}>Back to the journal</button>
             </section>
           )
+        ) : activeCategory === 'all' && activeCondition === 'new' && isCatalogueLoading ? (
+          <CatalogueSkeleton />
         ) : activeCategory === 'all' && activeCondition === 'new' && liveProducts.length === 0 ? (
           /* Shown to a real customer on a real shop's website, so it says
              nothing about how the site is built. It previously read "Products

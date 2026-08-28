@@ -21,7 +21,11 @@ export const JournalIndex: React.FC<JournalIndexProps> = ({ articles, onOpenArti
     return <section className="mx-auto flex min-h-[56vh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
       <p className="eyebrow text-ink-tertiary">Journal</p>
       <h1 className="mt-4 text-title font-semibold text-ink">New stories are on the way.</h1>
-      <p className="mt-3 text-body text-ink-secondary">Published guides from Suite will appear here.</p>
+      {/* Named the back-office system to the public before. A reader does not
+          know or care what the shop writes its guides in. */}
+      <p className="mt-3 text-body text-ink-secondary">
+        We are working on our first buying guides. Check back soon.
+      </p>
     </section>;
   }
 

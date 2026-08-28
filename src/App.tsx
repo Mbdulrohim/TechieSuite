@@ -697,12 +697,33 @@ export default function App({ initialRoute }: AppProps = {}) {
             </section>
           )
         ) : activeCategory === 'all' && activeCondition === 'new' && liveProducts.length === 0 ? (
+          /* Shown to a real customer on a real shop's website, so it says
+             nothing about how the site is built. It previously read "Products
+             published from Suite will appear here automatically", which named
+             the back-office system to the public and described an internal
+             mechanism no shopper has any use for. It was also a dead end: the
+             shop is open, and the page offered no way to reach it. */
           <section className="mx-auto flex min-h-[64vh] max-w-3xl flex-col items-center justify-center px-6 py-24 text-center">
             <p className="eyebrow text-ink-tertiary">{storeName}</p>
-            <h1 className="mt-4 text-headline font-semibold text-ink">Our online catalogue is being prepared.</h1>
+            <h1 className="mt-4 text-headline font-semibold text-ink">
+              Our online store is opening soon.
+            </h1>
             <p className="mt-4 max-w-xl text-body text-ink-secondary">
-              {storeDescription || 'Products published from Suite will appear here automatically.'}
+              {storeDescription ||
+                `We are still putting ${storeName} online. Everything we stock is available now — message us and we will confirm what is in and send you the price.`}
             </p>
+            {supportWhatsApp && (
+              <a
+                href={`https://wa.me/${supportWhatsApp}?text=${encodeURIComponent(
+                  `Hello ${storeName}! I would like to ask about a product.`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-7 text-footnote font-semibold text-white transition-colors hover:bg-black"
+              >
+                Message us on WhatsApp
+              </a>
+            )}
           </section>
         ) : activeCategory === 'all' && activeCondition === 'new' ? (
           <>
